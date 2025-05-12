@@ -1,0 +1,433 @@
+@import url(navBarStyles.css);
+@import url(footerStyles.css);
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Ubuntu", sans-serif;
+    
+    
+}
+a {
+    text-decoration: none;
+    color: #222222;
+    font-size: 13pt;
+}
+
+body {
+    background-color: #f1f1f1;
+}
+
+/*-------------------------------------*/
+
+.parallax{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    scroll-behavior: smooth;
+
+    overflow: hidden;
+
+}
+.parallax img{
+    position: absolute;
+    width:100%; 
+    top:0;
+    pointer-events: none;
+}
+#punch{
+    font-size: 60pt;
+    z-index: 1;
+    color:#fff;
+    padding: 0 100px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+#ground{
+    padding: 0 100px;
+    z-index: 2;
+    background-color: #003329;
+}
+
+.motivationStatement{
+    color: white;
+    padding: 50px 100px;
+    font-size: 15pt;
+    line-height: 50px;
+    text-align: center;
+    font-style: italic;
+}
+
+.doshas h1{
+    text-align: center;
+    padding: 80px 100px;   
+    font-size: 50pt; 
+}
+.doshaCards{
+    display: flex;
+    margin: 30px 100px;
+    gap:30px;
+}
+.card{
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    gap:30px;
+    padding:30px;
+    border-radius: 20px 20px 0 0;
+    align-items: center;
+    width: 33.3%
+}
+.card:hover{
+    box-shadow: none;
+}
+.doshaIcon{
+    font-size: 120px;
+}
+.doshaName{
+    font-size: 30pt;
+}
+#Vata{
+
+    background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
+    background-clip: text;
+    color: transparent	
+}
+#Pitta{
+    background: linear-gradient(to right, #FF4500, #FFA500, #FFFF66);
+    background-clip: text;
+    color: transparent	
+}
+#Kapha{
+    background: linear-gradient(to right, #4CAF50, #81C784, #A5D6A7);
+    background-clip: text;
+    color: transparent
+}
+.doshaInfo{
+    font-size: 13pt;
+    line-height: 2em;
+    text-align: center;
+
+    border: solid white;
+}
+
+.discoverDosha{
+    margin-bottom: 30px;
+    padding: 10px 30px;
+    color: white;
+    border-radius: 100px;
+    background: linear-gradient(to right, #86837F, black);
+}
+.discoverDosha:hover{
+    background: black;
+
+}
+/*-----------------------------------*/
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+  }
+  
+  .modal-content {
+    background: white;
+    margin: 100px 50px;
+    padding: 30px;
+    border-radius: 20px;
+
+  }
+  body.modal-open {
+    overflow: hidden; 
+  }
+  .generalInfo{
+    display: flex;
+    gap:30px;
+  }
+
+.generalInfo video{
+    border-radius: 14px 0 0 14px;
+    width:60%;
+    height: auto;
+}
+
+.text{
+    display: flex;
+
+}
+.text h2{
+    font-size: 50pt;
+}
+#VataName{
+    background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
+    background-clip: text;
+    color: transparent	
+}
+#PittaName{
+    background: linear-gradient(to right, #FF4500, #FFA500, #FFFF66);
+    background-clip: text;
+    color: transparent	
+}
+#KaphaName{
+    background: linear-gradient(to right, #4CAF50, #81C784, #A5D6A7);
+    background-clip: text;
+    color: transparent	
+}
+.close-button{
+    font-size: 30pt;
+    cursor: pointer;
+    color: grey;
+}
+.characteristics{
+    display: flex;
+    margin-top: 80px;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap:50px;
+
+}
+.firstRow{
+    display: flex;
+    gap:30px;
+    justify-content: space-evenly;
+}
+.secondRow{
+    display: flex;
+    gap:30px;
+}
+
+.rowContent{
+    display: flex;
+    flex:1;
+    flex-direction: column;
+    text-align: center;
+    line-height: 1.5em;
+    gap: 30px;
+    padding:30px;
+    border-radius: 14px;
+    background-color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+}
+.rowContent:hover{
+    box-shadow: none;
+}
+.characteristic{
+    text-align: center;
+    font-size: 13pt;
+    background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
+    background-clip: text;
+    color: transparent	
+}
+.problems{
+    display: flex;
+    flex-direction: column;
+    margin-top: 80px;
+    gap:50px;
+    justify-content: space-evenly
+
+}
+.spacerHeading{
+    font-size: 20pt;
+    font-weight: 500;
+
+    
+}
+.problem{
+    display: flex;
+    align-items: center;
+    gap:50px;
+    margin-left:70px;
+    margin-right:70px;
+}
+.problemName{
+    width: 30%;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 30px;
+    border-radius: 100px;
+    background-color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.problemDescription{
+    text-align: center;
+    background-color: #ffe9f3;
+    padding: 13px 30px;
+    border-radius: 100px;
+
+
+}
+
+.tips{
+    margin-top: 80px;
+}
+.tips img{
+    margin-top: 50px;
+    margin-bottom: 50px;
+    width: 100%;
+    pointer-events: none;
+    
+}
+
+.foodTips{
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    margin-bottom:80px;
+
+}
+.foodtip{
+    display: flex;
+    gap: 50px;
+    justify-content: space-evenly;
+    
+}
+.tipCard{
+    display:flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center
+    ;
+
+}
+.tipCard > p{
+    color: grey;
+}
+
+.list{
+    padding:30px;
+    gap: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    border-radius: 14px;
+    width: 100%;
+}
+#negative{
+    background-color: #ffe9f3;
+}
+#positive{
+    background-color: #E9FFE9;
+}
+.recommendations{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 100px;
+}
+.recommendationRow{
+    display: flex;
+    gap: 30px;
+    margin-left: 70px;
+    margin-right: 70px;
+}
+.recommendation{
+    display: flex;
+    flex:1;
+    gap: 30px;
+    background-color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-radius: 14px;
+}
+.recommendation:hover{
+    box-shadow: none;
+}
+.recommendation img{
+    width:40%;
+    object-fit: cover;
+    border-radius: 14px 0 0 14px;
+}
+
+.recommendationDescription{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+}
+.recommendationName{
+    font-weight: bold;
+}
+
+/*----------------------------__-------*/
+.info{
+    display: flex;
+    padding :50px 100px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 90px;
+
+    margin-top: 100px;;
+}
+.info img{
+    background-color:  white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.info img:hover{
+    box-shadow: none;
+}
+.text{
+    display: flex;
+    flex-direction: column;
+    gap:30px;
+}
+.text h1{
+    color: #e26a2c;
+    font-size: 30pt;;
+}
+.text p{
+    font-size: 13pt;
+    line-height: 2em;
+    text-align: justify;
+}
+#meditation{
+    width: 40%;
+}
+#services{
+    font-size: 13pt;
+    line-height: 2em;
+    text-align: justify;
+    margin-left: 40px;
+}
+.Kontakt{
+    display: flex;
+    background-color: white;
+    margin :50px 100px;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    gap:50px;
+    align-items: center;
+}
+.Kontakt:hover{
+    box-shadow: none;
+}
+.socialMedia{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.socialMedia i{
+    font-size: 25px;
+    padding-right: 50px;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+.socialMedia i:hover{
+    color: #e26a2c;
+}
+
+

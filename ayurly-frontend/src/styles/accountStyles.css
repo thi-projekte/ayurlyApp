@@ -1,0 +1,302 @@
+@import url(navBarStyles.css);
+@import url(footerStyles.css);
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Ubuntu", sans-serif;
+    
+    
+}
+a {
+    text-decoration: none;
+    color: #222222;
+    font-size: 13pt;
+}
+
+body {
+    background-color: #f1f1f1;
+}
+
+
+#account{
+    background-color: #e26a2c;
+    color: white
+}
+
+
+/*--------------------------*/
+/* Dashboard Layout */
+.dashboard-container {
+    padding: 40px 20px;
+  }
+  
+  /* Dosha-Status */
+  .dosha-status {
+    text-align: center;
+    padding: 30px 20px;
+  }
+  
+  .dosha-status-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: left;
+    color: #3c7f7f;
+  }
+  
+  .dosha-icon {
+    font-size: 2.5em;
+  }
+  
+  .retake-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #3c7f7f;
+    font-weight: 500;
+    text-decoration: underline;
+  }
+  
+  /* Tagesroutine */
+  .tagesroutine-vorschlag {
+    text-align: center;
+    padding: 30px 20px;
+  }
+  
+  .routine-card {
+    display: inline-block;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    max-width: 500px;
+    margin-top: 20px;
+    color: #3c7f7f;
+    text-align: left;
+
+  }
+  @import url(navBarStyles.css);
+@import url(footerStyles.css);
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Ubuntu", sans-serif;
+    
+    
+}
+a {
+    text-decoration: none;
+    color: #222222;
+    font-size: 13pt;
+}
+
+body {
+    background-color: #f1f1f1;
+}
+
+
+#account{
+    background-color: #e26a2c;
+    color: white
+}
+
+
+/*--------------------------*/
+/* Dashboard Layout */
+.dashboard-container {
+    padding: 40px 20px;
+  }
+  
+  /* Dosha-Status */
+  .dosha-status {
+    text-align: center;
+    padding: 30px 20px;
+  }
+  
+  .dosha-status-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: left;
+    color: #3c7f7f;
+  }
+  
+  .dosha-icon {
+    font-size: 2.5em;
+  }
+  
+  .retake-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #3c7f7f;
+    font-weight: 500;
+    text-decoration: underline;
+  }
+  
+  /* Tagesroutine */
+  .tagesroutine-vorschlag {
+     display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  }
+  
+  .routine-card {
+    display: inline-block;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    max-width: 500px;
+    margin-top: 20px;
+    color: #3c7f7f;
+    text-align: left;
+
+  }
+  
+  /* Dosha Übersicht */
+  .dosha-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 20px;
+  }
+  
+  .dosha-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 20px;
+    max-width: 300px;
+    text-align: center;
+    color: #3c7f7f;
+  }
+  
+  .dosha-card h3 {
+    margin-bottom: 12px;
+    font-size: 1.4em;
+  }
+
+
+
+
+
+  /*----------------------------------*/
+  .progress-section {
+    margin: 40px auto 20px;
+    max-width: 500px;
+  }
+
+  .progress-container {
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 24px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .progress-bar {
+    background-color: #3c7f7f;
+    height: 100%;
+    text-align: center;
+    color: white;
+    line-height: 24px;
+    font-weight: bold;
+    width: 0%;
+    transition: width 0.3s ease-in-out;
+  }
+
+  .routine-card {
+    display: block;
+  }
+
+.routine-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+  
+  /* Dosha Übersicht */
+  .dosha-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 20px;
+  }
+  
+  .dosha-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 20px;
+    max-width: 300px;
+    text-align: center;
+    color: #3c7f7f;
+  }
+  
+  .dosha-card h3 {
+    margin-bottom: 12px;
+    font-size: 1.4em;
+  }
+
+
+
+
+
+  /*----------------------------------*/
+  .progress-section {
+    margin: 40px auto 20px;
+    max-width: 500px;
+  }
+
+  .progress-container {
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 24px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .progress-bar {
+    background-color: #3c7f7f;
+    height: 100%;
+    text-align: center;
+    color: white;
+    line-height: 24px;
+    font-weight: bold;
+    width: 0%;
+    transition: width 0.3s ease-in-out;
+  }
+
+  .routine-card {
+    display: block;
+  }
+
+.routine-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+#progress-success {
+  text-align: center;
+  margin-top: 10px;
+}

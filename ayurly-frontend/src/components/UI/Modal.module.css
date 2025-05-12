@@ -1,0 +1,41 @@
+/* src/components/UI/Modal.module.css */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Damit man nach oben scrollen kann */
+  overflow-y: auto; /* Ermöglicht Scrollen, wenn Inhalt größer als Bildschirm */
+  padding-top: 50px; /* Abstand von oben */
+  padding-bottom: 50px; /* Abstand unten, falls Inhalt sehr lang */
+}
+
+.modalContent {
+  background: white;
+  margin: 0 20px; /* Minimaler horizontaler Abstand */
+  padding: 30px;
+  border-radius: 20px;
+  position: relative;
+  max-width: 90%; /* Maximale Breite, um nicht den ganzen Bildschirm einzunehmen */
+  width: 1000px; /* Oder eine spezifische Breite für deine Dosha-Modals */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.closeButton {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 30pt;
+  cursor: pointer;
+  color: grey;
+  background: none;
+  border: none;
+}
+
+/* Verhindert Scrollen des Body, wenn Modal offen ist */
+/* Dies kann in der HomePage Komponente mit useEffect gesetzt werden */
