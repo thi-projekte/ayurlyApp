@@ -247,7 +247,7 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="recommendation">
-                <img src="/img/index/gemüse.jpg" alt="Gemüse" /> 
+                <img src="/img/index/gemuese.jpg" alt="Gemüse" /> 
                 <div className="recommendationDescription">
                   <p className="recommendationName">Gemüse</p>
                   <p>Karotten, Rüben, Kürbis, Zucchini, Süßkartoffel.</p>
@@ -263,7 +263,7 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="recommendation">
-                <img src="/img/index/hülsenfrüchte.jpg" alt="Hülsenfrüchte" /> {/* Korrigierter Umlaut */}
+                <img src="/img/index/huelsenfruechte.jpg" alt="Hülsenfrüchte" /> {/* Korrigierter Umlaut */}
                 <div className="recommendationDescription">
                   <p className="recommendationName">Hülsenfrüchte</p>
                   <p>In Maßen, gut gekocht und gewürzt.</p>
@@ -391,7 +391,7 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="recommendation">
-                <img src="/img/index/gemüse.jpg" alt="Gemüse" />
+                <img src="/img/index/gemuese.jpg" alt="Gemüse" />
                 <div className="recommendationDescription">
                   <p className="recommendationName">Gemüse</p>
                   <p>Artischocken, Spargel, Spinat, Brokkoli, Zucchini.</p>
@@ -528,7 +528,7 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="recommendation">
-                <img src="/img/index/gemüse.jpg" alt="Gemüse" />
+                <img src="/img/index/gemuese.jpg" alt="Gemüse" />
                 <div className="recommendationDescription">
                   <p className="recommendationName">Gemüse</p>
                   <p>Grünes Blattgemüse, Brokkoli, Blumenkohl, Spargel.</p>
@@ -537,14 +537,14 @@ const HomePage = () => {
             </div>
             <div className="recommendationRow">
               <div className="recommendation">
-                <img src="/img/index/gewürze.jpg" alt="Gewürze" /> {/* Korrigierter Umlaut */}
+                <img src="/img/index/gewuerze.jpg" alt="Gewürze" /> {/* Korrigierter Umlaut */}
                 <div className="recommendationDescription">
                   <p className="recommendationName">Gewürze</p>
                   <p>Ingwer, Pfeffer, Kurkuma, Kreuzkümmel.</p>
                 </div>
               </div>
               <div className="recommendation">
-                <img src="/img/index/hülsenfrüchte.jpg" alt="Hülsenfrüchte" />
+                <img src="/img/index/huelsenfruechte.jpg" alt="Hülsenfrüchte" />
                 <div className="recommendationDescription">
                   <p className="recommendationName">Hülsenfrüchte</p>
                   <p>Linsen, Kichererbsen, Bohnen.</p>

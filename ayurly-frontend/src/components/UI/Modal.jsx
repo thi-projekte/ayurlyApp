@@ -1,6 +1,5 @@
-// src/components/UI/Modal.jsx
 import React from 'react';
-import styles from './Modal.module.css'; // Erstelle diese CSS-Modul-Datei
+import styles from './Modal.module.css';
 
 const Modal = ({ children, show, onClose }) => {
   if (!show) {
