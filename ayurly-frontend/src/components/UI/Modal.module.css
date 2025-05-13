@@ -5,37 +5,50 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.7); /* Dunkler Hintergrund, wie im Screenshot */
   z-index: 1000;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Damit man nach oben scrollen kann */
+  align-items: flex-start; /* Beginnt oben, damit man scrollen kann */
   overflow-y: auto; /* Ermöglicht Scrollen, wenn Inhalt größer als Bildschirm */
-  padding-top: 50px; /* Abstand von oben */
-  padding-bottom: 50px; /* Abstand unten, falls Inhalt sehr lang */
+  padding: 20px; /* Ein kleiner Abstand zum Rand des Viewports */
+                  /* Du hattest im alten modal-content margin: 100px 50px;
+                     Das können wir hier als padding auf dem Backdrop umsetzen,
+                     damit der Inhalt nicht ganz am Rand klebt.
+                     Alternativ: padding: 5vh 5vw; für responsive Abstände */
 }
 
 .modalContent {
   background: white;
-  margin: 0 20px; /* Minimaler horizontaler Abstand */
-  padding: 30px;
+  /* margin: 0 20px; Entfernen, da padding auf Backdrop jetzt den Abstand regelt */
+  padding: 30px;    /* Innerer Abstand im Modal-Fenster */
   border-radius: 20px;
   position: relative;
-  max-width: 90%; /* Maximale Breite, um nicht den ganzen Bildschirm einzunehmen */
-  width: 1000px; /* Oder eine spezifische Breite für deine Dosha-Modals */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+  /* Größenanpassung für "fast die ganze Seite" */
+  width: 90%;       /* Nimmt 90% der Breite des Viewports ein */
+  max-width: 1500px; /* Eine obere Grenze, damit es auf sehr großen Bildschirmen nicht zu breit wird */
+                     /* Passe diesen Wert nach Bedarf an. Dein Screenshot wirkt sehr breit. */
+  min-height: 70vh; /* Mindesthöhe, damit es substanziell aussieht, auch mit wenig Inhalt */
+                     /* Der Inhalt wird die Höhe dann bei Bedarf weiter ausdehnen */
+  /* margin-top: 5vh; */ /* Kann helfen, es etwas vom oberen Rand abzusetzen, falls padding auf Backdrop nicht reicht */
 }
 
 .closeButton {
   position: absolute;
   top: 15px;
   right: 20px;
-  font-size: 30pt;
+  font-size: 2rem; /* Etwas größer gemacht */
   cursor: pointer;
-  color: grey;
+  color: #888; /* Etwas helleres Grau */
   background: none;
   border: none;
+  line-height: 1; /* Verhindert zusätzlichen vertikalen Platz */
+  padding: 5px; /* Macht den Klickbereich etwas größer */
+}
+.closeButton:hover {
+  color: #333; /* Dunkler bei Hover */
 }
 
-/* Verhindert Scrollen des Body, wenn Modal offen ist */
-/* Dies kann in der HomePage Komponente mit useEffect gesetzt werden */
+/* Verhindert Scrollen des Body, wenn Modal offen ist (wird über JS in HomePage.jsx gesteuert) */

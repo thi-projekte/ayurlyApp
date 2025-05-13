@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'; // NavLink für aktive Links
-import '../../styles/navBarStyles.css'; // Wenn du die alten Styles direkt nutzt
+import './Navbar.module.css'; // Wenn du die alten Styles direkt nutzt
 
 const Navbar = () => {
   // Logik für eingeloggten Zustand kommt später

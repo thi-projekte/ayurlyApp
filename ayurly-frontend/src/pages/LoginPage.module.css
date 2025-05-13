@@ -1,0 +1,218 @@
+/* src/pages/LoginPage.module.css */
+
+/* Dieses CSS-Modul bildet die Struktur von loginStyles.css nach.
+   Globale Styles für body etc. sollten in deiner globalen CSS-Datei sein. */
+
+.loginPageContainer {
+  background-color: #fff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  border-radius: 30px; /* Dieser Radius schneidet den Inhalt ab, wenn overflow: hidden gesetzt ist */
+  position: relative;   /* Wichtig für die absoluten Kinder */
+  overflow: hidden;     /* !!! Schlüssel zum Verstecken der Ecken !!! */
+
+  /* width: 90%;    */       /* Vergrößert von 70% */
+  /*max-width: 1300px; */   /* Vergrößert von 900px, oder wähle einen passenden Wert */
+  /*min-height: 650px; */   /* Vergrößert von 480px, stelle sicher, dass der Inhalt passt */
+  height: 70vh;  /* Alternative: Höhe relativ zur Viewport-Höhe, kann man experimentieren */
+  width: 150vh;
+
+  margin: 5vh auto;     /* Behält die Zentrierung bei, 5vh Abstand oben/unten */
+  display: flex;
+  align-items: center;
+}
+
+.loginPageContainer p { /* Kann hier bleiben oder spezifischer werden, z.B. .togglePanel p */
+  font-size: 12pt;
+  line-height: 1.7em;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.loginPageContainer span { /* dto. */
+  font-size: 10pt;
+  margin: 15px 0; /* Reduziert, da 30px viel war */
+  color: #949494;
+}
+
+.loginPageContainer a { /* dto. */
+  color: #949494;
+  font-size: 10pt;
+  margin: 15px 0 10px 0;
+}
+
+.loginPageContainer button { /* dto. */
+  border:none;
+  cursor: pointer;
+  background-color: #e26a2c;
+  color: #fff;
+  font-size: 12pt;
+  font-weight: 600;
+  padding: 10px 50px;
+  border-radius: 100px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.loginPageContainer button:hover {
+  background-color: #222222;
+}
+
+.loginPageContainer button.hidden { /* Wird jetzt zu .hidden */
+  background-color: transparent;
+  border: 1px solid #fff; /* Damit man den Button sieht */
+}
+
+.loginPageContainer form { /* dto. */
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 40px;
+  height: 100%;
+}
+
+.loginPageContainer input { /* dto. */
+  background-color: #eee;
+  font-size: 13px;
+  border: none;
+  outline: none;
+  margin: 8px 0;
+  padding: 10px 15px;
+  border-radius: 8px; /* Etwas modernere Optik */
+  width: 100%;
+}
+
+.formContainer {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
+}
+
+.name { /* Hilfsklasse für Vorname/Nachname nebeneinander */
+  display: flex;
+  gap: 10px; /* Abstand zwischen den Input-Feldern */
+  width: 100%;
+}
+.name input {
+  flex: 1; /* Beide Felder nehmen gleich viel Platz ein */
+}
+
+
+.signIn {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.loginPageContainer.active .signIn {
+  transform: translateX(100%);
+}
+
+.signUp {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+}
+
+.loginPageContainer.active .signUp {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  animation: move 0.6s; /* Behalte die Keyframe-Animation */
+}
+
+@keyframes move { /* Bleibt global, da es von .active .signUp genutzt wird */
+  0%, 49.99% {
+    opacity: 0;
+    z-index: 1;
+  }
+  50%, 100% {
+    opacity: 1;
+    z-index: 5; /* Z-Index auf 5 erhöht, um über dem Switch-Container zu sein, wenn aktiv */
+  }
+}
+
+.switchContainer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden; /* Kann hier auch nützlich sein, aber der äußere ist wichtiger */
+  transition: all 0.6s ease-in-out;
+  /* Der border-radius des SwitchContainers selbst ist dafür verantwortlich,
+     dass SEINE EIGENEN Ecken rund sind, bevor sie vom .loginPageContainer abgeschnitten werden.
+     Das ursprüngliche Design nutzte die Transformation und den Radiuswechsel, um den Effekt zu erzielen.
+  */
+  border-radius: 100px 0 0 100px; /* Größerer Radius für einen weicheren Übergang innen, wenn er slidet */
+                                 /* Die 100px aus dem Original könnten hier auch noch passen */
+  z-index: 100; /* Niedriger als aktive Form, höher als inaktive */
+}
+
+.loginPageContainer.active .switchContainer {
+  transform: translateX(-100%);
+  border-radius: 0 100px 100px 0; /* Radius anpassen für die andere Seite */
+}
+
+.toggle {
+  height: 100%;
+  background: linear-gradient(to right, #ee8c71, #eb7820, #d4640e);
+  color: #fff;
+  position: relative;
+  left: -100%;
+  width: 200%; /* Wichtig für den Slide-Effekt */
+  transform: translateX(0);
+  transition: all 0.6s ease-in-out;
+}
+
+.loginPageContainer.active .toggle {
+  transform: translateX(50%);
+}
+
+.togglePanel {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 30px;
+  text-align: center; /* Sicherstellen, dass Text zentriert ist */
+  top: 0; /* Am oberen Rand ausrichten */
+  transform: translateX(0);
+  transition: all 0.6s ease-in-out;
+}
+
+.toggleLeft {
+  transform: translateX(-200%); /* Aus dem Sichtfeld links */
+}
+
+.loginPageContainer.active .toggleLeft {
+  transform: translateX(0); /* Kommt ins Sichtfeld */
+}
+
+.toggleRight {
+  right: 0; /* Startet im rechten Teil des .toggle Containers */
+  transform: translateX(0);
+}
+
+.loginPageContainer.active .toggleRight {
+  transform: translateX(200%); /* Geht aus dem Sichtfeld rechts */
+}
+
+.toggleRight span { /* Spezifisches Styling für den Span im toggleRight Panel */
+  font-size: 21pt;
+  font-weight: 600;
+  color: orange; /* Oder eine andere passende Farbe */
+}
+
+.errorMessage {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 10px;
+  min-height: 1.2em; /* Platzhalter, damit das Layout nicht springt */
+}
