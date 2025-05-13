@@ -537,14 +537,14 @@ const HomePage = () => {
             </div>
             <div className="recommendationRow">
               <div className="recommendation">
-                <img src="/img/index/gewuerze.jpg" alt="Gewürze" /> {/* Korrigierter Umlaut */}
+                <img src="/img/index/gewurze.jpg" alt="Gewürze" /> {/* Korrigierter Umlaut */}
                 <div className="recommendationDescription">
                   <p className="recommendationName">Gewürze</p>
                   <p>Ingwer, Pfeffer, Kurkuma, Kreuzkümmel.</p>
                 </div>
               </div>
               <div className="recommendation">
-                <img src="/img/index/huelsenfruechte.jpg" alt="Hülsenfrüchte" />
+                <img src="/img/index/hülsenfrüchte.jpg" alt="Hülsenfrüchte" />
                 <div className="recommendationDescription">
                   <p className="recommendationName">Hülsenfrüchte</p>
                   <p>Linsen, Kichererbsen, Bohnen.</p>

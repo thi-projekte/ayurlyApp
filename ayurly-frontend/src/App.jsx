@@ -4,8 +4,8 @@ import Navbar from './components/Navigation/Navbar'; // .jsx ist optional beim I
 import Footer from './components/Footer/Footer';
 import HomePage from './pages/HomePage';
  import DoshaTestPage from './pages/DoshaTestPage';
-// import RezeptePage from './pages/RezeptePage';
-// import RezepteDetailPage from './pages/RezepteDetailPage';
+import RezeptePage from './pages/RezeptePage';
+import RezepteDetailPage from './pages/RezepteDetailPage';
 // import CommunitiesPage from './pages/CommunitiesPage';
 import LoginPage from './pages/LoginPage';
  import AccountPage from './pages/AccountPage';
@@ -29,9 +29,9 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/dosha-test" element={<DoshaTestPage />} />
-            {/* <Route path="/rezepte" element={<RezeptePage />} />
+            <Route path="/rezepte" element={<RezeptePage />} />
             <Route path="/rezepte/:rezeptId" element={<RezepteDetailPage />} />
-            <Route path="/communities" element={<CommunitiesPage />} /> */}
+            {/* <Route path="/communities" element={<CommunitiesPage />} /> */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/account" element={<AccountPage />} />
             {/* Ggf. eine Route für Routinen/Challenges, falls noch relevant */}

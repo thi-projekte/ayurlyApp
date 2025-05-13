@@ -1,0 +1,128 @@
+.mainContent { /* Wrapper für den Hauptinhalt der Seite */
+  padding: 20px 5%; /* Oben/Unten und Seiten-Padding */
+}
+
+/* Toggle-Gruppe für Dosha-Filter */
+.toggleGroup {
+  display: flex;
+  margin: 30px 0; /* Oben/Unten-Margin, Seiten-Margin durch .mainContent */
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 20px; /* Abstand zwischen den Buttons */
+  flex-wrap: wrap; /* Umbruch bei Bedarf */
+}
+
+.toggleLabel { /* Styling für die Label-Elemente, die als Buttons dienen */
+  background-color: white;
+  text-align: center;
+  border-radius: 10px;
+  font-size: 1.1rem; /* Responsive: clamp(0.9rem, 2vw, 1.1rem); */
+  padding: 15px 25px;
+  flex: 1 1 auto; /* Nimmt verfügbaren Platz, aber schrumpft bei Bedarf */
+  min-width: 120px; /* Mindestbreite pro Button */
+  cursor: pointer;
+  border: 2px solid transparent; /* Platzhalter für den Rahmen bei :checked */
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.toggleLabel:hover {
+  border-color: #ddd;
+}
+
+/* Verstecke den Radio-Button selbst */
+.toggleButton {
+  appearance: none;
+  position: absolute; /* Aus dem Layout nehmen */
+  opacity: 0;
+}
+
+/* Styling für das ausgewählte Label */
+.toggleLabelChecked {
+  border-color: #e26a2c; /* Orange Rahmen */
+  background-color: #fff7f2; /* Sehr heller Orange-Ton als Hintergrund */
+  font-weight: 600;
+  color: #e26a2c;
+}
+
+/* Bereich für die Rezeptkarten */
+.recipesGrid {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive Grid */
+  gap: 30px;
+}
+
+.recipeCard {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-radius: 16px; /* Weniger rund als im Original-CSS */
+  overflow: hidden; /* Stellt sicher, dass das Bild die Rundung annimmt */
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  border: 1px solid #eee;
+}
+.recipeCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+.imagePreview {
+  width: 100%;
+  height: 200px; /* Feste Höhe für das Vorschaubild */
+  overflow: hidden;
+}
+.imagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Stellt sicher, dass das Bild den Bereich füllt */
+  /* border-radius für oben wurde durch overflow:hidden auf .recipeCard ersetzt */
+}
+
+.recipeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Weniger Gap */
+  padding: 20px;
+  flex-grow: 1; /* Lässt diesen Bereich wachsen, um den Button nach unten zu drücken */
+}
+.recipeName {
+  font-size: 1.3rem; /* Responsive: clamp(1.1rem, 2.5vw, 1.4rem); */
+  font-weight: 600; /* Dicker */
+  color: #333;
+}
+.description {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  /* Optional: Begrenzung der Zeilenanzahl für die Beschreibung */
+  /* display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; */
+}
+
+.discoverRecipe {
+  padding: 12px 20px;
+  margin-top: auto; /* Drückt den Button nach unten, wenn .recipeInfo flex-grow hat */
+  /* border-radius: 0 0 16px 16px; */ /* Wird vom Link-Styling überschrieben */
+  color: white;
+  text-align: center;
+  background: linear-gradient(to right, #5a5a5a, #333); /* Dunklerer Gradient */
+  text-decoration: none;
+  font-weight: 500;
+  display: block; /* Damit er die volle Breite annimmt und Padding korrekt wirkt */
+  transition: background 0.2s ease;
+}
+.discoverRecipe:hover {
+  background: linear-gradient(to right, #333, #1a1a1a); /* Noch dunkler bei Hover */
+}
+
+/* Platzhalter, falls keine Rezepte gefunden wurden */
+.noRecipesMessage {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #777;
+    margin-top: 50px;
+}

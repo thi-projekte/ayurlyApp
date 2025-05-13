@@ -1,0 +1,140 @@
+.pageContainer {
+  padding: 20px 5%;
+  max-width: 900px; /* Maximale Breite für den Inhalt */
+  margin: 0 auto;   /* Zentrierung */
+}
+
+.loading,
+.error {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+  margin-top: 50px;
+}
+
+.recipeDetail {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.recipeHeader {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.recipeImage {
+  width: 100%;
+  max-height: 400px; /* Maximale Höhe für das Bild */
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.recipeTitle {
+  font-size: clamp(1.8rem, 4vw, 2.5rem); /* Responsive Schriftgröße */
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.recipeDescription {
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 30px;
+  text-align: center; /* Oder left, je nach Präferenz */
+}
+
+.doshaTags {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.doshaTag {
+    background-color: #f0f7f7; /* Heller Hintergrund wie bei Intro-Box */
+    color: #3c7f7f; /* Teal-Farbe */
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.doshaTagVata { background-color: #e6e0ff; color: #534292;} /* Beispiel Vata */
+.doshaTagPitta { background-color: #ffe0e0; color: #c0392b;} /* Beispiel Pitta */
+.doshaTagKapha { background-color: #d4efdf; color: #287c37;} /* Beispiel Kapha */
+
+
+.recipeSection {
+  margin-bottom: 30px;
+}
+
+.sectionTitle {
+  font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+  color: #e26a2c; /* Orange Akzentfarbe */
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0;
+  font-weight: 600;
+}
+
+.ingredientsList,
+.instructionsList {
+  list-style: none; /* Entfernt Standard-Bullets */
+  padding-left: 0;
+}
+
+.ingredientsList li {
+  background-color: #f9f9f9;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: #444;
+  border: 1px solid #eee;
+}
+
+.instructionsList li {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 12px;
+  padding-left: 25px; /* Platz für Nummerierung */
+  position: relative;
+}
+
+/* Eigene Nummerierung für Zubereitungsschritte */
+.instructionsList li::before {
+  content: counter(instruction-step) ".";
+  counter-increment: instruction-step;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  color: #e26a2c; /* Orange */
+  margin-right: 10px;
+}
+.instructionsList {
+  counter-reset: instruction-step; /* Zähler initialisieren */
+}
+
+.backLinkContainer {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.backLink {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: #6c757d; /* Grau */
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+.backLink:hover {
+    background-color: #5a6268; /* Dunkleres Grau */
+}
