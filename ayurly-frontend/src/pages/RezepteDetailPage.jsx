@@ -1,4 +1,3 @@
-// src/pages/RezepteDetailPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RezepteDetailPage.module.css';
