@@ -1,31 +1,128 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom'; // NavLink für aktive Links
-import './Navbar.module.css'; // Wenn du die alten Styles direkt nutzt
+// src/components/Navigation/Navbar.jsx
+import React, { useState, useEffect, useRef } from 'react';
+import { NavLink } from 'react-router-dom';
+import styles from './Navbar.module.css'; // Importiere das CSS-Modul
 
 const Navbar = () => {
-  // Logik für eingeloggten Zustand kommt später
-  const isLoggedIn = false; // Dummy-Wert
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Später durch KeyCloak ersetzen
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navRef = useRef(); // Ref für die Navbar, um Klicks außerhalb zu erkennen
+
+  // Dummy-Login/Logout-Funktionen
+  const handleLogin = () => setIsLoggedIn(true);
+  const handleLogout = () => setIsLoggedIn(false);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  // Schließen des Menüs bei Klick außerhalb der Navbar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        closeMenu();
+      }
+    };
+    // Event Listener hinzufügen, wenn das Menü offen ist
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      // Event Listener entfernen, wenn das Menü geschlossen ist
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    // Cleanup-Funktion
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpen]);
+
 
   return (
-    <nav>
-      <NavLink to="/" className="logo">ayurly</NavLink>
-      <div className="links">
-        <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>Home</NavLink>
-        <NavLink to="/dosha-test" className={({ isActive }) => isActive ? "active" : ""}>Dosha Test</NavLink>
-        <NavLink to="/rezepte" className={({ isActive }) => isActive ? "active" : ""}>Rezepte</NavLink>
-        <NavLink to="/communities" className={({ isActive }) => isActive ? "active" : ""}>Communities</NavLink>
-        {/* Beispiel für eine bedingte Challenge-Seite, falls du sie noch hast */}
-        {/* <NavLink to="/routinen" className={({ isActive }) => isActive ? "active" : ""}>Challenges</NavLink> */}
+    <nav className={styles.navContainer} ref={navRef}>
+      <NavLink to="/" className={styles.logo} onClick={closeMenu}>
+        ayurly
+      </NavLink>
+
+      {/* Burger-Icon für Mobile */}
+      <div className={styles.mobileMenuIcon} onClick={toggleMenu}>
+        {menuOpen ? '✕' : '☰'} {/* Schließen/Öffnen Icon */}
       </div>
 
-      <div className="login">
-        {!isLoggedIn && <NavLink to="/login" className="signup">Login</NavLink>}
-        {/* "Account" Link Logik basierend auf isLoggedIn */}
-        {isLoggedIn && <NavLink to="/account" className="signup">Account</NavLink>}
-        {!isLoggedIn && (
-          <div style={{ marginLeft: '10px' }}> {/* Temporärer Workaround für den zweiten "Login" Button, der Account werden soll*/}
-             <NavLink to="/account" className="signup" style={{display: 'none'}} >Account (hidden)</NavLink>
-          </div>
+      {/* Navigationslinks */}
+      {/* Die Klasse 'open' wird hinzugefügt, wenn menuOpen true ist */}
+      <div className={`${styles.links} ${menuOpen ? styles.open : ''}`}>
+        <NavLink
+          to="/"
+          className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}
+          onClick={closeMenu}
+        >
+          Home
+        </NavLink>
+        <NavLink
+          to="/dosha-test"
+          className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}
+          onClick={closeMenu}
+        >
+          Dosha Test
+        </NavLink>
+        <NavLink
+          to="/rezepte"
+          className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}
+          onClick={closeMenu}
+        >
+          Rezepte
+        </NavLink>
+        <NavLink
+          to="/communities"
+          className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}
+          onClick={closeMenu}
+        >
+          Communities
+        </NavLink>
+        {isLoggedIn && (
+          <NavLink
+            to="/account"
+            className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}
+            onClick={closeMenu}
+          >
+            myAyurly
+          </NavLink>
+        )}
+
+        {/* Login/Logout im mobilen Menü anzeigen, wenn es offen ist */}
+        {menuOpen && (
+            <div className={`${styles.login} ${styles.visibleOnMobile}`}>
+                 {!isLoggedIn ? (
+                    <NavLink to="/login" className={styles.loginButton} onClick={() => { handleLogin(); closeMenu();}}> {/* Dummy Login bei Klick */}
+                        Login
+                    </NavLink>
+                    ) : (
+                    <button onClick={() => { handleLogout(); closeMenu(); }} className={styles.loginButton}>
+                        Logout
+                    </button>
+                    )}
+            </div>
+         )}
+      </div>
+
+      {/* Login-Bereich für Desktop (wird durch CSS im mobilen Modus bei offenem Menü ausgeblendet) */}
+      {/* Die Klasse hiddenOnMobileMenuOpen wird im CSS verwendet, um diesen Block zu verstecken, wenn das Menü offen ist,
+          um Duplizierung zu vermeiden, da der Login dann im Menü selbst ist.
+          Alternativ: {!menuOpen && (...)} im JSX, aber CSS-Lösung ist oft sauberer für reine Darstellung. */}
+      <div className={`${styles.login} ${menuOpen ? styles.hiddenOnMobileMenuOpen : ''}`}>
+        {!isLoggedIn ? (
+          // eslint-disable-next-line jsx-a11y/anchor-is-valid --
+          <a href="#" onClick={(e) => { e.preventDefault(); handleLogin();}} className={styles.loginButton}> {/* Temporär Link, bis /login Page da ist oder KeyCloak */}
+            Login
+          </a>
+        ) : (
+          <button onClick={handleLogout} className={styles.loginButton}>
+            Logout
+          </button>
         )}
       </div>
     </nav>

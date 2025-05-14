@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  ayurly-frontend-app:
-    image: ghcr.io/thi-projekte/ayurly-frontend:latest
+  ayurly-frontend: # Service-Name, wichtig für die interne DNS-Auflösung in Docker
+    image: ghcr.io/thi-projekte/ayurly-frontend:latest # zieht aktuellstes img aus github 
     container_name: ayurly-frontend 
     restart: unless-stopped
     expose: # Macht den Port nur für andere Container im selben Docker-Netzwerk verfügbar

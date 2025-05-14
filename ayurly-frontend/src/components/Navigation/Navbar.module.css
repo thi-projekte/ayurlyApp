@@ -1,57 +1,186 @@
-nav {
+/* src/components/Navigation/Navbar.module.css */
+.navContainer {
     padding: 0 100px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 100px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+    
 }
 
-nav a.logo {
+.logo {
     font-size: 40px;
     color: #e26a2c;
     font-weight: 800;
     padding-left: 14px;
+    text-decoration: none;
 }
 
-nav .links {
+.links {
     background-color: #D9D9D9;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; /* Hält die Link-Container auseinander */
     border-radius: 30px;
     width: 60%;
+    height: 40%; /* Stellt sicher, dass die Links die Höhe des Containers einnehmen */
 }
 
-.links a {
+/* Generelle Styles für die Navigationslinks */
+.link {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
-    width: 25%;
-    border-radius: 30px;
+    justify-content: center; /* Text zentrieren */
+    flex-grow: 1; /* Lässt die Links den verfügbaren Platz gleichmäßig einnehmen */
+    height: 100%; /* Volle Höhe des .links Containers */
+    border-radius: 30px; /* Wird angewendet, wenn nicht aktiv */
     padding: 10px 14px;
     font-size: 13pt;
+    color: #222222;
+    text-decoration: none;
+    transition: color 0.3s ease, background-color 0.3s ease; /* Übergang für Farbe und Hintergrund */
+    text-align: center;
 }
 
-nav .links a.active {
-    background-color: #e26a2c;
+/* Hover-Effekt: Nur Textfarbe ändern */
+.link:hover {
     color: #fff;
+    /* Kein expliziter Hintergrund hier, außer du möchtest einen subtilen Hover-Effekt,
+       der sich vom aktiven Zustand unterscheidet. */
 }
 
-nav .links a:hover {
+/* Aktiver Link: Orangener Hintergrund und weiße Schrift */
+.active {
+    background-color: #e26a2c; /* Wichtig: !important ist hier meist nicht nötig, wenn die Spezifität stimmt */
     color: #fff;
+    border-radius: 30px; /* Sicherstellen, dass der Radius auch im aktiven Zustand gilt */
 }
 
-nav .login a {
+.login {
+    display: flex;
+    align-items: center;
+}
+
+.loginButton { /* Einheitliche Klasse für Login/Logout-Buttons/Links */
     padding: 10px 20px;
     border: none;
-    margin-right: 14px;
+    margin-left: 14px;
     cursor: pointer;
     border-radius: 30px;
     background-color: #D9D9D9;
     font-size: 13pt;
+    color: #222222;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-nav .login a:hover {
+.loginButton:hover {
     background-color: #e26a2c;
     color: #fff;
+}
+
+/* --- Mobile Ansicht --- */
+.mobileMenuIcon {
+    display: none; /* Standardmäßig auf Desktop versteckt */
+    font-size: 30px;
+    cursor: pointer;
+    color: #333;
+}
+
+/* Wird durch JavaScript-Klasse .open auf .links gesteuert */
+.links.open {
+    display: flex;
+}
+
+/* Versteckt den Desktop-Login-Bereich, wenn das mobile Menü offen ist */
+.login.hiddenOnMobileMenuOpen {
+    display: none;
+}
+
+
+@media (max-width: 768px) {
+    .navContainer {
+        padding: 0 20px;
+        height: 80px;
+    }
+
+    .logo {
+        font-size: 30px;
+        padding-left: 0;
+    }
+
+    .mobileMenuIcon {
+        display: block; /* Burger-Icon auf Mobilgeräten anzeigen */
+    }
+
+    .links {
+        position: absolute;
+        top: 80px; /* Höhe der Navbar */
+        left: 0;
+        right: 0;
+        background-color: #f8f8f8;
+        flex-direction: column;
+        padding: 10px 0;
+        display: none; /* Initial versteckt, wird durch .open gezeigt */
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        z-index: 1000; /* Über anderen Elementen */
+        border-radius: 0; /* Keine abgerundeten Ecken für das Dropdown-Menü selbst */
+    }
+
+    .link { /* Anpassung der Links im mobilen Menü */
+        width: 100%;
+        justify-content: center;
+        padding: 15px 0;
+        border-radius: 0; /* Keine abgerundeten Ecken für einzelne Links im Dropdown */
+        color: #333; /* Andere Textfarbe für bessere Lesbarkeit auf hellem Grund */
+        height: auto; /* Höhe automatisch anpassen */
+    }
+
+    .link:hover {
+        background-color: #eee;
+        color: #e26a2c; /* Orange Textfarbe beim Hovern im mobilen Menü */
+    }
+
+    /* Aktiver Link im mobilen Menü */
+    .link.active { /* Korrekte Kombination der Klassen für den aktiven Link im mobilen Menü */
+        background-color: #e26a2c !important; /* Wichtig, um Hover zu überschreiben */
+        color: #fff !important;
+    }
+
+    /* Login-Bereich auf Mobilgeräten anpassen */
+    .login {
+        /* Wenn der Login-Bereich NICHT im Menü angezeigt wird, wird er hier ggf. ganz ausgeblendet */
+        /* In meinem JSX-Beispiel wird der Login-Bereich separat im mobilen Menü gerendert */
+    }
+
+    .login.visibleOnMobile {
+        display: flex;
+        flex-direction: column; /* Buttons untereinander */
+        align-items: center;
+        width: 100%;
+        padding: 15px 0;
+        background-color: #f8f8f8; /* Passend zum mobilen Menü */
+    }
+
+    .login.visibleOnMobile .loginButton { /* Styles für Buttons im mobilen Menü */
+        margin-left: 0;
+        margin-bottom: 10px; /* Abstand zwischen den Buttons */
+        width: 80%; /* Breite der Buttons anpassen */
+        text-align: center;
+    }
+    .login.visibleOnMobile .loginButton:last-child {
+        margin-bottom: 0;
+    }
+
+
+    /* Verstecke den ursprünglichen Login-Bereich, wenn das mobile Menü aktiv ist,
+       DA der Login-Bereich als Teil des .links.open Menüs gerendert wird (siehe JSX) */
+    .navContainer > .login { /* Selektiert nur den .login, der DIREKTES Kind von .navContainer ist */
+        display: none;
+    }
+
 }

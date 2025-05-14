@@ -1,27 +1,37 @@
+// src/components/Footer/Footer.jsx
 import React from 'react';
-import { Link } from 'react-router-dom'; // Link für normale Navigation
-import '../../styles/footerStyles.css';
+import { Link } from 'react-router-dom';
+import styles from './Footer.module.css'; // Importiere das CSS-Modul
 
 const Footer = () => {
   return (
-    <footer>
-      <h3>It's that simple. <span>Ayurly.</span></h3>
-      <div className="right">
-        <div className="links">
+    <footer className={styles.footerContainer}>
+      <div className={styles.logoArea}>
+        <h3>
+          It's that simple.<br></br> <span className={styles.ayurlySpan}>Ayurly.</span> {/* Ggf. eine eigene Klasse für das Span, falls nötig */}
+        </h3>
+      </div>
+      <div className={styles.rightSection}>
+        <div className={styles.footerLinks}>
           <Link to="/">Ayurly</Link>
           <Link to="/dosha-test">Dosha Test</Link>
           <Link to="/rezepte">Rezepte</Link>
           <Link to="/communities">Communities</Link>
           <Link to="/login">Login</Link>
-          {/* Hier könnte auch bedingt der Account-Link stehen */}
+          {/* Du könntest hier noch einen bedingten Account-Link hinzufügen, wenn der Benutzer eingeloggt ist */}
         </div>
-        <div className="socials">
-          {/* Icons müssen ggf. als React-Komponenten importiert werden (z.B. von react-icons)
-              oder die CSS-Klassen für Flaticons müssen global verfügbar sein. */}
-          <i className=""><i className="fi fi-brands-instagram"></i></i>
-          <i className=""><i className="fi fi-br-mailbox-envelope"></i></i>
+        <div className={styles.socials}>
+          {/* Stelle sicher, dass die Flaticon Klassen global verfügbar sind oder importiere Icons als Komponenten */}
+          <a href="https://www.instagram.com/ayurly.balance/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <i className="fi fi-brands-instagram"></i>
+          </a>
+          <a href="mailto:info@ayurly.com" aria-label="E-Mail">
+            <i className="fi fi-br-mailbox-envelope"></i>
+          </a>
         </div>
-        <p>Copyright © 2025 Ayurly, All Rights Reserved.</p>
+        <p className={styles.copyright}>
+          Copyright &copy; {new Date().getFullYear()} Ayurly, All Rights Reserved.
+        </p>
       </div>
     </footer>
   );
