@@ -26,6 +26,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven' # Aktiviert das Caching für Maven-Abhängigkeiten direkt hier
+        
+      - name: Make mvnw executable
+        # Dieser Schritt ist notwendig, falls mvnw nicht mit Ausführungsrechten eingecheckt wurde
+        working-directory: ./ayurly-data-service
+        run: chmod +x mvnw
 
       - name: Build Data Service with Maven
         # Wichtig: Arbeitsverzeichnis auf den Data-Service setzen
