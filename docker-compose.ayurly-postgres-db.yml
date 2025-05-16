@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  ayurly-postgres-db:
+    image: postgres:16-alpine # Aktuelle stabile Postgres-Version, Alpine für geringere Größe
+    container_name: ayurly-postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ayurlyuser}  # Standardwert, wenn nicht in .env gesetzt
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ayurlypassword123} # Standardwert, wenn nicht in .env gesetzt
+      POSTGRES_DB: ${POSTGRES_DB:-ayurly_data_db}          # Standardwert, wenn nicht in .env gesetzt
+    volumes:
+      - ayurly_postgres_data:/var/lib/postgresql/data # Persistentes Volume
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432" # Exponiere den Port nach außen (optional, wenn nur intern erreichbar)
+                                    # Der Standardwert wird verwendet, wenn POSTGRES_PORT nicht in .env gesetzt ist
+    networks:
+      - ayurly-backend-network # Verbindet mit dem externen Netzwerk
+
+volumes:
+  ayurly_postgres_data: # Definiert das Volume für persistente Daten
+    driver: local # Oder ein anderer Volume-Treiber deiner Wahl
+
+networks:
+  ayurly-backend-network: # Definiert das Netzwerk, das auch vom Backend genutzt wird
+    external: true # Wichtig: Dieses Netzwerk muss extern erstellt werden oder von einer anderen Compose-Datei
+                   # oder manuell über `docker network create ayurly-backend-network`

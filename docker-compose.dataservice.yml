@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  ayurly-data-service:
+    image: ghcr.io/thi-projekte/ayurly-data-service:latest # Das Image wird vom CI/CD-Workflow in die GitHub Container Registry gepusht.
+    container_name: ayurly-data-service
+    restart: unless-stopped
+    environment:
+      # --- Datenbankverbindung ---
+      # Diese Variablen werden für Quarkus in application.properties injected
+      POSTGRES_USER: ${POSTGRES_USER:-ayurlyuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ayurlypassword123} # Unbedingt in .env ändern!
+      POSTGRES_DB: ${POSTGRES_DB:-ayurly_data_db}
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://ayurly-postgres-db:5432/${POSTGRES_DB:-ayurly_data_db}
+
+      # --- Keycloak JWT Validierung ---
+      # Diese Variablen füllen die Platzhalter in application.properties für mp.jwt.verify.*
+      KEYCLOAK_AUTH_SERVER_URL: ${KEYCLOAK_AUTH_SERVER_URL:-https://keycloak.winfprojekt.de/realms/Aryuveda}
+      # Client-ID des Backends selbst. Kann auch eine Liste sein, wenn Tokens von Kogito weitergeleitet werden.
+      KEYCLOAK_BACKEND_CLIENT_ID: ${KEYCLOAK_BACKEND_CLIENT_ID:-ayurly-data-service}
+      # Wenn Kogito Tokens weiterleitet und diese eine andere Audience haben (z.B. die Client-ID von Kogito):
+      # KOGITO_CLIENT_ID_FOR_AUDIENCE: ${KOGITO_CLIENT_ID_FOR_AUDIENCE:-kogito-api}
+      # In application.properties würdest du dann setzen:
+      # quarkus.smallrye.jwt.verify.audiences=${KEYCLOAK_BACKEND_CLIENT_ID},${KOGITO_CLIENT_ID_FOR_AUDIENCE}
+      
+      # --- falls doch Keycloak OIDC Konfiguration ---
+      # Die tatsächlichen Property-Namen können je nach Quarkus OIDC Konfiguration variieren.
+      # QUARKUS_OIDC_AUTH_SERVER_URL: ${KEYCLOAK_AUTH_SERVER_URL:-https://keycloak.winfprojekt.de/realms/Aryuveda}
+      # QUARKUS_OIDC_CLIENT_ID: ${KEYCLOAK_BACKEND_CLIENT_ID:-ayurly-backend-client} # Client-ID für das Backend in Keycloak
+      # QUARKUS_OIDC_CREDENTIALS_SECRET: ${KEYCLOAK_BACKEND_CLIENT_SECRET} # Das Client-Secret aus Keycloak, via .env
+
+      # --- Logging (optional) ---
+      QUARKUS_LOG_LEVEL: INFO # Mögliche Werte: DEBUG, INFO, WARN, ERROR
+      # QUARKUS_LOG_CATEGORY__IO_QUARKUS__LEVEL: DEBUG # Beispiel für spezifische Kategorie
+
+      # --- Hibernate ORM ---
+      QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION: update # Optionen: none, create, drop-and-create, drop, update, validate
+      QUARKUS_HIBERNATE_ORM_LOG_SQL: "false"
+
+    # 'expose' macht den Port nur für andere Container in denselben Netzwerken verfügbar
+    expose:
+      - "8080" # Der interne Port, auf dem Quarkus standardmäßig lauscht.
+    volumes:
+      - ayurly_uploads_data:/deployments/uploads # Mapping des Volumes auf den Pfad im Container
+    networks:
+      - nginx-proxy-manager    # Erforderlich, damit Nginx den Service erreichen kann.
+      - ayurly-backend-network # Erforderlich für die Kommunikation mit der Postgres-Datenbank.
+
+networks:
+  nginx-proxy-manager:
+    external: true # Dieses Netzwerk wird vom Nginx Proxy Manager Stack verwaltet oder manuell erstellt.
+  ayurly-backend-network:
+    external: true # Dieses Netzwerk hast du für die Postgres-DB erstellt.
+
+volumes:
+  ayurly_uploads_data: # Definition des Volumes für persistente Uploads
+    driver: local 
