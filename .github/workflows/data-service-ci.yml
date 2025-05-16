@@ -3,17 +3,18 @@ name: Data-Service CI - Build and Push Docker Image
 on:
   push:
     branches:
-      - main # Löst den Workflow nur bei Pushes auf den main-Branch aus
+      - main
     paths:
-      - 'ayurly-data-service/**' # Löst den Workflow nur aus, wenn Änderungen im Data-Service-Ordner erfolgen
-      - '.github/workflows/data-service-ci.yml' # Löst auch aus, wenn der Workflow selbst geändert wird
+      - 'ayurly-data-service/**'
+      - '.github/workflows/data-service-ci.yml'
+  workflow_dispatch: # Ermöglicht manuelles Auslösen
 
 jobs:
   build-and-push-data-service:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write # Benötigt, um in die GitHub Packages Container Registry zu pushen
+      packages: write
 
     steps:
       - name: Checkout Repository
@@ -23,14 +24,18 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'temurin' # Oder eine andere Distribution deiner Wahl
+          distribution: 'temurin'
+          cache: 'maven' # Aktiviert das Caching für Maven-Abhängigkeiten direkt hier
 
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+      - name: Build Data Service with Maven
+        # Wichtig: Arbeitsverzeichnis auf den Data-Service setzen
+        working-directory: ./ayurly-data-service
+        # Der Befehl ./mvnw stellt sicher, dass der Maven Wrapper verwendet wird.
+        # 'package' kompiliert, testet (standardmäßig) und packt die Anwendung.
+        # -DskipTests kann hinzugefügt werden, um Tests im CI-Build zu überspringen, falls gewünscht,
+        # aber es ist generell gut, sie hier laufen zu lassen.
+        # Das Profil 'native' wird hier NICHT aktiviert, da wir das JVM-Dockerfile verwenden.
+        run: ./mvnw package -Dquarkus.container-image.build=false # Verhindert, dass Quarkus selbst versucht, ein Image zu bauen
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -46,7 +51,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/thi-projekte/ayurly-data-service
+          images: ghcr.io/${{ github.repository_owner }}/ayurly-data-service
           tags: |
             type=sha
             type=raw,value=latest,enable={{is_default_branch}}
@@ -54,13 +59,10 @@ jobs:
       - name: Build and push Docker image (Data Service)
         uses: docker/build-push-action@v6
         with:
-          context: ./ayurly-data-service
-          file: ./ayurly-data-service/src/main/docker/Dockerfile.jvm # Pfad zum Quarkus Dockerfile
+          context: ./ayurly-data-service # Kontext ist das Verzeichnis des Data-Service
+          file: ./ayurly-data-service/src/main/docker/Dockerfile.jvm # Pfad zum Quarkus JVM Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # Quarkus build arguments (optional, falls benötigt)
-          # build-args: |
-          #  QUARKUS_PACKAGE_TYPE=uber-jar
