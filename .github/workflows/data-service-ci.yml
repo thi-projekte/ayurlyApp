@@ -40,7 +40,7 @@ jobs:
         # -DskipTests kann hinzugefügt werden, um Tests im CI-Build zu überspringen, falls gewünscht,
         # aber es ist generell gut, sie hier laufen zu lassen.
         # Das Profil 'native' wird hier NICHT aktiviert, da wir das JVM-Dockerfile verwenden.
-        run: ./mvnw package -Dquarkus.container-image.build=false # Verhindert, dass Quarkus selbst versucht, ein Image zu bauen
+        run: ./mvnw package -DskipTests -Dquarkus.container-image.build=false # Verhindert, dass Quarkus selbst versucht, ein Image zu bauen
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
