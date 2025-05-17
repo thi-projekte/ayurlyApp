@@ -71,7 +71,7 @@ Die Docker-Compose-Dateien für das Starten der Services sind:
 ## Repository-Struktur
 
 Das Repository ist wie folgt strukturiert:
-
+```
 ayurlyapp/
 ├── .github/workflows/         # GitHub Actions CI/CD Workflows
 │   ├── data-service-ci.yml
@@ -94,7 +94,7 @@ ayurlyapp/
 ├── docker-compose.nginx-proxy.yml        # Docker Compose für nginx-proxy
 ├── README.md                             # Diese Datei
 └── ...                                  
-
+```
 ## Automatisierung (CI/CD)
 
 Für das Frontend (`ayurly-frontend`) und den Data-Service (`ayurly-data-service`) sind GitHub Actions Workflows eingerichtet:
