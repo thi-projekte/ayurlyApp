@@ -3,31 +3,25 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navigation/Navbar'; // .jsx ist optional beim Import
 import Footer from './components/Footer/Footer';
 import HomePage from './pages/HomePage';
- import DoshaTestPage from './pages/DoshaTestPage';
+import DoshaTestPage from './pages/DoshaTestPage';
 import RezeptePage from './pages/RezeptePage';
 import RezepteDetailPage from './pages/RezepteDetailPage';
 // import CommunitiesPage from './pages/CommunitiesPage';
 import LoginPage from './pages/LoginPage';
 import AccountPage from './pages/AccountPage';
 import { UserProvider } from './contexts/UserContext';
-
-// Globale App-Styles, falls vorhanden (Vite generiert eine App.css, die du anpassen oder ersetzen kannst)
-// import './App.css'; // Wenn du spezifische App-Wrapper Styles hast
-
-// Importiere deine alten CSS-Dateien, die allgemeingültig sind
-// (bis du sie in Komponenten-spezifische Styles umwandelst oder CSS-Module nutzt)
-// import './styles/navBarStyles.css';
-// import './styles/footerStyles.css';
-// Weitere globale Styles deiner Seiten hier importieren, wenn nötig,
-// oder besser direkt in den jeweiligen Page-Komponenten.
+// Admin-Page Imports
+import AdminRoute from './components/Navigation/AdminRoute';
+import AdminPage from './pages/AdminPage'; 
+import ManageDoshaTypes from './components/Admin/ManageDoshaTypes'; 
 
 function App() {
   return (
     <Router>
-      <UserProvider> {/* UserProvider umschließt deine App */}
+      <UserProvider> {/* UserContext umschließt alles */}
       {/* <div className="App">  Optionaler Wrapper, falls du ihn für globale Styles brauchst */}
-        <Navbar />
-        <main> {/* Dies ist der Bereich, der sich mit der Route ändert */}
+        <Navbar /> {/* Navbar immer anzeigen */}
+        <main> {/* main content wird dynamisch über die simulierten Routen geladen */}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/dosha-test" element={<DoshaTestPage />} />
@@ -38,11 +32,25 @@ function App() {
             <Route path="/account" element={<AccountPage />} />
             {/* Ggf. Protected Routes für Seiten wie /account */}
             {/* Ggf. eine Route für Routinen/Challenges, falls noch relevant */}
-            {/* <Route path="/routinen" element={<RoutinenPage />} /> */}
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminRoute />}> {/* Geschützte Hauptroute */}
+              {/* <Route index element={<Navigate to="dashboard" replace />} /> Standard-Weiterleitung für /admin */}
+              <Route path="" element={<AdminPage />}> {/* Layout für Admin-Seiten */}
+                <Route path="dashboard" element={<div>Admin Dashboard Platzhalter</div>} />
+                <Route path="content" element={<div>Content Management Platzhalter</div>} />
+                {/* <Route path="content/recipes" element={<ManageRecipes />} /> */}
+                <Route path="lookups" element={<div>Lookup Tabellen Management Platzhalter</div>} />
+                <Route path="lookups/dosha-types" element={<ManageDoshaTypes />} />
+                {/* <Route path="lookups/content-types" element={<ManageContentTypes />} /> */}
+                {/* <Route path="lookups/units" element={<ManageUnits />} /> */}
+                {/* Weitere Admin-Unterrouten */}
+              </Route>
+            </Route>
+            {/* Fallback-Route für nicht gefundene Pfade */}
+            <Route path="*" element={<div>404 Seite nicht gefunden</div>} /> 
           </Routes>
         </main>
-        <Footer />
-      {/* </div> */}
+        <Footer /> {/* Footer immer anzeigen */}
       </UserProvider>
     </Router>
   );

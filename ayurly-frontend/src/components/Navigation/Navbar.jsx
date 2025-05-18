@@ -2,15 +2,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './Navbar.module.css'; // Importiere das CSS-Modul
+import { useUser } from '../../contexts/UserContext';
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Später durch KeyCloak ersetzen
+  const { keycloakInstance, loadingKeycloak, login, logout } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
   const navRef = useRef(); // Ref für die Navbar, um Klicks außerhalb zu erkennen
 
+  // Prüfe, ob der User Admin ist
+  const isAdmin = !loadingKeycloak && keycloakInstance && keycloakInstance.authenticated && keycloakInstance.hasRealmRole('admin'); 
+
   // Dummy-Login/Logout-Funktionen
-  const handleLogin = () => setIsLoggedIn(true);
-  const handleLogout = () => setIsLoggedIn(false);
+  //const handleLogin = () => setIsLoggedIn(true);
+  //const handleLogout = () => setIsLoggedIn(false);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -39,6 +44,30 @@ const Navbar = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [menuOpen]);
+
+   const handleLogin = () => {
+    if (keycloakInstance && !keycloakInstance.authenticated) {
+        keycloakInstance.login();
+    }
+    closeMenu();
+  }
+  const handleLogout = () => {
+    if (keycloakInstance && keycloakInstance.authenticated) {
+        keycloakInstance.logout(); // Nutze die logout-Funktion aus dem Context
+    }
+    closeMenu();
+  }
+
+
+  if (loadingKeycloak) {
+    // Optional: Kleiner Ladeindikator in der Navbar oder null rendern bis KC geladen ist
+    return (
+        <nav className={styles.navContainer} ref={navRef}>
+             <NavLink to="/" className={styles.logo} onClick={closeMenu}>ayurly</NavLink>
+             <div className={styles.links}>Lade...</div>
+        </nav>
+    );
+  }
 
 
   return (
@@ -116,11 +145,11 @@ const Navbar = () => {
       <div className={`${styles.login} ${menuOpen ? styles.hiddenOnMobileMenuOpen : ''}`}>
         {!isLoggedIn ? (
           // eslint-disable-next-line jsx-a11y/anchor-is-valid --
-          <a href="#" onClick={(e) => { e.preventDefault(); handleLogin();}} className={styles.loginButton}> {/* Temporär Link, bis /login Page da ist oder KeyCloak */}
+          <a href="#" onClick={(e) => { e.preventDefault(); handleLogin();}} className={styles.loginButton}>  {/* Temporär Link, bis /login Page da ist oder KeyCloak */}
             Login
           </a>
         ) : (
-          <button onClick={handleLogout} className={styles.loginButton}>
+          <button onClick={handleLogout} className={styles.loginButton}> 
             Logout
           </button>
         )}
