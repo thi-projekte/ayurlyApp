@@ -16,7 +16,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/users") // Geänderter Pfad für Klarheit
+@Path("/api/users") 
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -94,7 +94,7 @@ public class AppUserResource {
             // Wir könnten ihn hier auch anlegen:
             LOG.infof("AppUser für Keycloak-ID %s nicht gefunden beim Dosha-Update, lege ihn an.", keycloakUserId);
             appUser = new AppUser(keycloakUserId);
-            // Optional: username/email hier auch setzen, falls in AppUser vorhanden
+            // Optional: username/email hier auch setzen, falls doch noch zu AppUser hinzugefügt
             // appUser.username = jwt.getClaim("preferred_username");
             // appUser.email = jwt.getClaim("email");
         }
