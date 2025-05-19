@@ -93,7 +93,7 @@ const RezepteDetailPage = () => {
   // Simuliere "Benefits"-Liste aus dem String, falls API es nicht als Array liefert.
   // Besser wäre es, wenn die API `benefits` als String-Array liefert.
   // Hier ein einfacher Split bei Zeilenumbruch oder Semikolon.
-  const benefitsList = recipe.benefits ? recipe.benefits.split(/[\n;]+/).map(b => b.trim()).filter(b => b) : [];
+  const benefitsList = Array.isArray(recipe.benefits) ? recipe.benefits.map(b => b.trim()).filter(b => b) : [];
   const benefitIcons = ["✨", "🌿", "🔥", "💨", "💧"]; // Beispiel-Icons
 
   return (
