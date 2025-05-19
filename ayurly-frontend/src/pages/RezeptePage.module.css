@@ -1,25 +1,26 @@
 .mainContent { /* Wrapper für den Hauptinhalt der Seite */
-  padding: 20px 5%; /* Oben/Unten und Seiten-Padding */
+  padding: 20px 0; /* Oben/Unten und Seiten-Padding */
 }
 
 /* Toggle-Gruppe für Dosha-Filter */
 .toggleGroup {
   display: flex;
-  margin: 30px 0; /* Oben/Unten-Margin, Seiten-Margin durch .mainContent */
+  margin: 30px 100px; /* Oben/Unten-Margin, Seiten-Margin durch .mainContent */
   justify-content: space-evenly;
   align-items: center;
-  gap: 20px; /* Abstand zwischen den Buttons */
+  gap: 30px; /* Abstand zwischen den Buttons */
   flex-wrap: wrap; /* Umbruch bei Bedarf */
 }
 
 .toggleLabel { /* Styling für die Label-Elemente, die als Buttons dienen */
   background-color: white;
+  display:flex;
+  flex-direction: column;
   text-align: center;
   border-radius: 10px;
   font-size: 1.1rem; /* Responsive: clamp(0.9rem, 2vw, 1.1rem); */
   padding: 15px 25px;
-  flex: 1 1 auto; /* Nimmt verfügbaren Platz, aber schrumpft bei Bedarf */
-  min-width: 120px; /* Mindestbreite pro Button */
+  width: calc((100% - 3* 30px) / 4); 
   cursor: pointer;
   border: 2px solid transparent; /* Platzhalter für den Rahmen bei :checked */
   transition: border-color 0.2s ease, background-color 0.2s ease;
@@ -46,8 +47,9 @@
 
 /* Bereich für die Rezeptkarten */
 .recipesGrid {
-  margin-top: 40px;
-  display: grid;
+  margin: 40px 100px;
+  display: flex;
+  flex-wrap: wrap;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive Grid */
   gap: 30px;
 }
@@ -55,9 +57,10 @@
 .recipeCard {
   display: flex;
   flex-direction: column;
+  width: calc((100% - 3* 30px) / 4);
   background-color: white;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  border-radius: 16px; /* Weniger rund als im Original-CSS */
+  border-radius: 20px; 
   overflow: hidden; /* Stellt sicher, dass das Bild die Rundung annimmt */
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   border: 1px solid #eee;
@@ -125,4 +128,61 @@
     font-size: 1.2rem;
     color: #777;
     margin-top: 50px;
+}
+
+/* --- Media Queries für Responsivität --- */
+
+/* Für Tablets und kleinere Desktops (z.B. 3 Karten nebeneinander) */
+@media (max-width: 1200px) {
+  .toggleGroup, .recipesGrid {
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+  .toggleLabel {
+    /* 3 Kacheln */
+    width: calc((100% - 2 * 30px) / 3);
+  }
+  .recipeCard {
+    /* 3 Karten: 2 Gaps für 3 Karten */
+    width: calc((100% - 2 * 30px) / 3);
+  }
+}
+
+/* Für kleinere Tablets und große Smartphones (z.B. 2 Karten nebeneinander) */
+@media (max-width: 992px) {
+  .toggleGroup, .recipesGrid {
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+  .toggleLabel {
+    /* 2 Kacheln */
+    width: calc((100% - 1 * 30px) / 2);
+  }
+  .recipeCard {
+    /* 2 Karten: 1 Gap für 2 Karten */
+    width: calc((100% - 1 * 30px) / 2);
+  }
+}
+
+/* Für Smartphones (z.B. 1 Karte pro Zeile) */
+@media (max-width: 768px) {
+  .toggleGroup, .recipesGrid {
+    margin-left: 15px;
+    margin-right: 15px;
+    gap: 20px; /* Ggf. Gap reduzieren */
+  }
+  .toggleLabel {
+    /* 1 Kachel (nimmt fast volle Breite, oder 2 wenn gewünscht) */
+    width: calc((100% - 1 * 20px) / 2); /* Beispiel für 2 nebeneinander */
+    /* oder width: 100%; für eine Kachel */
+  }
+  .recipeCard {
+    /* 1 Karte: kein Gap in der Formel nötig */
+    width: 100%;
+    /* oder für 2 Karten auf Smartphones, wenn genug Platz:
+    width: calc((100% - 20px) / 2); (Gap auf 20px angepasst) */
+  }
+  .imagePreview {
+    height: 180px; /* Bilder auf kleineren Screens etwas niedriger */
+  }
 }

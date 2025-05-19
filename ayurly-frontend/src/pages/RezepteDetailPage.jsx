@@ -1,157 +1,191 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RezepteDetailPage.module.css';
+import recipeService from '../services/recipeService'; // NEU
+import { useUser } from '../contexts/UserContext'; // NEU für Like-Funktion
 
-// Dummy-Rezeptdaten (sollten idealerweise aus einem Service/Kontext kommen oder per Prop übergeben werden,
-// aber für dieses Beispiel holen wir sie uns nochmal, wie in RezeptePage)
-// In einer echten Anwendung würdest du hier einen API-Call machen, um das spezifische Rezept per ID zu laden.
-const dummyRecipes = [
-  {
-    id: 'golden-gut-curry',
-    name: 'Golden Gut Curry',
-    image: '/img/recipes/golden gut curry.jpg',
-    description: 'Mit heilenden Kräutern verfeinert, stärkt dieses Curry deine Verdauung und lässt dein inneres Strahlen erblühen.',
-    dosha: ['vata', 'pitta', 'kapha'],
-    ingredients: [
-      '1 EL Ghee oder Kokosöl',
-      '1 Zwiebel, gehackt',
-      '2 Knoblauchzehen, gehackt',
-      '1 Stück Ingwer (ca. 2 cm), gerieben',
-      '1 TL Kurkumapulver',
-      '1/2 TL Kreuzkümmelpulver',
-      '1/2 TL Korianderpulver',
-      '1 Prise Asafoetida (Hing)',
-      '400g Süßkartoffeln, gewürfelt',
-      '200g Karotten, in Scheiben',
-      '1 Dose (400ml) Kokosmilch',
-      '1 Tasse Gemüsebrühe',
-      '100g frischer Spinat',
-      'Salz und Pfeffer nach Geschmack',
-      'Frischer Koriander zum Garnieren',
-    ],
-    instructions: [
-      'Ghee oder Kokosöl in einem großen Topf bei mittlerer Hitze erhitzen.',
-      'Zwiebel, Knoblauch und Ingwer hinzufügen und glasig dünsten.',
-      'Kurkuma, Kreuzkümmel, Koriander und Asafoetida einrühren und 1 Minute mitdünsten, bis es duftet.',
-      'Süßkartoffeln und Karotten hinzufügen und kurz anbraten.',
-      'Mit Kokosmilch und Gemüsebrühe ablöschen. Aufkochen lassen, dann Hitze reduzieren und ca. 15-20 Minuten köcheln lassen, bis das Gemüse weich ist.',
-      'Den frischen Spinat unterheben und zusammenfallen lassen.',
-      'Mit Salz und Pfeffer abschmecken.',
-      'Mit frischem Koriander garniert servieren.',
-    ],
-  },
-  {
-    id: 'kitchari-detox',
-    name: 'Kitchari Detox Bowl',
-    image: '/img/recipes/kitchari.jpg',
-    description: 'Ein leicht verdauliches und nährendes Gericht, perfekt zur Reinigung und Stärkung.',
-    dosha: ['vata', 'pitta', 'kapha'],
-    ingredients: ['1/2 Tasse Mung Dal (geschälte Mungbohnen)', '1/2 Tasse Basmatireis', '...weitere Zutaten...'],
-    instructions: ['Reis und Dal waschen...', '...weitere Schritte...'],
-  },
-  {
-    id: 'vata-beruhigungs-suppe',
-    name: 'Vata Beruhigungs-Suppe',
-    image: '/img/recipes/vata_suppe.jpg',
-    description: 'Eine wärmende und erdende Suppe, ideal um Vata auszugleichen und zur Ruhe zu kommen.',
-    dosha: ['vata'],
-    ingredients: ['Zutaten für Vata-Suppe...'],
-    instructions: ['Zubereitung für Vata-Suppe...'],
-  },
-  {
-    id: 'pitta-kuehl-salat',
-    name: 'Pitta Kühlender Salat',
-    image: '/img/recipes/pitta_salat.jpg',
-    description: 'Ein erfrischender und kühlender Salat, der Pitta besänftigt und den Geist klärt.',
-    dosha: ['pitta'],
-    ingredients: ['Zutaten für Pitta-Salat...'],
-    instructions: ['Zubereitung für Pitta-Salat...'],
-  },
-  {
-    id: 'kapha-anregungs-eintopf',
-    name: 'Kapha Anregungs-Eintopf',
-    image: '/img/recipes/kapha_eintopf.jpg',
-    description: 'Ein leichter und anregender Eintopf, der Kapha stimuliert und Energie spendet.',
-    dosha: ['kapha'],
-    ingredients: ['Zutaten für Kapha-Eintopf...'],
-    instructions: ['Zubereitung für Kapha-Eintopf...'],
-  }
-];
-
+// Importiere Icons (Beispiel, passe Pfade/Namen an deine Flaticon-Integration an)
+// Alternativ kannst du SVG-Icons direkt als Komponenten importieren.
+// Für dieses Beispiel verwenden wir FontAwesome-ähnliche Klassen als Platzhalter für Flaticon.
+// Du müsstest sicherstellen, dass die entsprechenden Flaticon-Klassen global verfügbar sind
+// oder die i-Tags durch img/svg ersetzen.
+// z.B. <i className="fi fi-rr-clock-five"></i> für Zeit
 
 const RezepteDetailPage = () => {
-  const { rezeptId } = useParams(); // Holt die 'rezeptId' aus der URL
+  const { rezeptId } = useParams();
+  const { isLoggedIn, login } = useUser(); // isLoggedIn und login für Like-Button
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchRecipe = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await recipeService.getRecipeById(rezeptId);
+      setRecipe(data);
+    } catch (err) {
+      setError(err.message || 'Fehler beim Laden des Rezepts.');
+      console.error("Error fetching recipe:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [rezeptId]);
 
   useEffect(() => {
-    // Finde das Rezept in den Dummy-Daten
-    // In einer echten App: fetch(`/api/recipes/${rezeptId}`)
-    const foundRecipe = dummyRecipes.find(r => r.id === rezeptId);
-    if (foundRecipe) {
-      setRecipe(foundRecipe);
+    fetchRecipe();
+  }, [fetchRecipe]);
+
+  const handleLikeToggle = async () => {
+    if (!isLoggedIn) {
+      // Optional: Hinweis anzeigen oder direkt zum Login weiterleiten
+      alert("Bitte melde dich an, um Rezepte zu liken.");
+      login(); // Keycloak Login starten
+      return;
     }
-    setLoading(false);
-  }, [rezeptId]);
+    if (!recipe) return;
+
+    try {
+      let updatedRecipeData;
+      if (recipe.likedByCurrentUser) {
+        updatedRecipeData = await recipeService.unlikeRecipe(recipe.id);
+      } else {
+        updatedRecipeData = await recipeService.likeRecipe(recipe.id);
+      }
+      // Backend sollte das aktualisierte Rezept oder zumindest den neuen Like-Status/Count zurückgeben.
+      // RecipeContentResource.java gibt LikeResponseDto zurück.
+      // Wir aktualisieren das Frontend basierend auf dieser Antwort.
+      setRecipe(prevRecipe => ({
+        ...prevRecipe,
+        likeCount: updatedRecipeData.likeCount,
+        likedByCurrentUser: updatedRecipeData.likedByCurrentUser,
+      }));
+    } catch (err) {
+      setError(err.message || "Fehler bei der Like-Aktion.");
+      console.error("Error toggling like:", err);
+    }
+  };
+
 
   if (loading) {
     return <div className={styles.loading}>Rezept wird geladen...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.error}>Fehler: {error}</div>;
   }
 
   if (!recipe) {
     return <div className={styles.error}>Rezept nicht gefunden.</div>;
   }
 
+  // Hilfsfunktion für Dosha-Tags (aus altem Code übernommen)
   const getDoshaTagClass = (dosha) => {
     switch (dosha.toLowerCase()) {
         case 'vata': return styles.doshaTagVata;
         case 'pitta': return styles.doshaTagPitta;
         case 'kapha': return styles.doshaTagKapha;
+        case 'tridoshic': return styles.doshaTagTridoshic;
         default: return '';
     }
-  }
+  };
+
+  // Simuliere "Benefits"-Liste aus dem String, falls API es nicht als Array liefert.
+  // Besser wäre es, wenn die API `benefits` als String-Array liefert.
+  // Hier ein einfacher Split bei Zeilenumbruch oder Semikolon.
+  const benefitsList = recipe.benefits ? recipe.benefits.split(/[\n;]+/).map(b => b.trim()).filter(b => b) : [];
+  const benefitIcons = ["✨", "🌿", "🔥", "💨", "💧"]; // Beispiel-Icons
 
   return (
     <div className={styles.pageContainer}>
-      <article className={styles.recipeDetail}>
-        <header className={styles.recipeHeader}>
-          <h1 className={styles.recipeTitle}>{recipe.name}</h1>
-          {recipe.image && (
-            <img src={recipe.image} alt={recipe.name} className={styles.recipeImage} />
-          )}
-          <p className={styles.recipeDescription}>{recipe.description}</p>
-          {recipe.dosha && recipe.dosha.length > 0 && (
-            <div className={styles.doshaTags}>
-              {recipe.dosha.map(d => (
-                <span key={d} className={`${styles.doshaTag} ${getDoshaTagClass(d)}`}>
-                  {d.charAt(0).toUpperCase() + d.slice(1)}
+      <article className={styles.recipeDetailWrapper}>
+        {/* Hero Section */}
+        <section className={styles.heroSection}>
+          <div className={styles.heroImageContainer}>
+            <img src={recipe.imageUrl || '/img/recipes/default_recipe_image.jpg'} alt={recipe.title} className={styles.heroImage} />
+          </div>
+          <div className={styles.heroInfo}>
+            <h1 className={styles.recipeTitle}>{recipe.title}</h1>
+            <div className={styles.metaInfoBar}>
+              {recipe.preparationTimeMinutes && (
+                <span className={styles.metaItem}>
+                  <i className="fi fi-rr-clock-five"></i> {/* Flaticon Beispiel */}
+                  {recipe.preparationTimeMinutes} min
                 </span>
-              ))}
+              )}
+              {recipe.numberOfPortions && (
+                <span className={styles.metaItem}>
+                  <i className="fi fi-rr-users-alt"></i> {/* Flaticon Beispiel */}
+                  {recipe.numberOfPortions} Portionen
+                </span>
+              )}
+              <button
+                onClick={handleLikeToggle}
+                className={`${styles.likeButton} ${recipe.likedByCurrentUser ? styles.liked : ''}`}
+                aria-label={recipe.likedByCurrentUser ? "Unlike this recipe" : "Like this recipe"}
+              >
+                <i className={`fi fi-${recipe.likedByCurrentUser ? 'ss' : 'rr'}-heart`}></i> {/* Solid vs Regular Heart */}
+                <span className={styles.likeCount}>{recipe.likeCount}</span>
+              </button>
+            </div>
+             {recipe.doshaTypes && recipe.doshaTypes.length > 0 && (
+              <div className={styles.doshaTags}>
+                {recipe.doshaTypes.map(d => (
+                  <span key={d} className={`${styles.doshaTag} ${getDoshaTagClass(d)}`}>
+                    {d.charAt(0).toUpperCase() + d.slice(1)}
+                  </span>
+                ))}
+              </div>
+            )}
+            <p className={styles.recipeDescription}>{recipe.description}</p>
+            {benefitsList.length > 0 && (
+              <div className={styles.benefitsSection}>
+                <h3 className={styles.subSectionTitle}>Vorteile</h3>
+                <ul className={styles.benefitsList}>
+                  {benefitsList.map((benefit, index) => (
+                    <li key={index}>
+                      <span className={styles.benefitIcon}>{benefitIcons[index % benefitIcons.length]}</span>
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Content Section (Zutaten & Zubereitung) */}
+        <section className={styles.contentSection}>
+          {recipe.ingredients && recipe.ingredients.length > 0 && (
+            <div className={styles.ingredientsContainer}>
+              <h2 className={styles.sectionTitle}>Zutaten</h2>
+              <ul className={styles.ingredientsList}>
+                {recipe.ingredients.map((ingredient, index) => (
+                  <li key={index}>
+                    <span className={styles.ingredientQuantity}>{ingredient.quantity} {ingredient.unit}</span>
+                    <span className={styles.ingredientName}>{ingredient.name}</span>
+                    {ingredient.notes && <span className={styles.ingredientNotes}>({ingredient.notes})</span>}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
-        </header>
 
-        {recipe.ingredients && recipe.ingredients.length > 0 && (
-          <section className={styles.recipeSection}>
-            <h2 className={styles.sectionTitle}>Zutaten</h2>
-            <ul className={styles.ingredientsList}>
-              {recipe.ingredients.map((ingredient, index) => (
-                <li key={index}>{ingredient}</li>
-              ))}
-            </ul>
-          </section>
-        )}
+          {recipe.preparationSteps && recipe.preparationSteps.length > 0 && (
+            <div className={styles.preparationContainer}>
+              <h2 className={styles.sectionTitle}>Zubereitung</h2>
+              <ol className={styles.preparationList}>
+                {recipe.preparationSteps.map((step) => ( // sortiert nach step.stepNumber in der API/DB
+                  <li key={step.stepNumber} className={styles.preparationStep}>
+                    <span className={styles.stepNumber}>{step.stepNumber}.</span>
+                    <p className={styles.stepDescription}>{step.description}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+        </section>
 
-        {recipe.instructions && recipe.instructions.length > 0 && (
-          <section className={styles.recipeSection}>
-            <h2 className={styles.sectionTitle}>Zubereitung</h2>
-            <ol className={styles.instructionsList}> {/* ol für nummerierte Liste */}
-              {recipe.instructions.map((instruction, index) => (
-                <li key={index}>{instruction}</li>
-              ))}
-            </ol>
-          </section>
-        )}
         <div className={styles.backLinkContainer}>
             <Link to="/rezepte" className={styles.backLink}>
                 Zurück zur Rezeptübersicht
