@@ -1,4 +1,4 @@
-const API_BASE_URL = '/api/user-accounts'; // Angepasst
+const API_BASE_URL = '/api/users';
 
 /**
  * Ruft das Benutzerprofil vom Backend ab.
@@ -11,7 +11,7 @@ const fetchUserProfile = async (token) => {
     throw new Error("No token provided for fetching user profile.");
   }
   try {
-    const response = await fetch(`${API_BASE_URL}/me`, { // Pfad /me bleibt gleich
+    const response = await fetch(`${API_BASE_URL}/me`, { 
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -20,16 +20,11 @@ const fetchUserProfile = async (token) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.text();
-      console.error(`Error fetching user profile: ${response.status} ${response.statusText}`, errorData);
-      if (response.status === 404) { // Sollte jetzt seltener auftreten, da Backend den User anlegt
-           console.warn("User profile not found on backend, possibly a new user and /me was not called yet to create it.");
-           // Hier könntest du ein "leeres" Profil zurückgeben, das signalisiert, dass der Dosha-Typ noch nicht gesetzt ist.
-           // Die Backend-Ressource erstellt jetzt aber schon einen leeren AppUser-Eintrag.
-           // Die DTO-Struktur wird aber trotzdem erwartet.
-           return { doshaType: null }; // Oder was immer deine UserAccountResponse-Struktur bei leerem Dosha ist
-      }
-      throw new Error(`Failed to fetch user profile. Status: ${response.status}`);
+      const errorText = await response.text(); // Versuche, Text zu bekommen für mehr Details
+      console.error(`Error fetching user profile: ${response.status} ${response.statusText}`, errorText);
+      // Wenn /me einen User anlegt, sollte 404 nicht mehr passieren, außer der User ist wirklich unbekannt
+      // oder der Token ist ungültig (was Keycloak abfangen sollte).
+      throw new Error(`Failed to fetch user profile. Status: ${response.status}. Body: ${errorText}`);
     }
     return await response.json();
   } catch (error) {
@@ -49,7 +44,7 @@ const updateUserDosha = async (doshaType, token) => {
     throw new Error("No token provided for updating Dosha type.");
   }
   try {
-    const response = await fetch(`${API_BASE_URL}/me/dosha`, { // Pfad /me/dosha bleibt gleich
+    const response = await fetch(`${API_BASE_URL}/me/dosha`, { 
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -60,11 +55,11 @@ const updateUserDosha = async (doshaType, token) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.text();
-      console.error(`Error updating dosha type: ${response.status} ${response.statusText}`, errorData);
-      throw new Error(`Failed to update Dosha type. Status: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`Error updating dosha type: ${response.status} ${response.statusText}`, errorText);
+      throw new Error(`Failed to update Dosha type. Status: ${response.status}. Body: ${errorText}`);
     }
-    return await response.json();
+    return await response.json(); // Erwarte die UserAccountResponse DTO zurück
   } catch (error) {
     console.error("Error in updateUserDosha:", error);
     throw error;

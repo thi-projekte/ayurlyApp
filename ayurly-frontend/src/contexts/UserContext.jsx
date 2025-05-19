@@ -1,125 +1,140 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
-import keycloakService from '../services/keycloakService'; // Importieren
-import userService from '../services/userService'; // Importieren (wird später erstellt)
+import keycloakService from '../services/keycloakService';
+import userService from '../services/userService';
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [keycloak, setKeycloak] = useState(null); // Die Keycloak-Instanz
+  const [keycloak, setKeycloak] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userProfile, setUserProfile] = useState(null); // Enthält { username, email, firstName, lastName, doshaType }
-  const [doshaType, setDoshaType] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState(null); // Backend-Profil: { keycloakId, username, email, firstName, lastName, doshaType }
+  const [loadingKeycloak, setLoadingKeycloak] = useState(true); // Umbenannt für Klarheit
 
-  const handleAuthentication = useCallback(async (kcInstance) => {
-    if (kcInstance && kcInstance.authenticated) {
-      setIsLoggedIn(true);
-      setKeycloak(kcInstance);
-
-      // Lade Benutzerprofil (inkl. Dosha-Typ) vom Backend
+  const fetchAndSetUserProfile = async (kcInstance) => {
+    if (kcInstance && kcInstance.authenticated && kcInstance.token) {
       try {
-        const profile = await userService.fetchUserProfile(kcInstance.token);
-        setUserProfile(profile);
-        setDoshaType(profile.doshaType || localStorage.getItem('doshaTypeContextual')); // Fallback auf lokalen Wert, falls Backend keinen hat
+        console.log("UserContext: Authenticated, fetching user profile from backend...");
+        const profileFromBackend = await userService.fetchUserProfile(kcInstance.token);
+        setUserProfile(profileFromBackend);
+        console.log("UserContext: Profile from backend:", profileFromBackend);
 
-        // Wenn ein Dosha-Typ vom Backend kommt, ggf. lokalen entfernen
-        if (profile.doshaType) {
-          localStorage.removeItem('doshaTypeContextual');
-        } else {
-          // Wenn Backend keinen Dosha-Typ hat, aber einer lokal existiert (z.B. neuer User),
-          // versuche, ihn zum Backend zu synchronisieren.
-          const localDosha = localStorage.getItem('doshaTypeContextual');
-          if (localDosha) {
-            // Warte kurz, um sicherzustellen, dass der Benutzer wirklich neu ist / keine Race Condition
-            setTimeout(async () => {
-                const currentProfile = await userService.fetchUserProfile(kcInstance.token); // Nochmal holen
-                if (!currentProfile.doshaType) {
-                    console.log(`User ${currentProfile.username} has no DoshaType in backend, attempting to sync local: ${localDosha}`);
-                    await updateDoshaTypeAndPersist(localDosha, kcInstance); // Speichern und dann entfernen
-                }
-            }, 2000);
-          }
+        // Spezielle Logik für Dosha-Typ Synchronisation
+        const localContextualDosha = localStorage.getItem('doshaTypeContextual');
+        if (localContextualDosha && !profileFromBackend.doshaType) {
+          console.log(`UserContext: User ${profileFromBackend.keycloakId} has no DoshaType in backend. Attempting to sync local contextual Dosha: ${localContextualDosha}`);
+          // Versuche, den lokalen Dosha-Typ zum Backend zu synchronisieren
+          // Warte kurz, falls der User gerade erst angelegt wurde und der /me Call zum Anlegen noch läuft
+          setTimeout(async () => {
+            try {
+                const updatedProfile = await userService.updateUserDosha(localContextualDosha, kcInstance.token);
+                setUserProfile(updatedProfile); // Aktualisiere mit der Antwort vom Backend
+                localStorage.removeItem('doshaTypeContextual');
+                console.log("UserContext: Contextual DoshaType synced to backend and removed from local storage.");
+            } catch (syncError) {
+                console.error("UserContext: Failed to sync contextual DoshaType to backend:", syncError);
+                // Behalte den lokalen Wert vorerst, falls das Backend-Update fehlschlägt
+            }
+          }, 1500); // Kleine Verzögerung
+        } else if (profileFromBackend.doshaType) {
+            // Wenn Backend einen Dosha-Typ hat, stelle sicher, dass der lokale kontextuelle entfernt wird
+            localStorage.removeItem('doshaTypeContextual');
         }
+
       } catch (error) {
-        console.error("Failed to fetch user profile from backend:", error);
-        // Fallback: Benutzerdaten aus dem Token nehmen
+        console.error("UserContext: Failed to fetch user profile from backend:", error);
+        // Fallback: Basis-Benutzerdaten aus dem Token nehmen, doshaType bleibt null
         const tokenProfile = {
+          keycloakId: kcInstance.subject,
           username: kcInstance.tokenParsed?.preferred_username || 'User',
           email: kcInstance.tokenParsed?.email,
           firstName: kcInstance.tokenParsed?.given_name,
           lastName: kcInstance.tokenParsed?.family_name,
-          doshaType: kcInstance.tokenParsed?.doshaType || localStorage.getItem('doshaTypeContextual'),
+          doshaType: null, // Wird vom Backend geholt
         };
         setUserProfile(tokenProfile);
-        setDoshaType(tokenProfile.doshaType);
       }
+    } else if (!kcInstance || !kcInstance.authenticated) {
+        // User ist nicht (mehr) eingeloggt
+        setUserProfile(null); // Kein Profil, wenn nicht eingeloggt
+    }
+  };
+
+  const handleAuthentication = useCallback(async (kcInstance) => {
+    setLoadingKeycloak(false);
+    if (kcInstance && kcInstance.authenticated) {
+      setIsLoggedIn(true);
+      setKeycloak(kcInstance);
+      await fetchAndSetUserProfile(kcInstance); // Profil laden
     } else {
       setIsLoggedIn(false);
       setKeycloak(null);
-      setUserProfile(null);
-      // Für nicht eingeloggte Benutzer den Dosha-Typ aus dem localStorage laden
-      setDoshaType(localStorage.getItem('doshaTypeContextual'));
+      setUserProfile(null); // User ist nicht eingeloggt, kein Profil
     }
-    setLoading(false);
   }, []);
 
   const handleAuthError = useCallback((error) => {
-    setLoading(false);
-    // Behandle Authentifizierungsfehler, z.B. Fehlermeldung anzeigen
-    // Fürs Erste, lade lokalen Dosha-Typ als Fallback
-    setDoshaType(localStorage.getItem('doshaTypeContextual'));
+    setLoadingKeycloak(false);
+    setIsLoggedIn(false);
+    setKeycloak(null);
+    setUserProfile(null);
+    console.error("UserContext: Keycloak authentication error:", error);
   }, []);
 
   useEffect(() => {
     keycloakService.initKeycloak(handleAuthentication, handleAuthError);
   }, [handleAuthentication, handleAuthError]);
 
-  const updateDoshaTypeAndPersist = async (newDosha, kcInstanceForUpdate = keycloak) => {
-    setDoshaType(newDosha);
-    if (isLoggedIn && kcInstanceForUpdate && kcInstanceForUpdate.authenticated) {
+
+  // Diese Funktion wird vom DoshaTestPage aufgerufen, um den Dosha-Typ zu setzen/aktualisieren
+  const updateDoshaTypeContextual = async (newDosha) => {
+    if (isLoggedIn && keycloak && keycloak.token) {
+      // Eingeloggter User: Direkt ans Backend senden und Profil aktualisieren
       try {
-        const updatedProfile = await userService.updateUserDosha(newDosha, kcInstanceForUpdate.token);
-        setUserProfile(updatedProfile); // Aktualisiere das Profil mit der Antwort vom Backend
-        localStorage.removeItem('doshaTypeContextual'); // Entferne den lokalen Wert, da jetzt serverseitig
-        console.log("Dosha type updated in backend and local storage cleared.");
+        console.log(`UserContext: Updating DoshaType to ${newDosha} for logged-in user.`);
+        const updatedProfile = await userService.updateUserDosha(newDosha, keycloak.token);
+        setUserProfile(updatedProfile); // Aktualisiere das gesamte Profil mit der Backend-Antwort
+        localStorage.removeItem('doshaTypeContextual'); // Entferne den lokalen Kontext-Wert
       } catch (error) {
-        console.error("Failed to update Dosha type in backend:", error);
-        // Fehlerbehandlung: Was passiert, wenn Backend-Update fehlschlägt?
-        // Option: Lokalen Wert vorerst beibehalten oder dem Benutzer eine Fehlermeldung anzeigen.
-        // Für dieses Beispiel: Wir behalten den im Context gesetzten Wert und versuchen es später ggf. erneut.
-        localStorage.setItem('doshaTypeContextual', newDosha); // Als Fallback wieder lokal speichern
+        console.error("UserContext: Failed to update DoshaType in backend:", error);
+        // Optional: Fallback-Logik oder Fehlermeldung anzeigen
+        // Als Fallback könnte man es lokal speichern, aber das Ziel ist die Backend-Synchronität
+        localStorage.setItem('doshaTypeContextual', newDosha); // Notfall-Fallback
+        setUserProfile(prev => ({ ...prev, doshaType: newDosha })); // Optimistisches UI-Update
       }
     } else {
-      // Nicht eingeloggt, nur im localStorage und Context speichern
+      // Nicht eingeloggter User: Nur im localStorage für den Kontext speichern
+      console.log(`UserContext: Setting contextual DoshaType to ${newDosha} for anonymous user.`);
       localStorage.setItem('doshaTypeContextual', newDosha);
+      // Kein userProfile zu aktualisieren, da nicht eingeloggt
+      // Der "doshaType" im Context wird dann indirekt über den userProfile (wenn null) und localStorage geladen
+      // oder sollte direkt im UserProvider einen eigenen State dafür haben.
+      // Besser: Einen eigenen State für den kontextuellen Dosha-Typ, wenn kein User eingeloggt ist.
+      // Für dieses Beispiel: Wir verlassen uns darauf, dass Komponenten, die den Dosha-Typ für anonyme User brauchen,
+      // ihn direkt aus dem localStorage oder über eine Prop bekommen. Der Context fokussiert sich auf den eingeloggten User.
+      // Wenn du einen globalen "aktuellen Dosha-Typ" brauchst, der immer da ist, dann:
+      // setLocalOrContextualDosha(newDosha); // Eine neue State-Variable
     }
   };
 
-
   const login = keycloakService.login;
   const logout = () => {
-    setIsLoggedIn(false); // Sofort UI aktualisieren
-    setUserProfile(null);
-    setDoshaType(localStorage.getItem('doshaTypeContextual')); // Fallback auf lokalen Wert
-    keycloakService.logout();
+    keycloakService.logout(); // Keycloak-Logout leitet weiter und löst dann neuen Init-Flow aus
+    // Lokale States werden durch den neuen Init-Flow nach Logout zurückgesetzt
   };
   const register = keycloakService.register;
 
-  if (loading) {
-    return <div>Anwendung wird geladen...</div>; // Oder ein schönerer globaler Loader
-  }
 
   return (
     <UserContext.Provider value={{
       isLoggedIn,
-      userProfile,
-      doshaType,
+      userProfile, // Enthält jetzt den Dosha-Typ vom Backend
+      doshaType: userProfile?.doshaType || localStorage.getItem('doshaTypeContextual'), // Der effektiv anzuzeigende Dosha-Typ
       login,
       logout,
       register,
-      updateDoshaType: updateDoshaTypeAndPersist,
-      keycloakInstance: keycloak, // Die initialisierte Keycloak-Instanz
-      loadingKeycloak: loading,
+      updateUserDosha: updateDoshaTypeContextual, // Umbenannt für Klarheit
+      keycloakInstance: keycloak,
+      loadingKeycloak,
       accountManagementUrl: keycloak?.authenticated ? keycloak.createAccountUrl() : null
     }}>
       {children}
@@ -127,7 +142,6 @@ export const UserProvider = ({ children }) => {
   );
 };
 
-// Hook für einfachen Zugriff auf den Context
 export const useUser = () => {
   const context = useContext(UserContext);
   if (context === undefined) {
