@@ -363,52 +363,61 @@ public class RecipeContentResource {
     @APIResponse(responseCode = "404", description = "Recipe not found")
     @SecurityRequirement(name = "jwtAuth")
     public Response updateRecipe(@PathParam("id") UUID id, @Valid RecipeContentCreateUpdateDto recipeDto) {
-        Optional<RecipeContent> existingRecipeOpt = RecipeContent.findByIdOptional(id);
-        if (existingRecipeOpt.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Recipe not found or content item is not a recipe.").build();
-        }
+    Optional<RecipeContent> existingRecipeOpt = RecipeContent.findByIdOptional(id);
+    if (existingRecipeOpt.isEmpty()) {
+        return Response.status(Response.Status.NOT_FOUND).entity("Recipe not found.").build();
+    }
 
-        RecipeContent existingRecipe = existingRecipeOpt.get();
-        // Update ContentItem fields
-        existingRecipe.title = recipeDto.title;
-        existingRecipe.imageUrl = recipeDto.imageUrl;
-        existingRecipe.previewDescription = recipeDto.previewDescription;
-         // Update RecipeDetails fields
-        existingRecipe.description = recipeDto.description;
-        existingRecipe.doshaTypes = recipeDto.doshaTypes;
-        existingRecipe.preparationTimeMinutes = recipeDto.preparationTimeMinutes;
-        existingRecipe.numberOfPortions = recipeDto.numberOfPortions;
+    RecipeContent existingRecipe = existingRecipeOpt.get();
+    existingRecipe.title = recipeDto.title;
+    existingRecipe.imageUrl = recipeDto.imageUrl;
+    existingRecipe.previewDescription = recipeDto.previewDescription;
+    existingRecipe.description = recipeDto.description;
+    existingRecipe.doshaTypes = recipeDto.doshaTypes;
+    existingRecipe.preparationTimeMinutes = recipeDto.preparationTimeMinutes;
+    existingRecipe.numberOfPortions = recipeDto.numberOfPortions;
 
-        // Update ingredients
-        existingRecipe.ingredients.clear(); // Bestehende löschen
-        // RecipeContent.flush(); // Flush ist hier nicht unbedingt nötig, Panache macht das am Transaktionsende
-        if (recipeDto.ingredients != null) {
-            recipeDto.ingredients.forEach(ingDto -> existingRecipe.addIngredient(ingDto.toEntity()));
-        }
+    // Vorhandene Collections leeren und neue Elemente hinzufügen
+    // Hibernate sollte dank orphanRemoval=true und CascadeType.ALL die alten Elemente löschen
+    // und die neuen hinzufügen/updaten.
 
-        // Update preparation steps
-        existingRecipe.preparationSteps.clear(); // Bestehende löschen
-        if (recipeDto.preparationSteps != null) {
-            recipeDto.preparationSteps.forEach(stepDto -> existingRecipe.addPreparationStep(stepDto.toEntity()));
-        }
+    // Zutaten aktualisieren
+    existingRecipe.ingredients.clear();
+    if (recipeDto.ingredients != null) {
+        recipeDto.ingredients.forEach(ingDto -> {
+            RecipeIngredient newIngredient = ingDto.toEntity();
+            existingRecipe.addIngredient(newIngredient); // Stellt sicher, dass die Beziehung korrekt gesetzt wird
+        });
+    }
 
-        // Update benefits
-        existingRecipe.benefits.clear(); // Bestehende löschen
-        if (recipeDto.benefits != null) {
-            for (int i = 0; i < recipeDto.benefits.size(); i++) {
-                String benefitText = recipeDto.benefits.get(i);
-                if (benefitText != null && !benefitText.trim().isEmpty()) {
-                     existingRecipe.addBenefit(new RecipeBenefit(benefitText.trim(), i * 10));
-                }
+    // Zubereitungsschritte aktualisieren
+    existingRecipe.preparationSteps.clear();
+    if (recipeDto.preparationSteps != null) {
+        recipeDto.preparationSteps.forEach(stepDto -> {
+            RecipePreparationStep newStep = stepDto.toEntity();
+            existingRecipe.addPreparationStep(newStep); // Stellt sicher, dass die Beziehung korrekt gesetzt wird
+        });
+    }
+
+    // Benefits aktualisieren
+    existingRecipe.benefits.clear();
+    if (recipeDto.benefits != null) {
+        for (int i = 0; i < recipeDto.benefits.size(); i++) {
+            String benefitText = recipeDto.benefits.get(i);
+            if (benefitText != null && !benefitText.trim().isEmpty()) {
+                RecipeBenefit newBenefit = new RecipeBenefit(benefitText.trim(), i * 10);
+                existingRecipe.addBenefit(newBenefit); // Stellt sicher, dass die Beziehung korrekt gesetzt wird
             }
         }
-
-        // Panache managed die Persistierung der Änderungen am Ende der Transaktion
-        // existingRecipe.persist(); // ist nicht nötig, da die Entität "managed" ist
-
-        RecipeContentDto responseDto = RecipeContentDto.fromEntity(existingRecipe, true, getCurrentUserIdOptional());
-        return Response.ok(responseDto).build();
     }
+
+    // Ein expliziter Flush ist hier normalerweise nicht nötig, da Panache/Hibernate dies am Ende der Transaktion managed.
+    // entity.flush() oder entityManager.flush() 
+    // Panache.getEntityManager().flush(); 
+
+    RecipeContentDto responseDto = RecipeContentDto.fromEntity(existingRecipe, true, getCurrentUserIdOptional());
+    return Response.ok(responseDto).build();
+}
 
     @DELETE 
     @Path("/{id}")
