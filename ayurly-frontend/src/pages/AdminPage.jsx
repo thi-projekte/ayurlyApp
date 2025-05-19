@@ -6,16 +6,25 @@ const AdminPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isActive = (path) => location.pathname.startsWith(`/admin/${path}`);
+  // Hilfsfunktion, um zu prüfen, ob ein Pfad aktiv ist (inkl. Unterpfade)
+  const isActive = (basePath) => location.pathname.startsWith(`/admin/${basePath}`);
+  // Hilfsfunktion für exakte Pfadübereinstimmung
   const isExactActive = (path) => location.pathname === `/admin/${path}`;
 
   // Wenn der Benutzer auf /admin/lookups ist, aber keine Unterroute gewählt hat,
-  // leite ihn z.B. zu Dosha-Typen weiter.
   useEffect(() => {
-    if (location.pathname === '/admin/lookups') {
-      navigate('dosha-types', { replace: true });
+    // Wenn /admin aufgerufen wird, direkt zu recipes weiterleiten
+    if (location.pathname === '/admin' || location.pathname === '/admin/') {
+        navigate('content/recipes', { replace: true });
     }
-    // Ggf. ähnliche Logik für /admin/content
+    // Wenn /admin/content aufgerufen wird, auch zu recipes weiterleiten
+    else if (location.pathname === '/admin/content') {
+      navigate('content/recipes', { replace: true });
+    }
+    // Weiterleitung für /admin/lookups (bleibt bestehen)
+    else if (location.pathname === '/admin/lookups') {
+      navigate('lookups/dosha-types', { replace: true });
+    }
   }, [location.pathname, navigate]);
 
 
@@ -25,19 +34,19 @@ const AdminPage = () => {
         <h1>Admin Dashboard</h1>
         <nav className={styles.adminNav}>
           <NavLink
-            to="dashboard"
-            className={() => `${styles.navLink} ${isExactActive('dashboard') || location.pathname === '/admin' ? styles.activeLink : ''}`}
+            to="dashboard" 
+            className={() => `${styles.navLink} ${isActive('dashboard') ? styles.activeLink : ''}`}
           >
             Übersicht
           </NavLink>
           <NavLink
-            to="content" // Basis für Content, z.B. /admin/content/recipes
+            to="content/recipes" // Direktlink zu Recipes
             className={() => `${styles.navLink} ${isActive('content') ? styles.activeLink : ''}`}
           >
-            Content Management
+            Rezept Management
           </NavLink>
           <NavLink
-            to="lookups/dosha-types" // Direkt zur ersten Lookup-Seite
+            to="lookups/dosha-types"
             className={() => `${styles.navLink} ${isActive('lookups') ? styles.activeLink : ''}`}
           >
             Lookup Tabellen
@@ -47,10 +56,19 @@ const AdminPage = () => {
 
       {/* Optional: Sub-Navigation für Lookup-Tabellen, wenn man auf /admin/lookups ist */}
       {isActive('lookups') && (
-        <nav className={styles.adminSubNav}> {/* Neues CSS hierfür anlegen */}
+        <nav className={styles.adminSubNav}> 
           <NavLink to="lookups/dosha-types" className={({isActive}) => isActive ? styles.activeSubLink : styles.subLink}>Dosha-Typen</NavLink>
           <NavLink to="lookups/content-types" className={({isActive}) => isActive ? styles.activeSubLink : styles.subLink}>Content-Typen</NavLink>
           <NavLink to="lookups/units" className={({isActive}) => isActive ? styles.activeSubLink : styles.subLink}>Einheiten</NavLink>
+        </nav>
+      )}
+
+      {/* Sub-Navigation für Content Management (optional, falls später mehr Content-Typen kommen) */}
+       {isActive('content') && !isActive('lookups') && ( // Nur anzeigen, wenn wir in Content sind, aber nicht in Lookups
+        <nav className={styles.adminSubNav}>
+          <NavLink to="content/recipes" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Rezepte</NavLink>
+          {/* <NavLink to="content/articles" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Artikel</NavLink> */}
+          {/* <NavLink to="content/yoga" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Yoga-Übungen</NavLink> */}
         </nav>
       )}
 

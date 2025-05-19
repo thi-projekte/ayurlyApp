@@ -207,3 +207,104 @@
   border: 1px solid #c3e6cb;
   border-radius: 4px;
 }
+
+.adminForm .checkboxLabel { /* Bereits vorhanden, ggf. anpassen */
+    display: inline-block;
+    margin-right: 15px;
+    font-weight: normal;
+    vertical-align: middle; /* Bessere Ausrichtung zur Checkbox */
+}
+.adminForm input[type="checkbox"] { /* Bereits vorhanden, ggf. anpassen */
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.adminForm h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.formGroupRepeat {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  background-color: #fdfdfd;
+}
+
+.formGroupRepeat input[type="text"],
+.formGroupRepeat textarea,
+.formGroupRepeat select {
+  flex-grow: 1;
+  margin-bottom: 0; /* Überschreibt ggf. .adminForm div input Margin */
+}
+.formGroupRepeat textarea {
+  min-height: 60px;
+}
+
+.addButton,
+.removeButton {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.addButton {
+  background-color: #28a745; /* Grün */
+  color: white;
+  margin-top: 5px;
+  margin-bottom: 15px; /* Abstand zur nächsten Sektion */
+}
+.addButton:hover {
+  background-color: #218838;
+}
+
+.removeButton {
+  background-color: #dc3545; /* Rot */
+  color: white;
+  flex-shrink: 0; /* Verhindert Schrumpfen */
+}
+.removeButton:hover {
+  background-color: #c82333;
+}
+
+/* Zusätzliche Sub-Navigation für AdminPage, falls verwendet */
+.adminSubNav {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.subLink {
+  padding: 8px 15px;
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.subLink:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+.activeSubLink {
+  background-color: #004d3f; /* Dunkleres Grün für Sub-Nav */
+  color: white;
+}
+.activeSubLink:hover {
+  background-color: #003329;
+  color: white;
+}

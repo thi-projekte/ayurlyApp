@@ -16,7 +16,7 @@ import AdminPage from './pages/AdminPage';
 import ManageDoshaTypes from './components/Admin/ManageDoshaTypes'; 
 import ManageContentTypes from './components/Admin/ManageContentTypes'; 
 import ManageUnits from './components/Admin/ManageUnits'; 
-// import ManageRecipes from './components/Admin/ManageRecipes'; // Für später
+import ManageRecipes from './components/Admin/ManageRecipes';
 
 function App() {
   return (
@@ -38,13 +38,14 @@ function App() {
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminRoute />}>
               <Route path="" element={<AdminPage />}> {/* Layout-Route */}
-                <Route index element={<Navigate to="dashboard" replace />} /> {/* Standard für /admin */}
+                <Route index element={<Navigate to="content/recipes" replace />} /> {/* Standard für /admin */}
                 <Route path="dashboard" element={<div>Admin Dashboard (Platzhalter)</div>} />
                 
                 {/* Content Management - Hauptseite und Unterrouten */}
-                <Route path="content" element={<div><h2>Content Management</h2><p>Bitte wähle einen Content-Typ zur Verwaltung.</p><Outlet/></div>} >
-                   {/* <Route index element={<Navigate to="recipes" replace />} /> Falls Standard für Content */}
-                   {/* <Route path="recipes" element={<ManageRecipes />} /> */}
+                <Route path="content" element={<Outlet/>}> {/* Wrapper für Content-Unterrouten */}
+                   <Route index element={<Navigate to="recipes" replace />} /> {/* Standard für /admin/content */}
+                   <Route path="recipes" element={<ManageRecipes />} /> {/* NEU */}
+                   {/* Hier könnten später weitere Content-Typen hinzukommen, z.B. Artikel, Yoga-Übungen */}
                 </Route>
 
                 {/* Lookup Tabellen Management - Hauptseite und Unterrouten */}
