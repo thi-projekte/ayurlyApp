@@ -12,7 +12,7 @@ services:
     volumes:
       - ayurly_postgres_data:/var/lib/postgresql/data # Persistentes Volume
     ports:
-      - "${POSTGRES_PORT:-5432}:5432" # Exponiere den Port nach außen (optional, wenn nur intern erreichbar)
+      - "15432:5432" # Exponiere den Port nach außen (optional, wenn nur intern erreichbar)
                                     # Der Standardwert wird verwendet, wenn POSTGRES_PORT nicht in .env gesetzt ist
     networks:
       - ayurly-backend-network # Verbindet mit dem externen Netzwerk

@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-ayurlyuser}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ayurlypassword123} # Unbedingt in .env ändern!
       POSTGRES_DB: ${POSTGRES_DB:-ayurly_data_db}
-      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://ayurly-postgres-db:5432/${POSTGRES_DB:-ayurly_data_db}
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://ayurly-postgres-db:5432/${POSTGRES_DB:-ayurly_data_db} # wichtig intern lauscht der db-container weiterhin auf 5432, nur extern auf 15432
 
       # --- Keycloak JWT Validierung ---
       # Diese Variablen füllen die Platzhalter in application.properties für mp.jwt.verify.*
