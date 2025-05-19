@@ -1,18 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useUser } from '../../contexts/UserContext';
 import apiRequest from '../../services/apiService';
-import styles from '../../pages/AdminPage.module.css'; // Wiederverwendung der Admin-Styles
+import styles from '../../pages/AdminPage.module.css';
 
 const API_BASE_URL_RECIPES = '/api/recipes';
 const API_BASE_URL_LOOKUPS = '/api/lookups';
+const API_BASE_URL_UPLOADS = '/api/admin/uploads'; 
 
 const initialRecipeFormState = {
   title: '',
-  imageUrl: '',
+  imageUrl: '', // Wird durch den Upload-Pfad ersetzt
   previewDescription: '',
   description: '',
   doshaTypes: [],
-  benefits: '',
+  benefits: [{ text: '' }], 
   preparationTimeMinutes: 0,
   numberOfPortions: 1,
   ingredients: [{ name: '', quantity: '', unit: '', notes: '' }],
@@ -26,9 +27,13 @@ const ManageRecipes = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
 
-  const [editingRecipe, setEditingRecipe] = useState(null); // null oder das zu bearbeitende Rezept-Objekt
+  const [editingRecipe, setEditingRecipe] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState(initialRecipeFormState);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
+
 
   // Lookup-Daten
   const [doshaTypeOptions, setDoshaTypeOptions] = useState([]);
@@ -43,7 +48,7 @@ const ManageRecipes = () => {
       setRecipes(data || []);
     } catch (err) {
       setError(err.message || 'Fehler beim Laden der Rezepte.');
-      setRecipes([]); // Fallback auf leeres Array
+      setRecipes([]);
     } finally {
       setIsLoading(false);
     }
@@ -71,6 +76,11 @@ const ManageRecipes = () => {
   const handleCreateNew = () => {
     setEditingRecipe(null);
     setFormData(initialRecipeFormState);
+    setSelectedFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // Input-Feld zurücksetzen
+    }
     setIsCreating(true);
     setError(null);
     setSuccessMessage('');
@@ -79,22 +89,29 @@ const ManageRecipes = () => {
   const handleEdit = async (recipeId) => {
     setIsLoading(true);
     setError(null);
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+    }
     try {
       const recipeToEdit = await apiRequest(`${API_BASE_URL_RECIPES}/${recipeId}`, 'GET', null, keycloakInstance.token);
       if (recipeToEdit) {
         setFormData({
           title: recipeToEdit.title || '',
-          imageUrl: recipeToEdit.imageUrl || '',
+          imageUrl: recipeToEdit.imageUrl || '', // Bestehende URL anzeigen
           previewDescription: recipeToEdit.previewDescription || '',
           description: recipeToEdit.description || '',
           doshaTypes: recipeToEdit.doshaTypes || [],
-          benefits: recipeToEdit.benefits || '',
+          benefits: recipeToEdit.benefits && recipeToEdit.benefits.length > 0
+            ? recipeToEdit.benefits.map(b => ({ text: b, id: Date.now() + Math.random() }))
+            : [{ text: '', id: Date.now() }],
           preparationTimeMinutes: recipeToEdit.preparationTimeMinutes || 0,
           numberOfPortions: recipeToEdit.numberOfPortions || 1,
           ingredients: recipeToEdit.ingredients && recipeToEdit.ingredients.length > 0 ? recipeToEdit.ingredients.map(ing => ({...ing, id: ing.id || Date.now() + Math.random() })) : [{ name: '', quantity: '', unit: '', notes: '', id: Date.now() }],
           preparationSteps: recipeToEdit.preparationSteps && recipeToEdit.preparationSteps.length > 0 ? recipeToEdit.preparationSteps.map(step => ({...step, id: step.id || Date.now() + Math.random() })) : [{ stepNumber: 1, description: '', id: Date.now() }],
         });
-        setEditingRecipe(recipeToEdit); // Speichere das volle geladene Rezept
+        setImagePreview(recipeToEdit.imageUrl || null); // Vorschau für bestehendes Bild
+        setEditingRecipe(recipeToEdit);
         setIsCreating(false);
       } else {
         setError("Rezept nicht gefunden.");
@@ -123,6 +140,22 @@ const ManageRecipes = () => {
     }
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setSelectedFile(null);
+      // Wenn keine neue Datei ausgewählt, aber eine alte imageUrl existiert, diese wieder anzeigen
+      setImagePreview(formData.imageUrl || null);
+    }
+  };
+
   const handleFormChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (name === "doshaTypes") {
@@ -138,6 +171,31 @@ const ManageRecipes = () => {
     }
   };
 
+  // --- Benefits ---
+  const handleBenefitChange = (index, e) => {
+    const { value } = e.target;
+    const newBenefits = formData.benefits.map((benefit, i) =>
+      i === index ? { ...benefit, text: value } : benefit
+    );
+    setFormData(prev => ({ ...prev, benefits: newBenefits }));
+  };
+
+  const addBenefit = () => {
+    setFormData(prev => ({
+      ...prev,
+      benefits: [...prev.benefits, { text: '', id: Date.now() }]
+    }));
+  };
+
+  const removeBenefit = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      benefits: prev.benefits.filter((_, i) => i !== index)
+    }));
+  };
+
+
+  // --- Ingredients & Steps ---
   const handleIngredientChange = (index, e) => {
     const { name, value } = e.target;
     const newIngredients = formData.ingredients.map((ing, i) =>
@@ -165,7 +223,6 @@ const ManageRecipes = () => {
     const newSteps = formData.preparationSteps.map((step, i) =>
       i === index ? { ...step, [name]: value } : step
     );
-    // Automatische StepNumber-Anpassung
     const numberedSteps = newSteps.map((step, idx) => ({ ...step, stepNumber: idx + 1 }));
     setFormData(prev => ({ ...prev, preparationSteps: numberedSteps }));
   };
@@ -191,9 +248,43 @@ const ManageRecipes = () => {
     setError(null);
     setSuccessMessage('');
 
-    // Bereinige leere Zutaten/Schritte vor dem Senden, falls nötig
+    let uploadedImageUrl = formData.imageUrl; // Bestehende URL oder leeren String verwenden
+
+    // 1. Bild hochladen, falls ein neues ausgewählt wurde
+    if (selectedFile) {
+      const imageUploadFormData = new FormData();
+      imageUploadFormData.append('file', selectedFile);
+      imageUploadFormData.append('subfolder', 'recipes'); // Optional, um Bilder zu organisieren
+
+      try {
+        // Verwende fetch direkt für FormData, da apiService für JSON konfiguriert ist
+        const uploadResponse = await fetch(`${API_BASE_URL_UPLOADS}/image`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${keycloakInstance.token}`,
+            // 'Content-Type': 'multipart/form-data' WIRD VOM BROWSER GESETZT bei FormData
+          },
+          body: imageUploadFormData,
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json().catch(() => ({ message: uploadResponse.statusText }));
+          throw new Error(errorData.message || `Bild-Upload fehlgeschlagen: ${uploadResponse.status}`);
+        }
+        const uploadResult = await uploadResponse.json();
+        uploadedImageUrl = uploadResult.filePath; // Pfad vom Backend verwenden
+      } catch (uploadError) {
+        setError(`Fehler beim Bild-Upload: ${uploadError.message}`);
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    // 2. Rezeptdaten speichern
     const payload = {
       ...formData,
+      imageUrl: uploadedImageUrl, // Aktualisierte imageUrl
+      benefits: formData.benefits.map(b => b.text).filter(text => text.trim() !== ''), // Nur Text der Benefits senden
       ingredients: formData.ingredients.filter(ing => ing.name.trim() !== ''),
       preparationSteps: formData.preparationSteps.filter(step => step.description.trim() !== ''),
       preparationTimeMinutes: parseInt(formData.preparationTimeMinutes, 10) || 0,
@@ -208,7 +299,12 @@ const ManageRecipes = () => {
       setSuccessMessage(`Rezept erfolgreich ${isCreating ? 'erstellt' : 'aktualisiert'}.`);
       setEditingRecipe(null);
       setIsCreating(false);
-      setFormData(initialRecipeFormState); // Formular zurücksetzen
+      setFormData(initialRecipeFormState);
+      setSelectedFile(null);
+      setImagePreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
       fetchRecipes();
     } catch (err) {
       setError(err.message || `Fehler beim ${isCreating ? 'Erstellen' : 'Aktualisieren'} des Rezepts.`);
@@ -239,10 +335,23 @@ const ManageRecipes = () => {
             <label htmlFor="title">Titel:</label>
             <input type="text" id="title" name="title" value={formData.title} onChange={handleFormChange} required />
           </div>
+
           <div>
-            <label htmlFor="imageUrl">Bild-URL:</label>
-            <input type="text" id="imageUrl" name="imageUrl" value={formData.imageUrl} onChange={handleFormChange} />
+            <label htmlFor="imageUpload">Bild hochladen:</label>
+            <input type="file" id="imageUpload" name="imageUpload" onChange={handleFileChange} accept="image/png, image/jpeg, image/gif, image/webp" ref={fileInputRef} />
+            {imagePreview && (
+              <div className={styles.imagePreviewContainer}>
+                <img src={imagePreview} alt="Rezept Vorschau" style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px' }}/>
+              </div>
+            )}
+            {formData.imageUrl && !selectedFile && !imagePreview && ( // Zeige existierende URL, wenn keine neue Datei ausgewählt
+                 <div className={styles.imagePreviewContainer}>
+                    <p>Aktuelles Bild:</p>
+                    <img src={formData.imageUrl} alt="Aktuelles Rezeptbild" style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px' }}/>
+                </div>
+            )}
           </div>
+
           <div>
             <label htmlFor="previewDescription">Vorschau-Beschreibung (kurz):</label>
             <textarea id="previewDescription" name="previewDescription" value={formData.previewDescription} onChange={handleFormChange}></textarea>
@@ -265,10 +374,23 @@ const ManageRecipes = () => {
               </label>
             ))}
           </div>
-          <div>
-            <label htmlFor="benefits">Vorteile/Wirkung:</label>
-            <textarea id="benefits" name="benefits" value={formData.benefits} onChange={handleFormChange}></textarea>
-          </div>
+
+          <h4>Vorteile/Wirkung</h4>
+          {formData.benefits.map((benefit, index) => (
+            <div key={benefit.id || index} className={styles.formGroupRepeat}>
+              <input
+                type="text"
+                name="benefit_text"
+                placeholder={`Vorteil ${index + 1}`}
+                value={benefit.text}
+                onChange={(e) => handleBenefitChange(index, e)}
+              />
+              <button type="button" onClick={() => removeBenefit(index)} className={styles.removeButton}>-</button>
+            </div>
+          ))}
+          <button type="button" onClick={addBenefit} className={styles.addButton}>Vorteil hinzufügen</button>
+
+
           <div>
             <label htmlFor="preparationTimeMinutes">Zubereitungszeit (Minuten):</label>
             <input type="number" id="preparationTimeMinutes" name="preparationTimeMinutes" value={formData.preparationTimeMinutes} onChange={handleFormChange} min="0" />
@@ -305,19 +427,21 @@ const ManageRecipes = () => {
 
           <div className={styles.formActions}>
             <button type="submit" className={styles.saveButton} disabled={isLoading}>
-              {isLoading ? 'Speichern...' : 'Speichern'}
+              {isLoading ? 'Speichern...' : 'Rezept Speichern'}
             </button>
-            <button type="button" className={styles.cancelButton} onClick={() => { setEditingRecipe(null); setIsCreating(false); setFormData(initialRecipeFormState); }} disabled={isLoading}>
+            <button type="button" className={styles.cancelButton} onClick={() => { setEditingRecipe(null); setIsCreating(false); setFormData(initialRecipeFormState); setSelectedFile(null); setImagePreview(null); if(fileInputRef.current) fileInputRef.current.value = "";}} disabled={isLoading}>
               Abbrechen
             </button>
           </div>
         </form>
       )}
 
-      {(!editingRecipe && !isCreating && recipes.length > 0) && (
+       {/* Tabellenansicht */}
+       {(!editingRecipe && !isCreating && recipes.length > 0) && (
         <table className={styles.adminTable}>
           <thead>
             <tr>
+              <th>Bild</th>
               <th>Titel</th>
               <th>Doshas</th>
               <th>Portionen</th>
@@ -328,6 +452,9 @@ const ManageRecipes = () => {
           <tbody>
             {recipes.map(recipe => (
               <tr key={recipe.id}>
+                <td>
+                  {recipe.imageUrl && <img src={recipe.imageUrl} alt={recipe.title} style={{width: '70px', height: '50px', objectFit: 'cover', borderRadius: '4px'}} onError={(e) => e.target.style.display='none'}/>}
+                </td>
                 <td>{recipe.title}</td>
                 <td>{recipe.doshaTypes?.join(', ') || '-'}</td>
                 <td>{recipe.numberOfPortions || '-'}</td>
