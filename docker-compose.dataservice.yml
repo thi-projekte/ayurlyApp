@@ -39,7 +39,7 @@ services:
 
     # 'expose' macht den Port nur für andere Container in denselben Netzwerken verfügbar
     expose:
-      - "8080" # Der interne Port, auf dem Quarkus standardmäßig lauscht.
+      - "18080" # Der interne Port, auf dem Quarkus standardmäßig lauscht.
     volumes:
       - ayurly_uploads_data:/deployments/uploads # Mapping des Volumes auf den Pfad im Container
     networks:
