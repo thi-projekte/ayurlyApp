@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Navbar from './components/Navigation/Navbar'; // .jsx ist optional beim Import
 import Footer from './components/Footer/Footer';
 import HomePage from './pages/HomePage';
@@ -14,6 +14,9 @@ import { UserProvider } from './contexts/UserContext';
 import AdminRoute from './components/Navigation/AdminRoute';
 import AdminPage from './pages/AdminPage'; 
 import ManageDoshaTypes from './components/Admin/ManageDoshaTypes'; 
+import ManageContentTypes from './components/Admin/ManageContentTypes'; 
+import ManageUnits from './components/Admin/ManageUnits'; 
+// import ManageRecipes from './components/Admin/ManageRecipes'; // Für später
 
 function App() {
   return (
@@ -33,17 +36,24 @@ function App() {
             {/* Ggf. Protected Routes für Seiten wie /account */}
             {/* Ggf. eine Route für Routinen/Challenges, falls noch relevant */}
             {/* Admin Routes */}
-            <Route path="/admin" element={<AdminRoute />}> {/* Geschützte Hauptroute */}
-              {/* <Route index element={<Navigate to="dashboard" replace />} /> Standard-Weiterleitung für /admin */}
-              <Route path="" element={<AdminPage />}> {/* Layout für Admin-Seiten */}
-                <Route path="dashboard" element={<div>Admin Dashboard Platzhalter</div>} />
-                <Route path="content" element={<div>Content Management Platzhalter</div>} />
-                {/* <Route path="content/recipes" element={<ManageRecipes />} /> */}
-                <Route path="lookups" element={<div>Lookup Tabellen Management Platzhalter</div>} />
-                <Route path="lookups/dosha-types" element={<ManageDoshaTypes />} />
-                {/* <Route path="lookups/content-types" element={<ManageContentTypes />} /> */}
-                {/* <Route path="lookups/units" element={<ManageUnits />} /> */}
-                {/* Weitere Admin-Unterrouten */}
+            <Route path="/admin" element={<AdminRoute />}>
+              <Route path="" element={<AdminPage />}> {/* Layout-Route */}
+                <Route index element={<Navigate to="dashboard" replace />} /> {/* Standard für /admin */}
+                <Route path="dashboard" element={<div>Admin Dashboard (Platzhalter)</div>} />
+                
+                {/* Content Management - Hauptseite und Unterrouten */}
+                <Route path="content" element={<div><h2>Content Management</h2><p>Bitte wähle einen Content-Typ zur Verwaltung.</p><Outlet/></div>} >
+                   {/* <Route index element={<Navigate to="recipes" replace />} /> Falls Standard für Content */}
+                   {/* <Route path="recipes" element={<ManageRecipes />} /> */}
+                </Route>
+
+                {/* Lookup Tabellen Management - Hauptseite und Unterrouten */}
+                <Route path="lookups" element={<Outlet/>}> {/* Nur Outlet für Unterrouten */}
+                    <Route index element={<Navigate to="dosha-types" replace />} /> {/* Standard zu Dosha-Typen */}
+                    <Route path="dosha-types" element={<ManageDoshaTypes />} />
+                    <Route path="content-types" element={<ManageContentTypes />} />
+                    <Route path="units" element={<ManageUnits />} />
+                </Route>
               </Route>
             </Route>
             {/* Fallback-Route für nicht gefundene Pfade */}
