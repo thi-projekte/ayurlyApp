@@ -22,12 +22,21 @@ CREATE TABLE recipe_details (
     content_id UUID PRIMARY KEY REFERENCES content_items(id) ON DELETE CASCADE, -- 1:1 Beziehung und Primärschlüssel ist auch Fremdschlüssel
     description TEXT,
     dosha_types VARCHAR(50)[], -- Array von Strings, z.B. {'Vata', 'Pitta'} oder {'Tridoshic'}
-    benefits TEXT,
     preparation_time_minutes INT,
     number_of_portions INT
 );
 
 CREATE INDEX idx_recipe_details_dosha_types ON recipe_details USING GIN (dosha_types);
+
+-- Tabelle für Rezept-Vorteile (1:n Beziehung zu recipe_details)
+CREATE TABLE recipe_benefits (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    recipe_content_id UUID NOT NULL REFERENCES recipe_details(content_id) ON DELETE CASCADE,
+    benefit_text TEXT NOT NULL,
+    sort_order INT DEFAULT 0 -- Für die Reihenfolge der Vorteile
+);
+
+CREATE INDEX idx_recipe_benefits_recipe_content_id ON recipe_benefits(recipe_content_id);
 
 -- Tabelle für Zutaten (1:n Beziehung zu recipe_details)
 CREATE TABLE recipe_ingredients (
@@ -93,6 +102,10 @@ COMMENT ON COLUMN content_items.like_count IS 'Anzahl der Likes für diesen Cont
 COMMENT ON TABLE recipe_details IS 'Speichert die spezifischen Details für Content-Einträge vom Typ RECIPE.';
 COMMENT ON COLUMN recipe_details.content_id IS 'Fremdschlüssel zur content_items Tabelle, identifiziert das zugehörige Rezept.';
 COMMENT ON COLUMN recipe_details.dosha_types IS 'Array der Dosha-Typen, für die das Rezept geeignet ist.';
+
+COMMENT ON TABLE recipe_benefits IS 'Speichert die einzelnen Vorteile/Benefits für Rezepte.';
+COMMENT ON COLUMN recipe_benefits.benefit_text IS 'Der Text des Vorteils.';
+COMMENT ON COLUMN recipe_benefits.sort_order IS 'Definiert die Anzeigereihenfolge der Vorteile.';
 
 COMMENT ON TABLE recipe_ingredients IS 'Speichert die Zutaten für Rezepte. Verweist auf recipe_details.';
 COMMENT ON TABLE recipe_preparation_steps IS 'Speichert die Zubereitungsschritte für Rezepte. Verweist auf recipe_details.';

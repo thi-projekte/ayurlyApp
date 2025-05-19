@@ -1,3 +1,4 @@
+// src/main/java/de/ayurly/app/dataservice/resource/RecipeContentResource.java
 package de.ayurly.app.dataservice.resource;
 
 import java.net.URI;
@@ -9,26 +10,27 @@ import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.media.Content; 
+import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
-import org.eclipse.microprofile.openapi.annotations.tags.Tag; 
-import org.jboss.logging.Logger;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger; // Dein Original-Import
 
 import de.ayurly.app.dataservice.entity.AppUser;
 import de.ayurly.app.dataservice.entity.content.ContentItem;
 import de.ayurly.app.dataservice.entity.content.ContentLike;
+import de.ayurly.app.dataservice.entity.content.recipe.RecipeBenefit; // NEU
 import de.ayurly.app.dataservice.entity.content.recipe.RecipeContent;
 import de.ayurly.app.dataservice.entity.content.recipe.RecipeIngredient;
-import de.ayurly.app.dataservice.entity.content.recipe.RecipePreparationStep; 
+import de.ayurly.app.dataservice.entity.content.recipe.RecipePreparationStep;
 import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
-import jakarta.annotation.security.RolesAllowed; 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject; 
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -52,7 +54,7 @@ public class RecipeContentResource {
 
     private static final Logger LOG = Logger.getLogger(RecipeContentResource.class); 
 
-    @Inject 
+    @Inject
     JsonWebToken jwt;
 
     // --- DTOs (Data Transfer Object)---
@@ -65,7 +67,7 @@ public class RecipeContentResource {
         public static IngredientDto fromEntity(RecipeIngredient entity) {
             if (entity == null) return null;
             IngredientDto dto = new IngredientDto();
-            dto.name = entity.name; 
+            dto.name = entity.name;
             dto.quantity = entity.quantity;
             dto.unit = entity.unit;
             dto.notes = entity.notes;
@@ -102,6 +104,26 @@ public class RecipeContentResource {
         }
     }
 
+    public static class BenefitDto {
+        public String benefitText;
+        public int sortOrder;
+
+        public static BenefitDto fromEntity(RecipeBenefit entity) {
+            if (entity == null) return null;
+            BenefitDto dto = new BenefitDto();
+            dto.benefitText = entity.benefitText;
+            dto.sortOrder = entity.sortOrder;
+            return dto;
+        }
+
+        public RecipeBenefit toEntity() {
+            RecipeBenefit entity = new RecipeBenefit();
+            entity.benefitText = this.benefitText;
+            entity.sortOrder = this.sortOrder;
+            return entity;
+        }
+    }
+
     public static class RecipeContentDto {
         public UUID id;
         public String title;
@@ -109,16 +131,16 @@ public class RecipeContentResource {
         public String previewDescription;
         public String description;
         public String[] doshaTypes;
-        public String benefits;
+        public List<String> benefits; 
         public Integer preparationTimeMinutes;
         public Integer numberOfPortions;
         public List<IngredientDto> ingredients;
         public List<PreparationStepDto> preparationSteps;
         public String contentType;
-        public int likeCount; // NEU
-        public Boolean likedByCurrentUser; // NEU: Wird nur gesetzt, wenn ein User eingeloggt ist
+        public int likeCount; 
+        public Boolean likedByCurrentUser; // Wird nur gesetzt, wenn ein User eingeloggt ist
 
-        public static RecipeContentDto fromEntity(RecipeContent entity, boolean includeDetails, String currentUserId) { // currentUserId NEU
+        public static RecipeContentDto fromEntity(RecipeContent entity, boolean includeDetails, String currentUserId) { 
             if (entity == null) return null;
             RecipeContentDto dto = new RecipeContentDto();
             dto.id = entity.id; // von ContentItem
@@ -131,7 +153,13 @@ public class RecipeContentResource {
             // Spezifische Rezeptdaten
             dto.description = entity.description;
             dto.doshaTypes = entity.doshaTypes;
-            dto.benefits = entity.benefits;
+            if (entity.benefits != null) { 
+                dto.benefits = entity.benefits.stream()
+                                      .map(benefit -> benefit.benefitText)
+                                      .collect(Collectors.toList());
+            } else {
+                dto.benefits = Collections.emptyList();
+            }
             dto.preparationTimeMinutes = entity.preparationTimeMinutes;
             dto.numberOfPortions = entity.numberOfPortions;
 
@@ -142,8 +170,9 @@ public class RecipeContentResource {
                 if (entity.preparationSteps != null) {
                     dto.preparationSteps = entity.preparationSteps.stream().map(PreparationStepDto::fromEntity).collect(Collectors.toList());
                 }
+                // Benefits sind jetzt immer Teil der Haupt-DTO, wenn vorhanden, nicht nur bei includeDetails
             }
-            
+
             // Prüfen, ob der aktuelle User geliked hat
             if (currentUserId != null) {
                 dto.likedByCurrentUser = ContentLike.count("contentItem.id = ?1 AND userId = ?2", entity.id, currentUserId) > 0;
@@ -164,7 +193,7 @@ public class RecipeContentResource {
         // Felder von RecipeDetails
         public String description;
         public String[] doshaTypes;
-        public String benefits;
+        public List<String> benefits; 
         public Integer preparationTimeMinutes;
         public Integer numberOfPortions;
         public List<IngredientDto> ingredients;
@@ -181,7 +210,6 @@ public class RecipeContentResource {
             // RecipeDetails Felder
             recipe.description = this.description;
             recipe.doshaTypes = this.doshaTypes;
-            recipe.benefits = this.benefits;
             recipe.preparationTimeMinutes = this.preparationTimeMinutes;
             recipe.numberOfPortions = this.numberOfPortions;
 
@@ -197,11 +225,19 @@ public class RecipeContentResource {
                     recipe.addPreparationStep(stepEntity);
                 });
             }
+            if (this.benefits != null) { // NEU
+                for (int i = 0; i < this.benefits.size(); i++) {
+                    String benefitText = this.benefits.get(i);
+                    if (benefitText != null && !benefitText.trim().isEmpty()) {
+                        recipe.addBenefit(new RecipeBenefit(benefitText.trim(), i * 10)); // sortOrder basiert auf Index
+                    }
+                }
+            }
             return recipe;
         }
     }
 
-   public static class LikeResponseDto {
+   public static class LikeResponseDto { 
         public UUID contentId;
         public int likeCount;
         public boolean likedByCurrentUser;
@@ -223,7 +259,7 @@ public class RecipeContentResource {
 
     // --- Endpunkte ---
 
-    @GET
+    @GET 
     @PermitAll
     @Operation(summary = "Get all recipes", description = "Retrieves a list of all recipes (as RecipeContent). Optional filter by providing doshaType.")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RecipeContentDto.class, type = org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY)))
@@ -248,7 +284,7 @@ public class RecipeContentResource {
                       .collect(Collectors.toList());
     }
 
-    @GET
+    @GET 
     @Path("/personalized")
     @Authenticated // Nur für eingeloggte User
     @Operation(summary = "Get personalized recipes for current user", description = "Retrieves recipes matching the current user's dosha type. Also includes Tridoshic recipes.")
@@ -279,15 +315,15 @@ public class RecipeContentResource {
         // Das `dosha_types` Feld ist ein Array.
         String query = "SELECT rc FROM RecipeContent rc WHERE (:userDosha = ANY(rc.doshaTypes) OR 'Tridoshic' = ANY(rc.doshaTypes)) ORDER BY rc.title";
         List<RecipeContent> recipes = RecipeContent.find(query, Parameters.with("userDosha", userDosha)).list();
-        
+
         String currentUserIdForLikeCheck = getCurrentUserIdOptional();
         List<RecipeContentDto> recipeDtos = recipes.stream()
-                                           .map(recipe -> RecipeContentDto.fromEntity(recipe, false, currentUserIdForLikeCheck)) 
+                                           .map(recipe -> RecipeContentDto.fromEntity(recipe, false, currentUserIdForLikeCheck))
                                            .collect(Collectors.toList());
         return Response.ok(recipeDtos).build();
     }
 
-    @GET
+    @GET 
     @Path("/{id}")
     @PermitAll
     @Operation(summary = "Get a recipe by ID", description = "Retrieves a single recipe (as RecipeContent) by its UUID.")
@@ -296,14 +332,14 @@ public class RecipeContentResource {
     public Response getRecipeById(@PathParam("id") UUID id) {
         // Finde ein ContentItem und prüfe, ob es ein RecipeContent ist
         Optional<RecipeContent> recipeOpt = RecipeContent.findByIdOptional(id);
-        String currentUserId = getCurrentUserIdOptional(); 
+        String currentUserId = getCurrentUserIdOptional();
 
         return recipeOpt
-            .map(recipe -> Response.ok(RecipeContentDto.fromEntity(recipe, true, currentUserId)).build())
+            .map(recipe -> Response.ok(RecipeContentDto.fromEntity(recipe, true, currentUserId)).build()) // includeDetails auf true setzen
             .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).entity("Recipe not found or content item is not a recipe.").build());
     }
 
-    @POST
+    @POST 
     @RolesAllowed("admin")
     @Transactional
     @Operation(summary = "Create a new recipe", description = "Creates a new recipe (as RecipeContent). Requires 'admin' role.")
@@ -318,7 +354,7 @@ public class RecipeContentResource {
         return Response.created(URI.create("/api/recipes/" + recipe.id)).entity(responseDto).build();
     }
 
-    @PUT
+    @PUT 
     @Path("/{id}")
     @RolesAllowed("admin")
     @Transactional
@@ -340,24 +376,33 @@ public class RecipeContentResource {
          // Update RecipeDetails fields
         existingRecipe.description = recipeDto.description;
         existingRecipe.doshaTypes = recipeDto.doshaTypes;
-        existingRecipe.benefits = recipeDto.benefits;
         existingRecipe.preparationTimeMinutes = recipeDto.preparationTimeMinutes;
         existingRecipe.numberOfPortions = recipeDto.numberOfPortions;
 
         // Update ingredients
-        existingRecipe.ingredients.clear();
-        RecipeContent.flush();
+        existingRecipe.ingredients.clear(); // Bestehende löschen
+        // RecipeContent.flush(); // Flush ist hier nicht unbedingt nötig, Panache macht das am Transaktionsende
         if (recipeDto.ingredients != null) {
             recipeDto.ingredients.forEach(ingDto -> existingRecipe.addIngredient(ingDto.toEntity()));
         }
 
         // Update preparation steps
-        existingRecipe.preparationSteps.clear();
-        RecipeContent.flush();
+        existingRecipe.preparationSteps.clear(); // Bestehende löschen
         if (recipeDto.preparationSteps != null) {
             recipeDto.preparationSteps.forEach(stepDto -> existingRecipe.addPreparationStep(stepDto.toEntity()));
         }
-        
+
+        // Update benefits
+        existingRecipe.benefits.clear(); // Bestehende löschen
+        if (recipeDto.benefits != null) {
+            for (int i = 0; i < recipeDto.benefits.size(); i++) {
+                String benefitText = recipeDto.benefits.get(i);
+                if (benefitText != null && !benefitText.trim().isEmpty()) {
+                     existingRecipe.addBenefit(new RecipeBenefit(benefitText.trim(), i * 10));
+                }
+            }
+        }
+
         // Panache managed die Persistierung der Änderungen am Ende der Transaktion
         // existingRecipe.persist(); // ist nicht nötig, da die Entität "managed" ist
 
@@ -365,7 +410,7 @@ public class RecipeContentResource {
         return Response.ok(responseDto).build();
     }
 
-    @DELETE
+    @DELETE 
     @Path("/{id}")
     @RolesAllowed("admin")
     @Transactional
@@ -386,7 +431,7 @@ public class RecipeContentResource {
 
     // --- LIKE Endpunkte ---
 
-    @POST
+    @POST 
     @Path("/{id}/like")
     @Authenticated // Jeder authentifizierte User kann liken
     @Transactional
@@ -420,12 +465,12 @@ public class RecipeContentResource {
         } else {
             LOG.infof("User %s already liked content item %s. No action taken.", userId, contentId);
         }
-        
+
         LikeResponseDto response = new LikeResponseDto(contentId, item.likeCount, true);
         return Response.ok(response).build();
     }
 
-    @POST // Oder DELETE, je nach Präferenz für "unlike"
+    @POST // Oder DELETE, je nach Präferenz für "unlike" 
     @Path("/{id}/unlike")
     @Authenticated // Jeder authentifizierte User kann entliken
     @Transactional
@@ -456,7 +501,7 @@ public class RecipeContentResource {
         } else {
              LOG.infof("User %s had not liked content item %s, or like already removed. No action taken.", userId, contentId);
         }
-        
+
         LikeResponseDto response = new LikeResponseDto(contentId, item.likeCount, false);
         return Response.ok(response).build();
     }

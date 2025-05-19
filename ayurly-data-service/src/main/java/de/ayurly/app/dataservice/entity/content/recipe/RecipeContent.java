@@ -1,12 +1,21 @@
 package de.ayurly.app.dataservice.entity.content.recipe;
 
-import de.ayurly.app.dataservice.entity.content.ContentItem;
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.ayurly.app.dataservice.entity.content.ContentItem;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "recipe_details")
@@ -21,9 +30,6 @@ public class RecipeContent extends ContentItem {
     @Column(name = "dosha_types", columnDefinition = "varchar(50)[]")
     public String[] doshaTypes;
 
-    @Column(columnDefinition = "TEXT")
-    public String benefits;
-
     @Column(name = "preparation_time_minutes")
     public Integer preparationTimeMinutes;
 
@@ -37,6 +43,10 @@ public class RecipeContent extends ContentItem {
     @OneToMany(mappedBy = "recipeContent", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("stepNumber ASC")
     public List<RecipePreparationStep> preparationSteps = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipeContent", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OrderBy("sortOrder ASC, benefitText ASC") // Sortierung nach sortOrder, dann Text
+    public List<RecipeBenefit> benefits = new ArrayList<>();
 
     public void addIngredient(RecipeIngredient ingredient) {
         ingredients.add(ingredient);
@@ -56,5 +66,15 @@ public class RecipeContent extends ContentItem {
     public void removePreparationStep(RecipePreparationStep step) {
         preparationSteps.remove(step);
         step.recipeContent = null;
+    }
+
+    public void addBenefit(RecipeBenefit benefit) {
+        benefits.add(benefit);
+        benefit.recipeContent = this;
+    }
+
+    public void removeBenefit(RecipeBenefit benefit) {
+        benefits.remove(benefit);
+        benefit.recipeContent = null;
     }
 }
