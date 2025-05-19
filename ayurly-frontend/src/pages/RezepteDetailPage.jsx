@@ -124,7 +124,8 @@ const RezepteDetailPage = () => {
                 className={`${styles.likeButton} ${recipe.likedByCurrentUser ? styles.liked : ''}`}
                 aria-label={recipe.likedByCurrentUser ? "Unlike this recipe" : "Like this recipe"}
               >
-                <i className={`fi fi-${recipe.likedByCurrentUser ? 'ss' : 'rr'}-heart`}></i> {/* Solid vs Regular Heart */}
+                {/*<i className={`fi fi-${recipe.likedByCurrentUser ? 'ss' : 'rr'}-heart`}></i>  Solid vs Regular Heart */}
+                <i className={`fi fi-${recipe.likedByCurrentUser ? 'ss' : 'rr'}-thumbs-up`}></i>
                 <span className={styles.likeCount}>{recipe.likeCount}</span>
               </button>
             </div>
@@ -144,7 +145,6 @@ const RezepteDetailPage = () => {
                 <ul className={styles.benefitsList}>
                   {benefitsList.map((benefit, index) => (
                     <li key={index}>
-                      <span className={styles.benefitIcon}>{benefitIcons[index % benefitIcons.length]}</span>
                       {benefit}
                     </li>
                   ))}
