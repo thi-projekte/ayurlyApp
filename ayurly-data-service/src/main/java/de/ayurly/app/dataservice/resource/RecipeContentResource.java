@@ -2,6 +2,7 @@
 package de.ayurly.app.dataservice.resource;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +16,12 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.jboss.logging.Logger; // Dein Original-Import
+import org.jboss.logging.Logger; 
 
 import de.ayurly.app.dataservice.entity.AppUser;
 import de.ayurly.app.dataservice.entity.content.ContentItem;
 import de.ayurly.app.dataservice.entity.content.ContentLike;
-import de.ayurly.app.dataservice.entity.content.recipe.RecipeBenefit; // NEU
+import de.ayurly.app.dataservice.entity.content.recipe.RecipeBenefit; 
 import de.ayurly.app.dataservice.entity.content.recipe.RecipeContent;
 import de.ayurly.app.dataservice.entity.content.recipe.RecipeIngredient;
 import de.ayurly.app.dataservice.entity.content.recipe.RecipePreparationStep;
@@ -31,6 +32,7 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -56,6 +58,9 @@ public class RecipeContentResource {
 
     @Inject
     JsonWebToken jwt;
+
+    @Inject
+    EntityManager entityManager;
 
     // --- DTOs (Data Transfer Object)---
     public static class IngredientDto {
@@ -363,61 +368,75 @@ public class RecipeContentResource {
     @APIResponse(responseCode = "404", description = "Recipe not found")
     @SecurityRequirement(name = "jwtAuth")
     public Response updateRecipe(@PathParam("id") UUID id, @Valid RecipeContentCreateUpdateDto recipeDto) {
-    Optional<RecipeContent> existingRecipeOpt = RecipeContent.findByIdOptional(id);
-    if (existingRecipeOpt.isEmpty()) {
-        return Response.status(Response.Status.NOT_FOUND).entity("Recipe not found.").build();
-    }
+        Optional<RecipeContent> existingRecipeOpt = RecipeContent.findByIdOptional(id);
+        if (existingRecipeOpt.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Recipe not found or content item is not a recipe.").build();
+        }
 
-    RecipeContent existingRecipe = existingRecipeOpt.get();
-    existingRecipe.title = recipeDto.title;
-    existingRecipe.imageUrl = recipeDto.imageUrl;
-    existingRecipe.previewDescription = recipeDto.previewDescription;
-    existingRecipe.description = recipeDto.description;
-    existingRecipe.doshaTypes = recipeDto.doshaTypes;
-    existingRecipe.preparationTimeMinutes = recipeDto.preparationTimeMinutes;
-    existingRecipe.numberOfPortions = recipeDto.numberOfPortions;
+        RecipeContent existingRecipe = existingRecipeOpt.get();
+        // Update ContentItem fields
+        existingRecipe.title = recipeDto.title;
+        existingRecipe.imageUrl = recipeDto.imageUrl;
+        existingRecipe.previewDescription = recipeDto.previewDescription;
+         // Update RecipeDetails fields
+        existingRecipe.description = recipeDto.description;
+        existingRecipe.doshaTypes = recipeDto.doshaTypes;
+        existingRecipe.preparationTimeMinutes = recipeDto.preparationTimeMinutes;
+        existingRecipe.numberOfPortions = recipeDto.numberOfPortions;
 
-    // Vorhandene Collections leeren und neue Elemente hinzufügen
-    // Hibernate sollte dank orphanRemoval=true und CascadeType.ALL die alten Elemente löschen
-    // und die neuen hinzufügen/updaten.
+        // Zutaten aktualisieren
+        // Alte Zutaten entfernen
+        for (RecipeIngredient ingredient : new ArrayList<>(existingRecipe.ingredients)) {
+            existingRecipe.removeIngredient(ingredient); // Stellt sicher, dass die Beziehung aufgehoben wird
+        }
+        entityManager.flush(); 
 
-    // Zutaten aktualisieren
-    existingRecipe.ingredients.clear();
-    if (recipeDto.ingredients != null) {
-        recipeDto.ingredients.forEach(ingDto -> {
-            RecipeIngredient newIngredient = ingDto.toEntity();
-            existingRecipe.addIngredient(newIngredient); // Stellt sicher, dass die Beziehung korrekt gesetzt wird
-        });
-    }
-
-    // Zubereitungsschritte aktualisieren
-    existingRecipe.preparationSteps.clear();
-    if (recipeDto.preparationSteps != null) {
-        recipeDto.preparationSteps.forEach(stepDto -> {
-            RecipePreparationStep newStep = stepDto.toEntity();
-            existingRecipe.addPreparationStep(newStep); // Stellt sicher, dass die Beziehung korrekt gesetzt wird
-        });
-    }
-
-    // Benefits aktualisieren
-    existingRecipe.benefits.clear();
-    if (recipeDto.benefits != null) {
-        for (int i = 0; i < recipeDto.benefits.size(); i++) {
-            String benefitText = recipeDto.benefits.get(i);
-            if (benefitText != null && !benefitText.trim().isEmpty()) {
-                RecipeBenefit newBenefit = new RecipeBenefit(benefitText.trim(), i * 10);
-                existingRecipe.addBenefit(newBenefit); // Stellt sicher, dass die Beziehung korrekt gesetzt wird
+        // Neue Zutaten hinzufügen
+        if (recipeDto.ingredients != null) {
+            for (IngredientDto ingDto : recipeDto.ingredients) {
+                RecipeIngredient newIngredient = ingDto.toEntity();
+                existingRecipe.addIngredient(newIngredient);
             }
         }
+
+        // Zubereitungsschritte aktualisieren
+        // Alte Schritte entfernen
+        for (RecipePreparationStep step : new ArrayList<>(existingRecipe.preparationSteps)) {
+            existingRecipe.removePreparationStep(step);
+        }
+        entityManager.flush(); 
+
+        // Neue Schritte hinzufügen
+        if (recipeDto.preparationSteps != null) {
+            for (PreparationStepDto stepDto : recipeDto.preparationSteps) {
+                RecipePreparationStep newStep = stepDto.toEntity();
+                existingRecipe.addPreparationStep(newStep);
+            }
+        }
+
+        // Benefits aktualisieren
+        // Alte Benefits entfernen
+        for (RecipeBenefit benefit : new ArrayList<>(existingRecipe.benefits)) {
+            existingRecipe.removeBenefit(benefit);
+        }
+        entityManager.flush(); 
+
+        // Neue Benefits hinzufügen
+        if (recipeDto.benefits != null) {
+            for (int i = 0; i < recipeDto.benefits.size(); i++) {
+                String benefitText = recipeDto.benefits.get(i);
+                if (benefitText != null && !benefitText.trim().isEmpty()) {
+                     existingRecipe.addBenefit(new RecipeBenefit(benefitText.trim(), i * 10));
+                }
+            }
+        }
+        
+        // Panache managed die Persistierung der Änderungen am Ende der Transaktion
+        // Ein explizites persist() auf existingRecipe ist nicht nötig, da es eine managed entity ist.
+
+        RecipeContentDto responseDto = RecipeContentDto.fromEntity(existingRecipe, true, getCurrentUserIdOptional());
+        return Response.ok(responseDto).build();
     }
-
-    // Ein expliziter Flush ist hier normalerweise nicht nötig, da Panache/Hibernate dies am Ende der Transaktion managed.
-    // entity.flush() oder entityManager.flush() 
-    // Panache.getEntityManager().flush(); 
-
-    RecipeContentDto responseDto = RecipeContentDto.fromEntity(existingRecipe, true, getCurrentUserIdOptional());
-    return Response.ok(responseDto).build();
-}
 
     @DELETE 
     @Path("/{id}")
