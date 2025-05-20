@@ -2,12 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; // Für Links im Footer-Bereich
 import Modal from '../components/UI/Modal';
 import '../styles/indexStyles.css'; // Deine Styles für die Homepage
+import { useUser } from '../contexts/UserContext';
 
 const HomePage = () => {
-  const [username, setUsername] = useState('Username'); // Später dynamisch
+  const { isLoggedIn, userProfile, loadingKeycloak } = useUser(); // User-Infos aus dem Context
+  const [welcomeMessage, setWelcomeMessage] = useState('Willkommen bei Ayurly'); // Default
   const [showVataModal, setShowVataModal] = useState(false);
   const [showPittaModal, setShowPittaModal] = useState(false);
   const [showKaphaModal, setShowKaphaModal] = useState(false);
+
+  // Willkommensnachricht aktualisieren
+  useEffect(() => {
+    if (!loadingKeycloak) { // Erst handeln, wenn Keycloak-Initialisierung abgeschlossen ist
+      if (isLoggedIn && userProfile) {
+        // userProfile.firstName kommt aus dem Keycloak Token oder der /me Antwort
+        const firstName = userProfile.firstName || userProfile.username || 'Nutzer'; 
+        setWelcomeMessage(`Willkommen, ${firstName}`);
+      } else {
+        setWelcomeMessage('Willkommen bei Ayurly'); // Für nicht eingeloggte User
+      }
+    }
+  }, [isLoggedIn, userProfile, loadingKeycloak]); //sobald loadingKeyCloak abgeschlossen wurde...
 
   // Parallax-Effekt
   useEffect(() => {
@@ -20,7 +35,7 @@ const HomePage = () => {
       const hill5 = document.getElementById('hill5');
       // const parallaxSection = document.querySelector(".parallax");
 
-      // Begrenzung des Scroll-Wertes (aus deinem Original-Skript)
+      // Begrenzung des Scroll-Wertes 
       // const maxScroll = parallaxSection ? parallaxSection.offsetHeight : Infinity;
       // if (value > maxScroll) { // Diese Logik muss ggf. angepasst werden, da `value` hier nur eine Kopie ist
       //   value = maxScroll;
@@ -69,7 +84,8 @@ const HomePage = () => {
         <img src="/img/index/hill4.png" alt="" id="hill4" />
         <img src="/img/index/hill5.png" alt="" id="hill5" />
         <img src="/img/index/tree.png" alt="" id="tree" />
-        <h2 id="punch">&#128075; Willkommen, {username}</h2>
+        {/* Dynamische Willkommensnachricht */}
+        <h2 id="punch">&#128075; {welcomeMessage}</h2> 
         <img src="/img/index/leaf.png" alt="" id="leaf" />
         <img src="/img/index/plant.png" alt="" id="plant" />
       </section>
