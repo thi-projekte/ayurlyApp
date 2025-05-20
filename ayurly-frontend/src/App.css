@@ -19,7 +19,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center; /* Zentriert Seiteninhalte horizontal */
-  padding: 20px;      /* Etwas Abstand für alle Seiten */
+  padding: 0;      /* Etwas Abstand für alle Seiten */
   min-height: calc(100vh - 200px); /* Beispiel: Volle Höhe minus Navbar & Footer Höhe */
                                   /* Dies muss an die tatsächliche Höhe angepasst werden */
 }
