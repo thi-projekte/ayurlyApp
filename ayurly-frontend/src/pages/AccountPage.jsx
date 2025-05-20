@@ -15,10 +15,19 @@ const AccountPage = () => {
   
 
   useEffect(() => {
-    // Verwende den Dosha-Typ aus dem Context. Fallback, falls er null/undefined ist.
-    // Der contextDoshaType ist bereits der Wert, der entweder vom Backend kommt oder aus 'doshaTypeContextual'
-    const currentEffectiveDosha = contextDoshaType || "Unbekannt"; // Fallback zu Unbekannt, falls kein Dosha bekannt oder initial null
-    const capitalizedDosha = currentEffectiveDosha.charAt(0).toUpperCase() + currentEffectiveDosha.slice(1).toLowerCase();
+    const currentEffectiveDosha = contextDoshaType || null; // Bleibe bei null, wenn nicht bekannt
+    
+    // Setze, ob initial ein Dosha bekannt war (also nicht null oder "Unbekannt" vom Context)
+    // Dieser State hilft uns, den Link-Text korrekt zu setzen.
+    if (contextDoshaType && contextDoshaType !== "Unbekannt") {
+        setIsInitialDoshaKnown(true);
+    } else {
+        setIsInitialDoshaKnown(false);
+    }
+
+    const capitalizedDosha = currentEffectiveDosha 
+        ? currentEffectiveDosha.charAt(0).toUpperCase() + currentEffectiveDosha.slice(1).toLowerCase()
+        : "Unbekannt"; // Fallback direkt hier
     setUserDosha(capitalizedDosha);
 
     let description = "";
@@ -122,13 +131,7 @@ const AccountPage = () => {
 
   const getDoshaSpecificRoutines = () => {
     if (!userDosha || userDosha === "Unbekannt" || checkboxes.length === 0) {
-        if (userDosha === "Unbekannt") {
-            return (
-                <div className={styles.routineCard}>
-                    <p>Dein Dosha-Typ wurde noch nicht bestimmt. <Link to="/dosha-test" className={styles.callToActionLink}>Mache jetzt den Test!</Link></p>
-                </div>
-            );
-        }
+        // Die Nachricht für unbekanntes Dosha wird jetzt weiter unten globaler behandelt
         return null;
     }
     return (
@@ -156,7 +159,10 @@ const AccountPage = () => {
           {doshaIcon && <span className={styles.doshaIcon}>{doshaIcon}</span>}
           <div>
             <p><strong>{userDosha}</strong> – {doshaDescription}</p>
-            <Link to="/dosha-test" className={styles.retakeLink}>Dosha-Test erneut machen</Link>
+            {/* Link-Text dynamisch anpassen */}
+            <Link to="/dosha-test" className={styles.retakeLink}>
+              {isInitialDoshaKnown ? "Dosha-Test erneut machen" : "Dosha-Test machen"}
+            </Link>
           </div>
         </div>
       </section>
@@ -170,7 +176,6 @@ const AccountPage = () => {
         </section>
       )}
 
-      {/* Nur anzeigen, wenn Dosha bekannt ist */}
       {userDosha !== "Unbekannt" && checkboxes.length > 0 && (
         <section>
             <div className={styles.dashboardContainer}>
@@ -193,9 +198,9 @@ const AccountPage = () => {
             </div>
         </section>
       )}
-      {/* Fallback-Nachricht, wenn Dosha unbekannt ist und keine Routinen angezeigt werden */}
+      
       {userDosha === "Unbekannt" && (
-           <section className={styles.tagesroutineVorschlag}>
+           <section className={styles.tagesroutineVorschlag} style={{ marginTop: '30px' }}> {/* Fügt etwas Abstand hinzu, wenn kein Tipp da ist */}
              <div className={styles.routineCard}>
                 <p>Mache den <Link to="/dosha-test" className={styles.callToActionLink}>Dosha-Test</Link>, um deine personalisierten Routinen und Tipps zu sehen!</p>
              </div>

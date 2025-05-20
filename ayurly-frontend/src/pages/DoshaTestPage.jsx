@@ -116,7 +116,7 @@ const DoshaTestPage = () => {
         setCurrentQuestionIndex(prevIndex => prevIndex + 1);
     } else {
         // Letzte Frage beantwortet
-        calculateResult(updatedCounts); // Ergebnis berechnen
+        calculateAndSetResult(updatedCounts); // Ergebnis berechnen
 
         // Ergebnisansicht nach kleiner Verzögerung aktivieren
         setTimeout(() => {
