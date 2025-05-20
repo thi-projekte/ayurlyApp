@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // Für Links zu Detailseiten
 import styles from './RezeptePage.module.css';
+import { useUser } from '../contexts/UserContext';
 
 // Dummy-Rezeptdaten (später durch API-Aufruf ersetzen)
 const dummyRecipes = [
@@ -44,15 +45,26 @@ const dummyRecipes = [
 
 
 const RezeptePage = () => {
+  const { doshaType: contextDoshaType, loadingKeycloak } = useUser(); // Hol den Dosha-Typ und Ladezustand aus dem Context
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
+  // SelectedDosha wird nun initial vom Context oder 'all' gesetzt, wenn Context noch lädt oder kein Dosha bekannt
   const [selectedDosha, setSelectedDosha] = useState('all'); // 'all', 'vata', 'pitta', 'kapha'
+  
+  // Effekt, um selectedDosha zu setzen, sobald der contextDoshaType verfügbar ist
+  useEffect(() => {
+    if (!loadingKeycloak && contextDoshaType) {
+      setSelectedDosha(contextDoshaType.toLowerCase());
+    } else if (!loadingKeycloak && !contextDoshaType) {
+      setSelectedDosha('all'); // Fallback, wenn kein Dosha bekannt
+    }
+    // Wenn loadingKeycloak true ist, bleibt der Default 'all' vorerst
+  }, [contextDoshaType, loadingKeycloak]);
 
   // Lade Rezepte (hier Dummy-Daten, später API)
   useEffect(() => {
     // TODO: Hier API-Aufruf implementieren, um Rezepte zu laden
     setRecipes(dummyRecipes);
-    setFilteredRecipes(dummyRecipes); // Initial alle Rezepte anzeigen
   }, []);
 
   // Filter Rezepte, wenn sich selectedDosha oder die Haupt-Rezeptliste ändert
@@ -69,6 +81,12 @@ const RezeptePage = () => {
   const handleDoshaChange = (event) => {
     setSelectedDosha(event.target.value);
   };
+
+  // Wenn der Context noch lädt, könnte man einen Ladezustand anzeigen oder einfach 'all' beibehalten
+  if (loadingKeycloak && selectedDosha === 'all' && !contextDoshaType) {
+     // Optional: Zeige eine Ladeanzeige, bis der DoshaTyp vom Context geladen ist
+     // console.log("RezeptePage: Warte auf UserContext Initialisierung für Dosha-Filter...");
+  }
 
   return (
     <div className={styles.mainContent}> {/* Wrapper für Hauptinhalt */}
