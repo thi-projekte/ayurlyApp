@@ -12,6 +12,7 @@ const AccountPage = () => {
   const [checkboxes, setCheckboxes] = useState([]);
   const [progressPercent, setProgressPercent] = useState(0);
   const [progressSuccessMessage, setProgressSuccessMessage] = useState('');
+  const [isInitialDoshaKnown, setIsInitialDoshaKnown] = useState(false);
   
 
   useEffect(() => {
