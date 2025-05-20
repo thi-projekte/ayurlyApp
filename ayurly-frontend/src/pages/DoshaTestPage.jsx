@@ -2,6 +2,7 @@
 import React, { useState } from 'react'; // useEffect nicht mehr benötigt für diese Logik
 import { useNavigate } from 'react-router-dom';
 import styles from './DoshaTestPage.module.css';
+import { useUser } from '../contexts/UserContext';
 
 const questions = [
     {
@@ -68,11 +69,12 @@ const DoshaTestPage = () => {
   const [showResult, setShowResult] = useState(false);
   const [resultText, setResultText] = useState('');
   const navigate = useNavigate();
+  const { updateUserDosha } = useUser();
 
   const progressPercent = questions.length > 0 ? Math.round(((currentQuestionIndex) / questions.length) * 100) : 0;
 
   // Ergebnisberechnung ausgelagert
-  const calculateResult = (finalCounts) => {
+  const calculateAndSetResult = async (finalCounts) => {
       const sortedDoshas = Object.entries(finalCounts).sort(([, a], [, b]) => b - a);
 
       if (sortedDoshas.length === 0 || sortedDoshas[0][1] === 0) {
@@ -90,7 +92,14 @@ const DoshaTestPage = () => {
           default: text = "Ergebnis konnte nicht ermittelt werden.";
       }
       setResultText(text);
-      localStorage.setItem("selectedDosha", maxDosha);
+      // Den ermittelten Dosha-Typ über den Context aktualisieren
+      try {
+        await updateUserDosha(maxDosha); // Ruft die Funktion aus dem UserContext auf
+        console.log(`Dosha-Test: Ergebnis '${maxDosha}' an UserContext übergeben.`);
+      } catch (error) {
+        console.error("Dosha-Test: Fehler beim Aktualisieren des Dosha-Typs über Context:", error);
+        // Hier könnte eine Fehlermeldung für den Benutzer angezeigt werden
+      }
   };
 
 

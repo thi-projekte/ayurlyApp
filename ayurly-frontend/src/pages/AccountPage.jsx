@@ -1,20 +1,24 @@
-// src/pages/AccountPage.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import styles from './AccountPage.module.css'; // Geänderter Import
+import styles from './AccountPage.module.css'; 
+import { useUser } from '../contexts/UserContext';
 
 const AccountPage = () => {
-  const [userDosha, setUserDosha] = useState('Pitta');
+  const { doshaType: contextDoshaType } = useUser(); // Dosha-Typ aus dem Context holen
+  const [userDosha, setUserDosha] = useState('Unbekannt'); // Initialer Fallback
   const [doshaDescription, setDoshaDescription] = useState('');
   const [doshaIcon, setDoshaIcon] = useState('');
   const [routineTipp, setRoutineTipp] = useState('');
   const [checkboxes, setCheckboxes] = useState([]);
   const [progressPercent, setProgressPercent] = useState(0);
   const [progressSuccessMessage, setProgressSuccessMessage] = useState('');
+  
 
   useEffect(() => {
-    const storedDosha = localStorage.getItem("selectedDosha") || "Pitta";
-    const capitalizedDosha = storedDosha.charAt(0).toUpperCase() + storedDosha.slice(1).toLowerCase();
+    // Verwende den Dosha-Typ aus dem Context. Fallback, falls er null/undefined ist.
+    // Der contextDoshaType ist bereits der Wert, der entweder vom Backend kommt oder aus 'doshaTypeContextual'
+    const currentEffectiveDosha = contextDoshaType || "Unbekannt"; // Fallback zu Unbekannt, falls kein Dosha bekannt oder initial null
+    const capitalizedDosha = currentEffectiveDosha.charAt(0).toUpperCase() + currentEffectiveDosha.slice(1).toLowerCase();
     setUserDosha(capitalizedDosha);
 
     let description = "";
@@ -49,7 +53,7 @@ const AccountPage = () => {
           { id: 'kapha6', label: 'Vermeidung von schweren Speisen' },
         ];
         break;
-      default: // Pitta
+      case "Pitta":
         description = "zielstrebig, energiegeladen, manchmal hitzköpfig.";
         icon = "🔥";
         tipp = "<strong>Pitta-Ausgleich:</strong> Starte deinen Tag mit einer kühlenden Atemübung wie <em>Sheetali Pranayama</em> und trinke warmes Wasser mit frischer Minze.";
@@ -62,17 +66,35 @@ const AccountPage = () => {
           { id: 'pitta6', label: 'Vermeidung von scharfen Gewürzen' },
         ];
         break;
+      default: // Für den Fall "Unbekannt" oder wenn contextDoshaType initial null/undefined war und der Fallback nicht zutrifft
+        description = "noch nicht bestimmt. Mache den Dosha-Test!";
+        icon = "❔";
+        tipp = "Mache unseren Dosha-Test, um personalisierte Tipps zu erhalten.";
+        currentRoutinesConfig = [];
+        setUserDosha("Unbekannt"); // Stelle sicher, dass userDosha auf "Unbekannt" gesetzt wird
+        break;
     }
     setDoshaDescription(description);
     setDoshaIcon(icon);
     setRoutineTipp(tipp);
 
-    const initialCheckboxes = currentRoutinesConfig.map((routine, index) => {
-      const savedState = localStorage.getItem(`routine-${capitalizedDosha}-${index}`);
-      return { ...routine, checked: savedState === "true" };
-    });
-    setCheckboxes(initialCheckboxes);
-  }, []);
+    // Lade den Speicherstatus der Checkboxen basierend auf dem *effektiven* userDosha
+    // Stelle sicher, dass `capitalizedDosha` hier den korrekten Wert hat (Vata, Pitta, Kapha, oder der Fallback)
+    const storageRelevantDosha = (capitalizedDosha === "Unbekannt" || !currentRoutinesConfig.length) ? "" : capitalizedDosha;
+
+    if (storageRelevantDosha) {
+        const initialCheckboxes = currentRoutinesConfig.map((routine, index) => {
+            const storageKey = `routine-${storageRelevantDosha}-${index}`;
+            const savedState = localStorage.getItem(storageKey);
+            return { ...routine, checked: savedState === "true" };
+        });
+        setCheckboxes(initialCheckboxes);
+    } else {
+        setCheckboxes([]); // Keine Routinen für "Unbekannt"
+    }
+
+
+  }, [contextDoshaType]); // Abhängigkeit vom contextDoshaType
 
   useEffect(() => {
     if (checkboxes.length === 0) {
@@ -92,17 +114,28 @@ const AccountPage = () => {
       i === index ? { ...cb, checked: !cb.checked } : cb
     );
     setCheckboxes(updatedCheckboxes);
-    localStorage.setItem(`routine-${userDosha}-${index}`, updatedCheckboxes[index].checked.toString());
+    // Speichere den Status mit dem aktuellen userDosha (der bereits kapitalisiert ist)
+    if (userDosha && userDosha !== "Unbekannt") {
+        localStorage.setItem(`routine-${userDosha}-${index}`, updatedCheckboxes[index].checked.toString());
+    }
   };
 
   const getDoshaSpecificRoutines = () => {
-    if (!userDosha || checkboxes.length === 0) return null;
-    // Hier verwenden wir Klassen aus styles-Objekt
+    if (!userDosha || userDosha === "Unbekannt" || checkboxes.length === 0) {
+        if (userDosha === "Unbekannt") {
+            return (
+                <div className={styles.routineCard}>
+                    <p>Dein Dosha-Typ wurde noch nicht bestimmt. <Link to="/dosha-test" className={styles.callToActionLink}>Mache jetzt den Test!</Link></p>
+                </div>
+            );
+        }
+        return null;
+    }
     return (
       <div className={styles.routineCard} data-dosha={userDosha}>
         <h3>{doshaIcon} {userDosha}</h3>
         {checkboxes.map((routine, index) => (
-          <label key={routine.id} className={styles.checkboxLabel}> {/* Beispiel für eine neue spezifische Klasse */}
+          <label key={routine.id} className={styles.checkboxLabel}>
             <input
               type="checkbox"
               checked={routine.checked}
@@ -116,8 +149,6 @@ const AccountPage = () => {
   };
 
   return (
-    // Verwende Klassennamen aus dem importierten 'styles'-Objekt
-    // Bindeestrich-Klassen werden zu CamelCase (styles.doshaStatus) oder mit Klammern (styles['dosha-status'])
     <div className={styles.accountPageContainer}>
       <section className={styles.doshaStatus}>
         <h2>Dein aktueller Dosha-Typ</h2>
@@ -130,36 +161,46 @@ const AccountPage = () => {
         </div>
       </section>
 
-      <section className={styles.tagesroutineVorschlag}>
-        <h2>Dein Tagesroutine-Tipp</h2>
-        <div className={styles.routineCard}>
-            <p dangerouslySetInnerHTML={{ __html: routineTipp }}></p>
-        </div>
-      </section>
-
-      <section>
-        <div className={styles.dashboardContainer}>
-          <div className={styles.progressSection}>
-            <h3 style={{ textAlign: 'center' }}>Tagesfortschritt</h3>
-            <div className={styles.progressContainer}>
-              <div className={styles.progressBar} style={{ width: `${progressPercent}%` }}>
-                {progressPercent}%
-              </div>
+      {userDosha !== "Unbekannt" && (
+        <section className={styles.tagesroutineVorschlag}>
+            <h2>Dein Tagesroutine-Tipp</h2>
+            <div className={styles.routineCard}>
+                <p dangerouslySetInnerHTML={{ __html: routineTipp }}></p>
             </div>
-            {progressSuccessMessage && <p className={styles.progressSuccess} >{progressSuccessMessage}</p>}
-          </div>
+        </section>
+      )}
 
-          <h2 style={{ textAlign: 'center', marginTop: '40px' }}>
-            Deine ayurvedischen Routinen
-          </h2>
-          {/* <p className={styles.doshaDisplay} style={{ textAlign: 'center', color: '#3c7f7f', fontWeight: 500 }}>
-             Wird nicht mehr direkt benötigt
-          </p> */}
-          <section className={styles.routineGrid}>
-            {getDoshaSpecificRoutines()}
-          </section>
-        </div>
-      </section>
+      {/* Nur anzeigen, wenn Dosha bekannt ist */}
+      {userDosha !== "Unbekannt" && checkboxes.length > 0 && (
+        <section>
+            <div className={styles.dashboardContainer}>
+            <div className={styles.progressSection}>
+                <h3 style={{ textAlign: 'center' }}>Tagesfortschritt</h3>
+                <div className={styles.progressContainer}>
+                <div className={styles.progressBar} style={{ width: `${progressPercent}%` }}>
+                    {progressPercent}%
+                </div>
+                </div>
+                {progressSuccessMessage && <p className={styles.progressSuccess} >{progressSuccessMessage}</p>}
+            </div>
+
+            <h2 style={{ textAlign: 'center', marginTop: '40px' }}>
+                Deine ayurvedischen Routinen
+            </h2>
+            <section className={styles.routineGrid}>
+                {getDoshaSpecificRoutines()}
+            </section>
+            </div>
+        </section>
+      )}
+      {/* Fallback-Nachricht, wenn Dosha unbekannt ist und keine Routinen angezeigt werden */}
+      {userDosha === "Unbekannt" && (
+           <section className={styles.tagesroutineVorschlag}>
+             <div className={styles.routineCard}>
+                <p>Mache den <Link to="/dosha-test" className={styles.callToActionLink}>Dosha-Test</Link>, um deine personalisierten Routinen und Tipps zu sehen!</p>
+             </div>
+           </section>
+      )}
     </div>
   );
 };
