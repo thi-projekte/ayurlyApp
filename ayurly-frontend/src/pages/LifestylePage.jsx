@@ -39,7 +39,7 @@ const LifestylePage = () => {
   }, []);
 
   return (
-    <main className={styles.pageContainer}> {/* Optional: Übergeordneter Container für Seiten-Padding */}
+    <div className={styles.pageContainer}> {/* Optional: Übergeordneter Container für Seiten-Padding */}
       <section className={styles.leadIn}>
         <div className={styles.top}>
           <p>Ayurveda ist mehr als nur Ernährung.</p>
@@ -115,7 +115,7 @@ const LifestylePage = () => {
           </a>
         </div>
       </section>
-    </main>
+      </div>
   );
 };
 

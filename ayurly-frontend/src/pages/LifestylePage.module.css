@@ -1,4 +1,7 @@
-/* src/pages/LifestylePage.module.css */
+.pageContainer {
+    width:100%;
+}
+
 .leadIn {
   display: flex;
   flex-direction: column;
