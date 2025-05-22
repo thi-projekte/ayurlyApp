@@ -55,6 +55,8 @@ import jakarta.ws.rs.core.Response;
 public class RecipeContentResource {
 
     private static final Logger LOG = Logger.getLogger(RecipeContentResource.class); 
+    
+    private static final String TRIDOSHIC_DB_VALUE = "Tridoshic"; // Wert, wie er in der DB im Array steht (Groß-/Kleinschreibung beachten!)
 
     @Inject
     JsonWebToken jwt;
@@ -269,23 +271,23 @@ public class RecipeContentResource {
     @Operation(summary = "Get all recipes", description = "Retrieves a list of all recipes (as RecipeContent). Optional filter by providing doshaType.")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = RecipeContentDto.class, type = org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY)))
     public List<RecipeContentDto> getAllRecipes(@QueryParam("doshaType") String doshaType) {
-        // Wir wollen nur ContentItems vom Typ 'RECIPE'
-        // Mit JOINED-Strategie können wir direkt RecipeContent abfragen.
         List<RecipeContent> recipes;
         String currentUserId = getCurrentUserIdOptional();
 
         if (doshaType != null && !doshaType.trim().isEmpty()) {
-            // Da doshaTypes in recipe_details ist, müssen wir die RecipeContent Entitäten filtern
-            // Dies erfordert eine Query, die auf die Spalte in recipe_details zugreift.
-            // Beispiel: "SELECT rc FROM RecipeContent rc WHERE :dosha = ANY(rc.doshaTypes)"
-            String query = "SELECT rc FROM RecipeContent rc WHERE :doshaType = ANY(rc.doshaTypes) ORDER BY rc.title";
-            recipes = RecipeContent.find(query, Parameters.with("doshaType", doshaType)).list();
+            // Query, um Rezepte zu finden, die entweder den spezifischen Dosha-Typ des Users enthalten
+            // ODER als 'Tridoshic' (oder dein DB-Äquivalent) markiert sind.
+            String query = "SELECT rc FROM RecipeContent rc WHERE (:doshaParam = ANY(rc.doshaTypes) OR :tridoshicValue = ANY(rc.doshaTypes)) ORDER BY rc.title";
+            recipes = RecipeContent.find(query, 
+                Parameters.with("doshaParam", doshaType).and("tridoshicValue", TRIDOSHIC_DB_VALUE)
+            ).list();
         } else {
+            // Wenn kein doshaType angegeben ist, alle Rezepte laden
             recipes = RecipeContent.listAll(Sort.by("title"));
         }
 
         return recipes.stream()
-                      .map(recipe -> RecipeContentDto.fromEntity(recipe, false, currentUserId)) // false: keine Details für Listenansicht
+                      .map(recipe -> RecipeContentDto.fromEntity(recipe, false, currentUserId))
                       .collect(Collectors.toList());
     }
 

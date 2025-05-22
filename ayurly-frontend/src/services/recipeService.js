@@ -15,11 +15,6 @@ const getAllRecipes = async (doshaType = null) => {
   if (doshaType && doshaType !== 'all') {
     url += `?doshaType=${encodeURIComponent(doshaType)}`;
   }
-  // Wenn der 'personalized' Endpunkt für eingeloggte User ohne Dosha-Filter genutzt werden soll:
-  // if (isLoggedIn && (!doshaType || doshaType === 'all')) {
-  //   url = `${API_BASE_URL}/personalized`;
-  // }
-
   return apiRequest(url, 'GET', null, token);
 };
 

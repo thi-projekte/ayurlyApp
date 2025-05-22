@@ -4,6 +4,8 @@ import styles from './RezeptePage.module.css';
 import recipeService from '../services/recipeService';
 import { useUser } from '../contexts/UserContext';
 
+const TRIDOSHIC_VALUE = "tridoshic";
+
 const RezeptePage = () => {
   const { doshaType: contextDoshaType, loadingKeycloak } = useUser();
 
@@ -61,23 +63,20 @@ const RezeptePage = () => {
       return;
     }
 
-    let recipesToFilter = allRecipes;
+    let recipesToDisplay = [];
     if (selectedDosha === 'all') {
-      setFilteredRecipes(recipesToFilter);
+      recipesToDisplay = allRecipes;
     } else {
-      setFilteredRecipes(
-        recipesToFilter.filter(recipe =>
-          recipe.doshaTypes && recipe.doshaTypes.map(d => d.toLowerCase()).includes(selectedDosha)
-        )
-      );
+      recipesToDisplay = allRecipes.filter(recipe => {
+        const lowerCaseDoshaTypes = recipe.doshaTypes ? recipe.doshaTypes.map(d => d.toLowerCase()) : [];
+        return lowerCaseDoshaTypes.includes(selectedDosha) || lowerCaseDoshaTypes.includes(TRIDOSHIC_VALUE);
+      });
     }
-    
-    // Signalisiere, dass der (initiale) Filterprozess abgeschlossen ist,
-    // nachdem allRecipes geladen und der selectedDosha berücksichtigt wurde.
-    if (!loading && !initialFilterApplied) {
-        setInitialFilterApplied(true);
-    }
+    setFilteredRecipes(recipesToDisplay);
 
+    if (!loading && !initialFilterApplied) {
+      setInitialFilterApplied(true);
+    }
   }, [selectedDosha, allRecipes, loadingKeycloak, loading, initialFilterApplied]);
 
 
