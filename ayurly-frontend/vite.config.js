@@ -7,7 +7,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',  // diese config wird nur in dev version genutzt -> nginx kümmert sich um forwarding bei prod build
+        target: 'https://ayurly-data-service.winfprojekt.de',  // diese config wird nur in dev version genutzt -> nginx kümmert sich um forwarding bei prod build
+        changeOrigin: true, // Notwendig für virtuelle Hosts
+        // rewrite: (path) => path.replace(/^\/api/, '/api') // Optional, falls der Pfad umgeschrieben werden muss
+      },
+      '/uploads': {
+        target: 'https://ayurly.winfprojekt.de',  // diese config wird nur in dev version genutzt -> nginx kümmert sich um forwarding bei prod build
         changeOrigin: true, // Notwendig für virtuelle Hosts
         // rewrite: (path) => path.replace(/^\/api/, '/api') // Optional, falls der Pfad umgeschrieben werden muss
       }
