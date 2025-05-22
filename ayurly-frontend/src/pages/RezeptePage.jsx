@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
 import styles from './RezeptePage.module.css';
 import recipeService from '../services/recipeService';
-import { useUser } from '../contexts/UserContext';
+import { useUser } from '../../contexts/UserContext';
 
 const RezeptePage = () => {
   const { doshaType: contextDoshaType, loadingKeycloak } = useUser();
 
-  const [recipes, setRecipes] = useState([]);
-  const [selectedDosha, setSelectedDosha] = useState('all'); // Default, wird ggf. überschrieben
+  const [allRecipes, setAllRecipes] = useState([]); // Speichert *alle* geladenen Rezepte
+  const [filteredRecipes, setFilteredRecipes] = useState([]); // Die aktuell anzuzeigenden, gefilterten Rezepte
+  const [selectedDosha, setSelectedDosha] = useState('all'); // Default-Filter
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // Hilfs-State, um sicherzustellen, dass der erste API-Call erst nach Initialisierung von selectedDosha erfolgt.
-  const [isInitialFilterSet, setIsInitialFilterSet] = useState(false);
+  const [initialFilterApplied, setInitialFilterApplied] = useState(false);
 
-  // 1. Effekt: Setze den initialen selectedDosha basierend auf dem UserContext.
+
+  // 1. Effekt: Setze den initialen selectedDosha basierend auf dem UserContext
   useEffect(() => {
     if (!loadingKeycloak) { // Warten bis Keycloak-Initialisierung abgeschlossen ist
       if (contextDoshaType) {
@@ -23,46 +23,74 @@ const RezeptePage = () => {
       } else {
         setSelectedDosha('all'); // Fallback, wenn kein Dosha im Context bekannt
       }
-      setIsInitialFilterSet(true); // Signalisiert, dass der initiale Filter gesetzt ist
+      // Wichtig: Wir signalisieren noch nicht, dass der Filter angewendet wurde,
+      // da das Filtern erst nach dem Laden der `allRecipes` Sinn ergibt.
     }
   }, [contextDoshaType, loadingKeycloak]);
 
-  // 2. Effekt: Lade Rezepte basierend auf selectedDosha, sobald der initiale Filter gesetzt ist.
+  // 2. Effekt: Lade *alle* Rezepte initial von der API
   useEffect(() => {
-    // Nur laden, wenn Keycloak bereit ist UND der initiale Filterwert gesetzt wurde.
-    if (loadingKeycloak || !isInitialFilterSet) {
-      return;
-    }
-
-    const fetchRecipesFromApi = async () => {
+    const fetchAllRecipesFromApi = async () => {
       setLoading(true);
       setError(null);
       try {
-        // 'all' wird an den recipeService übergeben, der es als 'null' (für alle Rezepte) interpretiert.
-        const doshaToFetch = selectedDosha === 'all' ? null : selectedDosha;
-        const fetchedData = await recipeService.getAllRecipes(doshaToFetch);
-        setRecipes(fetchedData || []);
+        const fetchedData = await recipeService.getAllRecipes(null); // null, um alle Rezepte zu laden
+        setAllRecipes(fetchedData || []);
       } catch (err) {
         setError(err.message || "Fehler beim Laden der Rezepte.");
-        setRecipes([]);
-        console.error("Error fetching recipes:", err);
+        setAllRecipes([]);
+        console.error("Error fetching all recipes:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchRecipesFromApi();
-  }, [selectedDosha, loadingKeycloak, isInitialFilterSet]); // Abhängigkeiten
+    // Nur ausführen, wenn Keycloak bereit ist, um initiale Race Conditions mit selectedDosha zu vermeiden
+    if (!loadingKeycloak) {
+        fetchAllRecipesFromApi();
+    }
+  }, [loadingKeycloak]); // Abhängigkeit von loadingKeycloak, um nach dessen Abschluss zu laden
+
+  // 3. Effekt: Filter die Rezepte clientseitig, wenn sich selectedDosha oder allRecipes ändern.
+  // Dieser Effekt wird auch getriggert, nachdem allRecipes geladen wurden und selectedDosha initial gesetzt wurde.
+  useEffect(() => {
+    // Stelle sicher, dass wir nicht filtern, bevor die Rezepte geladen sind oder Keycloak initialisiert ist.
+    if (loadingKeycloak || loading) {
+      // Wenn noch geladen wird (entweder Keycloak oder die Rezepte),
+      // warte ab, bevor gefiltert wird. filteredRecipes wird dann beim nächsten Durchlauf gesetzt.
+      return;
+    }
+
+    let recipesToFilter = allRecipes;
+    if (selectedDosha === 'all') {
+      setFilteredRecipes(recipesToFilter);
+    } else {
+      setFilteredRecipes(
+        recipesToFilter.filter(recipe =>
+          recipe.doshaTypes && recipe.doshaTypes.map(d => d.toLowerCase()).includes(selectedDosha)
+        )
+      );
+    }
+    
+    // Signalisiere, dass der (initiale) Filterprozess abgeschlossen ist,
+    // nachdem allRecipes geladen und der selectedDosha berücksichtigt wurde.
+    if (!loading && !initialFilterApplied) {
+        setInitialFilterApplied(true);
+    }
+
+  }, [selectedDosha, allRecipes, loadingKeycloak, loading, initialFilterApplied]);
+
 
   const handleDoshaChange = (event) => {
     setSelectedDosha(event.target.value);
   };
 
-  if (loading && !isInitialFilterSet) { // Zeige Ladeindikator, wenn Keycloak noch lädt
-    return <div className={styles.loadingMessage}>Initialisiere Filter...</div>;
-  }
-  if (loading && isInitialFilterSet) { // Zeige Ladeindikator, wenn Rezepte geladen werden
-    return <div className={styles.loadingMessage}>Lade Rezepte...</div>;
+
+  // Ladezustand anzeigen
+  // Zeige "Initialisiere Filter...", wenn Keycloak lädt ODER der initiale Filter noch nicht angewendet wurde,
+  // nachdem die Rezepte prinzipiell geladen sein könnten.
+  if (loadingKeycloak || (loading && allRecipes.length === 0) || (!initialFilterApplied && !loading && !error)) {
+    return <div className={styles.loadingMessage}>Lade Rezepte und Filter...</div>;
   }
 
   if (error) {
@@ -70,8 +98,8 @@ const RezeptePage = () => {
   }
 
   return (
-    <div className={styles.mainContent}> {/* Wrapper für Hauptinhalt */}
-      <section className={styles.filterSection}> {/* Eigene Section für die Filter */}
+    <div className={styles.mainContent}>
+      <section className={styles.filterSection}>
         <div className={styles.toggleGroup}>
           <label
             className={`${styles.toggleLabel} ${selectedDosha === 'all' ? styles.toggleLabelChecked : ''}`}
@@ -137,13 +165,13 @@ const RezeptePage = () => {
       </section>
 
       <section className={styles.recipesGrid}>
-        {recipes.length > 0 ? (
-          recipes.map(recipe => (
+        {filteredRecipes.length > 0 ? (
+          filteredRecipes.map(recipe => (
             <div key={recipe.id} className={styles.recipeCard}>
               <div className={styles.imagePreview}>
-                <img 
-                    src={recipe.imageUrl || '/img/recipes/default_recipe_image.jpg'} 
-                    alt={recipe.title} 
+                <img
+                    src={recipe.imageUrl || '/img/recipes/default_recipe_image.jpg'}
+                    alt={recipe.title}
                 />
               </div>
               <div className={styles.recipeInfo}>
@@ -156,9 +184,14 @@ const RezeptePage = () => {
             </div>
           ))
         ) : (
-          !loading && ( 
+          // Zeige diese Nachricht nur, wenn nicht mehr geladen wird und kein Fehler vorliegt,
+          // aber keine Rezepte zum Filter passen (oder gar keine Rezepte da sind).
+          !loading && !error && (
             <p className={styles.noRecipesMessage}>
-              Keine Rezepte für die Auswahl "{selectedDosha === 'all' ? 'Alle' : selectedDosha.charAt(0).toUpperCase() + selectedDosha.slice(1)}" gefunden.
+              {allRecipes.length === 0 
+                ? "Aktuell sind keine Rezepte verfügbar." 
+                : `Keine Rezepte für die Auswahl "${selectedDosha === 'all' ? 'Alle' : selectedDosha.charAt(0).toUpperCase() + selectedDosha.slice(1)}" gefunden.`
+              }
             </p>
           )
         )}
