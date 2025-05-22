@@ -134,6 +134,7 @@
     .link { /* Anpassung der Links im mobilen Menü */
         width: 100%;
         justify-content: center;
+        background-color: #f8f8f8;
         padding: 15px 0;
         border-radius: 0; /* Keine abgerundeten Ecken für einzelne Links im Dropdown */
         color: #333; /* Andere Textfarbe für bessere Lesbarkeit auf hellem Grund */
