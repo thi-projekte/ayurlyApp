@@ -1,33 +1,49 @@
 .mainContent { /* Wrapper für den Hauptinhalt der Seite */
   padding: 20px 0; /* Oben/Unten und Seiten-Padding */
+  width: 100%; /* Stelle sicher, dass mainContent die volle Breite nimmt, falls es von App.css beeinflusst wird */
 }
 
 /* Toggle-Gruppe für Dosha-Filter */
 .toggleGroup {
   display: flex;
   margin: 30px 100px; /* Oben/Unten-Margin, Seiten-Margin durch .mainContent */
-  justify-content: space-evenly;
+  justify-content: space-evenly; /* Behält die gleichmäßige Verteilung bei, wenn Platz ist */
   align-items: center;
   gap: 30px; /* Abstand zwischen den Buttons */
   flex-wrap: wrap; /* Umbruch bei Bedarf */
 }
 
-.toggleLabel { /* Styling für die Label-Elemente, die als Buttons dienen */
+.toggleLabel { 
   background-color: white;
   display:flex;
   flex-direction: column;
   text-align: center;
   border-radius: 10px;
-  font-size: 1.1rem; /* Responsive: clamp(0.9rem, 2vw, 1.1rem); */
-  padding: 15px 25px;
-  width: calc((100% - 3* 30px) / 4); 
+  font-size: 1.1rem; 
+  padding: 15px 25px; /* Beachte, dass dieses Padding zur Gesamtbreite beiträgt */
+  
+  /* Feste Breitenberechnung basierend auf 4 Elementen */
+  /* Hier verwenden wir flex-basis für bessere Kontrolle im Flex-Kontext */
+  flex-grow: 0; /* Nicht wachsen lassen über die Basisbreite hinaus */
+  flex-shrink: 0; /* Nicht schrumpfen lassen unter die Basisbreite */
+  flex-basis: calc(25% - (30px * 3 / 4)); /* (100% / 4 Spalten) - (Anteil am Gesamt-Gap) */
+                                        /* Gap ist 30px, 3 Gaps für 4 Elemente. Jeder Button "trägt" 3/4 eines Gaps */
+                                        /* Das sind 25% - 22.5px. */
+  /* Alternative, einfachere Berechnung, wenn Padding die Breite nicht sprengen soll: */
+  /* width: calc( (100% - (3 * 30px)) / 4 ); */ /* Deine ursprüngliche Formel */
+  /* Eine min-width kann sinnvoll sein, damit die Buttons nicht zu schmal werden bei sehr kleinen Screens,
+     bevor der Umbruch durch flex-wrap greift und die Buttons dann die volle Breite (durch eine neue Media Query) bekommen. */
+  min-width: 150px; /* Beispiel: Verhindert, dass Buttons unleserlich klein werden */
+
+  box-sizing: border-box; /* Stelle sicher, dass Padding und Border in die width/height-Berechnung einfließen */
   cursor: pointer;
-  border: 2px solid transparent; /* Platzhalter für den Rahmen bei :checked */
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  border: 2px solid transparent; 
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 .toggleLabel:hover {
   border-color: #ddd;
+  transform: translateY(-2px); /* Leichter Hover-Effekt */
 }
 
 /* Verstecke den Radio-Button selbst */
@@ -50,21 +66,29 @@
   margin: 40px 100px;
   display: flex;
   flex-wrap: wrap;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive Grid */
   gap: 30px;
 }
 
 .recipeCard {
   display: flex;
   flex-direction: column;
-  width: calc((100% - 3* 30px) / 4);
   background-color: white;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   border-radius: 20px; 
-  overflow: hidden; /* Stellt sicher, dass das Bild die Rundung annimmt */
+  overflow: hidden; 
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   border: 1px solid #eee;
+
+  /* Anpassung für Flexbox-Kinder */
+  flex-grow: 1; /* Erlaube der Karte zu wachsen, um Leerraum zu füllen */
+  flex-shrink: 1; /* Erlaube der Karte zu schrumpfen, wenn nötig */
+  flex-basis: calc(25% - 23px); /* Ungefähre Basisbreite für 4 Spalten (22.5px ist 3/4 von 30px gap) - 
+                                    Diese Berechnung kann knifflig sein mit Gaps.
+                                    Eine feste min-width ist oft besser. */
+  min-width: 280px; /* Eine sinnvolle Mindestbreite */
+  max-width: calc(25% - 23px); /* Wenn sie nicht breiter als 1/4 sein soll */
 }
+
 .recipeCard:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 28px rgba(0,0,0,0.12);
@@ -123,66 +147,46 @@
 }
 
 /* Platzhalter, falls keine Rezepte gefunden wurden */
-.noRecipesMessage {
+.noRecipesMessage, .loadingMessage { /* loadingMessage hinzugefügt */
     text-align: center;
     font-size: 1.2rem;
     color: #777;
     margin-top: 50px;
+    width: 100%; /* Nimmt die volle Breite des Grid-Containers ein */
 }
 
 /* --- Media Queries für Responsivität --- */
 
-/* Für Tablets und kleinere Desktops (z.B. 3 Karten nebeneinander) */
+/* Media Queries müssen dann auch flex-basis anpassen oder die Anzahl der gewünschten Elemente pro Zeile */
 @media (max-width: 1200px) {
-  .toggleGroup, .recipesGrid {
-    margin-left: 50px;
-    margin-right: 50px;
-  }
+  /* ... */
   .toggleLabel {
     /* 3 Kacheln */
-    width: calc((100% - 2 * 30px) / 3);
+    width: calc((100% - 2 * 30px) / 3); /* <-- HIER WIRD ES FÜR 3 ELEMENTE ANGEPASST */
   }
+  
   .recipeCard {
-    /* 3 Karten: 2 Gaps für 3 Karten */
-    width: calc((100% - 2 * 30px) / 3);
+    flex-basis: calc(33.333% - 20px); /* Für 3 Karten */
   }
 }
-
-/* Für kleinere Tablets und große Smartphones (z.B. 2 Karten nebeneinander) */
 @media (max-width: 992px) {
-  .toggleGroup, .recipesGrid {
-    margin-left: 30px;
-    margin-right: 30px;
-  }
-  .toggleLabel {
+    .toggleLabel {
     /* 2 Kacheln */
-    width: calc((100% - 1 * 30px) / 2);
+    width: calc((100% - 1 * 30px) / 2); /* <-- HIER WIRD ES FÜR 2 ELEMENTE ANGEPASST */
   }
+  
   .recipeCard {
-    /* 2 Karten: 1 Gap für 2 Karten */
-    width: calc((100% - 1 * 30px) / 2);
+    flex-basis: calc(50% - 15px); /* Für 2 Karten */
   }
 }
-
-/* Für Smartphones (z.B. 1 Karte pro Zeile) */
 @media (max-width: 768px) {
-  .toggleGroup, .recipesGrid {
-    margin-left: 15px;
-    margin-right: 15px;
-    gap: 20px; /* Ggf. Gap reduzieren */
-  }
   .toggleLabel {
     /* 1 Kachel (nimmt fast volle Breite, oder 2 wenn gewünscht) */
     width: calc((100% - 1 * 20px) / 2); /* Beispiel für 2 nebeneinander */
     /* oder width: 100%; für eine Kachel */
   }
+  
   .recipeCard {
-    /* 1 Karte: kein Gap in der Formel nötig */
-    width: 100%;
-    /* oder für 2 Karten auf Smartphones, wenn genug Platz:
-    width: calc((100% - 20px) / 2); (Gap auf 20px angepasst) */
-  }
-  .imagePreview {
-    height: 180px; /* Bilder auf kleineren Screens etwas niedriger */
+    flex-basis: 100%; /* Für 1 Karte */
   }
 }
