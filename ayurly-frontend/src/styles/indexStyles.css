@@ -376,7 +376,6 @@ body.modal-open {
     margin-bottom: 8px;
 }
 
-
 #negative {
     background-color: #ffe9f3;
 }
@@ -715,6 +714,7 @@ body.modal-open {
     .info {
         flex-direction: column; /* Bild und Text untereinander */
         padding: 30px 20px;
+        margin-left: 5px;
         margin-top: 40px;
         gap: 25px;
     }

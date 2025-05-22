@@ -37,8 +37,8 @@
 
 .closeButton {
   position: absolute;
-  top: 15px;
-  right: 20px;
+  top: 0px;
+  right: 10px;
   font-size: 2rem; /* Etwas größer gemacht */
   cursor: pointer;
   color: #888; /* Etwas helleres Grau */
