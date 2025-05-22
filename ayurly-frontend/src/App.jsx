@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage';
 import DoshaTestPage from './pages/DoshaTestPage';
 import RezeptePage from './pages/RezeptePage';
 import RezepteDetailPage from './pages/RezepteDetailPage';
-// import CommunitiesPage from './pages/CommunitiesPage';
+import LifestylePage from './pages/LifestylePage';
 import LoginPage from './pages/LoginPage';
 import AccountPage from './pages/AccountPage';
 import { UserProvider } from './contexts/UserContext';
@@ -30,7 +30,7 @@ function App() {
             <Route path="/dosha-test" element={<DoshaTestPage />} />
             <Route path="/rezepte" element={<RezeptePage />} />
             <Route path="/rezepte/:rezeptId" element={<RezepteDetailPage />} />
-            {/* <Route path="/communities" element={<CommunitiesPage />} /> */}
+            <Route path="/lifestyle" element={<LifestylePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/account" element={<AccountPage />} />
             {/* Ggf. Protected Routes für Seiten wie /account */}

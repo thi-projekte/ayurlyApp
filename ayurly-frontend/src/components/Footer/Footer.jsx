@@ -16,7 +16,7 @@ const Footer = () => {
           <Link to="/">Ayurly</Link>
           <Link to="/dosha-test">Dosha Test</Link>
           <Link to="/rezepte">Rezepte</Link>
-          <Link to="/communities">Communities</Link>
+          <Link to="/lifestyle">Lifestyle</Link>
           <Link to="/login">Login</Link>
           {/* Du könntest hier noch einen bedingten Account-Link hinzufügen, wenn der Benutzer eingeloggt ist */}
         </div>

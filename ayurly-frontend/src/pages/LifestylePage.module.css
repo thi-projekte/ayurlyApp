@@ -1,0 +1,303 @@
+/* src/pages/LifestylePage.module.css */
+.leadIn {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  margin-bottom: 50px; /* Abstand zur nächsten Sektion */
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+  gap: 30px;
+  align-items: center;
+  font-size: 15pt;
+  color: #626262;
+}
+
+.statement { /* ID als Klasse verwenden für CSS Modules */
+  font-size: 40pt;
+  color: #222; /* Bessere Lesbarkeit als #626262 für großen Text */
+}
+
+.statement span {
+  color: #e26a2c;
+  font-weight: bold;
+}
+
+.zoomOut {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Bild zentrieren, falls es nicht volle Breite hat */
+  overflow: hidden; /* Hilft, falls das Bild durch Skalierung überlappt */
+}
+
+.zoomOutimage {
+  width: 100%;
+  transition: transform 0.1s ease-out, border-radius 0.1s ease-out; /* Border-Radius auch animieren */
+  object-fit: cover;
+  /* border-radius initial, falls gewünscht (wird durch JS angepasst) */
+}
+
+.descriptionAndBubbles {
+  display: flex;
+  gap: 50px;
+  margin-left: 100px;
+  margin-right: 100px;
+  align-items: center;
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in;
+}
+
+.descriptionAndBubbles:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Subtilerer Schatten beim Hover */
+}
+
+.bubbles {
+  flex: 1;
+  display: flex; /* Bubbles nebeneinander anordnen */
+  flex-direction: column; /* Falls sie doch untereinander sollen, oder Logik anpassen */
+  align-items: center; /* Zentriert die Bubbles horizontal, wenn sie untereinander sind */
+  gap: 20px; /* Abstand zwischen den Bubbles */
+}
+
+.perimeter {
+  border: 2px dashed gray;
+  padding: 10px;
+  border-radius: 100px;
+  width: min-content;
+  /* Die spezifischen Margins für #bubbleMiddle und #bubbleBottom könnten in einer Mobile-Ansicht
+     zu Problemen führen. Flexbox/Grid auf .bubbles wäre robuster für die Positionierung. */
+}
+
+.bubbleMiddle { /* ID als Klasse */
+  /* margin-left: 200px; Beispiel für Desktop, ggf. durch Flexbox-Align ersetzen */
+  align-self: center; /* Beispiel für Flexbox */
+}
+
+.bubbleBottom { /* ID als Klasse */
+  /* margin-left: 30px; Beispiel für Desktop */
+  align-self: flex-start; /* Beispiel für Flexbox */
+}
+
+
+.bubble {
+  width: 100px;
+  height: 100px;
+  border-radius: 85% 70% 78% 73%; /* Beibehalten für "organische" Form */
+  animation: rotate_bubbles 7s linear infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* Für die Positionierung des Emojis */
+}
+
+@keyframes rotate_bubbles {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.body { /* ID als Klasse */
+  background: linear-gradient(135deg, #C1E1C1, #88B04B);
+}
+
+.mind { /* ID als Klasse */
+  background: linear-gradient(135deg, #BFD7ED, #4A90E2);
+}
+
+.soul { /* ID als Klasse */
+  background: linear-gradient(135deg, #F7CAC9, #FFD700);
+}
+
+.emoji {
+  font-size: 50pt;
+  /* position: absolute; nicht mehr unbedingt nötig, wenn bubble flex ist */
+  animation: counterRotate 7s linear infinite;
+}
+
+@keyframes counterRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.text {
+  flex: 2;
+  line-height: 1.8rem; /* Angepasst für bessere Lesbarkeit */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 25px; /* Etwas weniger Gap */
+  color: #555; /* Etwas dunkleres Grau */
+}
+
+.headline {
+  font-size: 20pt;
+  color: #333; /* Dunkler für Headline */
+  font-weight: 600;
+}
+
+.description {
+    font-size: 1em; /* Standard Textgröße */
+}
+
+.discover {
+  margin: 50px 100px;
+  font-size: 30pt;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  margin: 50px 100px;
+  gap: 30px;
+  width: 90%;
+}
+
+.row {
+  display: flex;
+  gap: 30px;
+}
+
+.item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  /* gap: 20px; Entfernt, da Text absolut positioniert ist */
+  position: relative;
+  align-items: center;
+  height: 350px;
+  transition: transform 0.5s ease;
+  overflow: hidden; /* Damit das Bild nicht über den Radius hinausgeht */
+  text-decoration: none; /* Für a-Tags */
+}
+
+.item:hover {
+  transform: scale(1.05);
+}
+
+.item img {
+  width: 100%;
+  height: 350px;
+  border-radius: 20px; /* Wird durch overflow:hidden auf .item behandelt */
+  object-fit: cover;
+}
+
+.item p {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-radius: 20px 0 0 0; /* Angepasst für die Ecke unten rechts, aber nicht über die Kante der Karte */
+  color: white;
+  background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.1)); /* Dunkler für besseren Kontrast */
+  backdrop-filter: blur(5px); /* Etwas weniger Blur */
+  -webkit-backdrop-filter: blur(5px);
+  padding: 10px 25px; /* Padding angepasst */
+  font-size: 18pt; /* Etwas kleiner */
+  font-weight: bold;
+  margin: 10px; /* Kleiner Abstand vom Rand */
+  border-top-left-radius: 10px; /* Obere linke Ecke des Textblocks abrunden */
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 1024px) {
+  .descriptionAndBubbles {
+    margin-left: 50px;
+    margin-right: 50px;
+    flex-direction: column; /* Bubbles über Text */
+    gap: 30px;
+  }
+  .bubbles {
+    flex-direction: row; /* Bubbles wieder nebeneinander */
+    justify-content: space-around;
+    width: 100%;
+  }
+  .perimeter { /* Reset margins for mobile */
+    margin-left: 0 !important;
+  }
+  .discover {
+    margin: 40px 50px;
+    font-size: 24pt;
+  }
+  .grid {
+    margin: 40px 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .top {
+    font-size: 13pt;
+  }
+  .statement {
+    font-size: 30pt;
+    padding: 0 10px;
+  }
+  .descriptionAndBubbles {
+    margin-left: 20px;
+    margin-right: 20px;
+    padding: 20px;
+  }
+  .bubble {
+    width: 80px;
+    height: 80px;
+  }
+  .emoji {
+    font-size: 40pt;
+  }
+  .text {
+    line-height: 1.6rem;
+    gap: 20px;
+  }
+  .headline {
+    font-size: 16pt;
+  }
+  .discover {
+    margin: 30px 20px;
+    font-size: 20pt;
+  }
+  .grid {
+    margin: 30px 20px;
+    gap: 20px;
+  }
+  .row {
+    flex-direction: column; /* Items untereinander auf Mobile */
+    gap: 20px;
+  }
+  .item {
+    height: 250px; /* Höhe anpassen für Mobile */
+  }
+  .item p {
+    font-size: 16pt;
+    padding: 8px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+    .statement {
+        font-size: 24pt;
+    }
+    .discover {
+        font-size: 18pt;
+    }
+    .bubbles {
+      gap: 10px; /* Noch weniger Gap zwischen Bubbles */
+      transform: scale(0.9); /* Bubbles kleiner machen, wenn es sehr eng wird */
+    }
+}
