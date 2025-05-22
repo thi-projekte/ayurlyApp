@@ -113,6 +113,16 @@
   /* Wenn sie nicht breiter als 1/4 sein soll */
 }
 
+/* Wrapper für Bild und Hauptinfo, um sie klickbar zu machen */
+.cardLinkWrapper {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Nimmt den verfügbaren Platz ein, bevor der Button kommt */
+  /* Lässt diesen Bereich wachsen, um den Button nach unten zu drücken */
+}
+
 .recipeCard:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
@@ -136,43 +146,102 @@
 .recipeInfo {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  /* Weniger Gap */
-  padding: 20px;
-  flex-grow: 1;
-  /* Lässt diesen Bereich wachsen, um den Button nach unten zu drücken */
+  gap: 6px;
+  padding: 15px 20px 10px 20px;
 }
 
 .recipeName {
   font-size: 1.3rem;
-  /* Responsive: clamp(1.1rem, 2.5vw, 1.4rem); */
   font-weight: 600;
-  /* Dicker */
   color: #333;
+  margin-bottom: 0;
 }
 
 .description {
   color: #666;
   font-size: 0.9rem;
   line-height: 1.5;
-  /* Optional: Begrenzung der Zeilenanzahl für die Beschreibung */
-  /* display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis; */
+}
+
+/* Container für Meta-Daten (Zeit) und Aktionen (Like-Button) */
+.cardMetaActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px 15px 20px; /* Padding oben und unten angepasst */
+  font-size: 0.85rem;
+  color: #555;
+  border-top: 1px solid #f0f0f0; /* Leichte Trennlinie über diesem Bereich */
+}
+
+.prepTime {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prepTime svg {
+  font-size: 1em; /* relativ zum Text */
+  color: #e26a2c; /* Haupt-Akzentfarbe */
+}
+
+.likeButtonCard {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  color: #555;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+}
+
+.likeButtonCard:hover:not(:disabled) {
+  background-color: #f7f7f7;
+  border-color: #d0d0d0;
+  color: #333;
+}
+
+.likeButtonCard.liked {
+  background-color: #fff0f0; /* Heller Rotton */
+  border-color: #ffc0c0;
+  color: #c0392b;
+}
+
+.likeButtonCard.liked svg {
+  color: #c0392b;
+}
+
+.likeButtonCard svg {
+  font-size: 1.1em; /* Etwas größer für bessere Sichtbarkeit */
+  color: #999; /* Standard-Herzfarbe */
+  transition: color 0.2s ease;
+}
+
+.likeButtonCard:hover:not(:disabled) svg {
+  color: #e26a2c; /* Orange beim Hover für das Icon */
+}
+
+.likeButtonCard:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.likeCountCard {
+  font-weight: 500;
+  min-width: 10px; /* Platzhalter für die Zahl */
+  text-align: left;
 }
 
 .discoverRecipe {
   padding: 12px 20px;
   margin-top: auto;
-  /* Drückt den Button nach unten, wenn .recipeInfo flex-grow hat */
-  /* border-radius: 0 0 16px 16px; */
-  /* Wird vom Link-Styling überschrieben */
   color: white;
   text-align: center;
   background: linear-gradient(to right, #5a5a5a, #333);
-  /* Dunklerer Gradient */
   text-decoration: none;
   font-weight: 500;
   display: block;

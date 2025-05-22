@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import styles from './RezeptePage.module.css';
 import recipeService from '../services/recipeService';
 import { useUser } from '../contexts/UserContext';
+import { FaRegClock, FaRegThumbsUp, FaThumbsUp } from 'react-icons/fa';
 
 const TRIDOSHIC_VALUE = "tridoshic";
 
 const RezeptePage = () => {
-  const { doshaType: contextDoshaType, loadingKeycloak } = useUser();
+  const { doshaType: contextDoshaType, loadingKeycloak, isLoggedIn, login } = useUser(); // isLoggedIn und login für Like-Funktion
 
   const [allRecipes, setAllRecipes] = useState([]); // Speichert *alle* geladenen Rezepte
   const [filteredRecipes, setFilteredRecipes] = useState([]); // Die aktuell anzuzeigenden, gefilterten Rezepte
@@ -15,6 +16,7 @@ const RezeptePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [initialFilterApplied, setInitialFilterApplied] = useState(false);
+  const [likingRecipeId, setLikingRecipeId] = useState(null); // State für Ladezustand des Like-Buttons
 
 
   // 1. Effekt: Setze den initialen selectedDosha basierend auf dem UserContext
@@ -51,7 +53,7 @@ const RezeptePage = () => {
     if (!loadingKeycloak) {
         fetchAllRecipesFromApi();
     }
-  }, [loadingKeycloak]); // Abhängigkeit von loadingKeycloak, um nach dessen Abschluss zu laden
+  }, [loadingKeycloak, isLoggedIn]); // Abhängigkeit von loadingKeycloak, um nach dessen Abschluss zu laden
 
   // 3. Effekt: Filter die Rezepte clientseitig, wenn sich selectedDosha oder allRecipes ändern.
   // Dieser Effekt wird auch getriggert, nachdem allRecipes geladen wurden und selectedDosha initial gesetzt wurde.
@@ -82,6 +84,43 @@ const RezeptePage = () => {
 
   const handleDoshaChange = (event) => {
     setSelectedDosha(event.target.value);
+  };
+
+  // Like-Handler für die Rezeptkarten
+  const handleLikeToggle = async (recipeId) => {
+    if (!isLoggedIn) {
+      alert("Bitte melde dich an, um Rezepte zu liken.");
+      login(); // Keycloak Login starten
+      return;
+    }
+
+    const recipeToUpdate = allRecipes.find(r => r.id === recipeId);
+    if (!recipeToUpdate) return;
+
+    setLikingRecipeId(recipeId); // Ladezustand für diesen spezifischen Button setzen
+    try {
+      let updatedRecipeData;
+      if (recipeToUpdate.likedByCurrentUser) {
+        updatedRecipeData = await recipeService.unlikeRecipe(recipeId); //
+      } else {
+        updatedRecipeData = await recipeService.likeRecipe(recipeId); //
+      }
+
+      // Update `allRecipes` und damit auch `filteredRecipes` (durch den Filter-Effekt)
+      setAllRecipes(prevRecipes =>
+        prevRecipes.map(recipe =>
+          recipe.id === recipeId
+            ? { ...recipe, likeCount: updatedRecipeData.likeCount, likedByCurrentUser: updatedRecipeData.likedByCurrentUser }
+            : recipe
+        )
+      );
+    } catch (err) {
+      console.error("Error toggling like on recipe page:", err);
+      // Zeige dem User eine verständliche Fehlermeldung
+      alert(err.message || "Es gab ein Problem beim Liken des Rezepts. Bitte versuche es später erneut.");
+    } finally {
+      setLikingRecipeId(null); // Ladezustand zurücksetzen
+    }
   };
 
 
@@ -167,28 +206,55 @@ const RezeptePage = () => {
         {filteredRecipes.length > 0 ? (
           filteredRecipes.map(recipe => (
             <div key={recipe.id} className={styles.recipeCard}>
-              <div className={styles.imagePreview}>
-                <img
-                    src={recipe.imageUrl || '/img/recipes/default_recipe_image.jpg'}
-                    alt={recipe.title}
-                />
-              </div>
-              <div className={styles.recipeInfo}>
-                <p className={styles.recipeName}>{recipe.title}</p>
-                <p className={styles.description}>{recipe.previewDescription}</p>
+              <Link to={`/rezepte/${recipe.id}`} className={styles.cardLinkWrapper}> {/* Link umschließt Bild und Titel */}
+                <div className={styles.imagePreview}>
+                  <img
+                      src={recipe.imageUrl || '/img/recipes/default_recipe_image.jpg'}
+                      alt={recipe.title}
+                  />
+                </div>
+                <div className={styles.recipeInfo}>
+                  <p className={styles.recipeName}>{recipe.title}</p>
+                  <p className={styles.description}>{recipe.previewDescription}</p>
+                </div>
+              </Link>
+              {/* Separate Sektion für Meta-Daten und Aktionen unter der Beschreibung, aber innerhalb der Karte */}
+              <div className={styles.cardMetaActions}>
+                <span className={styles.prepTime}>
+                  {recipe.preparationTimeMinutes != null ? ( // Prüfen, ob die Zeit vorhanden ist
+                    <>
+                      <FaRegClock /> {recipe.preparationTimeMinutes} min
+                    </>
+                  ) : (
+                    <>
+                      <FaRegClock /> -- min {/* Fallback, falls keine Zeitangabe */}
+                    </>
+                  )}
+                </span>
+                <button
+                  onClick={(e) => {
+                      // e.preventDefault(); // Nicht mehr nötig, da Button außerhalb des Links ist
+                      // e.stopPropagation(); // Nicht mehr nötig
+                      handleLikeToggle(recipe.id);
+                  }}
+                  className={`${styles.likeButtonCard} ${recipe.likedByCurrentUser ? styles.liked : ''}`}
+                  disabled={likingRecipeId === recipe.id}
+                  aria-label={recipe.likedByCurrentUser ? "Unlike this recipe" : "Like this recipe"}
+                >
+                  {likingRecipeId === recipe.id ? '...' : (recipe.likedByCurrentUser ? <FaThumbsUp /> : <FaRegThumbsUp />)}
+                  <span className={styles.likeCountCard}>{recipe.likeCount}</span>
+                </button>
               </div>
               <Link to={`/rezepte/${recipe.id}`} className={styles.discoverRecipe}>
-                Mehr
+                Mehr erfahren
               </Link>
             </div>
           ))
         ) : (
-          // Zeige diese Nachricht nur, wenn nicht mehr geladen wird und kein Fehler vorliegt,
-          // aber keine Rezepte zum Filter passen (oder gar keine Rezepte da sind).
           !loading && !error && (
             <p className={styles.noRecipesMessage}>
-              {allRecipes.length === 0 
-                ? "Aktuell sind keine Rezepte verfügbar." 
+              {allRecipes.length === 0
+                ? "Aktuell sind keine Rezepte verfügbar."
                 : `Keine Rezepte für die Auswahl "${selectedDosha === 'all' ? 'Alle' : selectedDosha.charAt(0).toUpperCase() + selectedDosha.slice(1)}" gefunden.`
               }
             </p>
