@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './RezeptePage.module.css';
 import recipeService from '../services/recipeService';
-import { useUser } from '../../contexts/UserContext';
+import { useUser } from '../contexts/UserContext';
 
 const RezeptePage = () => {
   const { doshaType: contextDoshaType, loadingKeycloak } = useUser();
