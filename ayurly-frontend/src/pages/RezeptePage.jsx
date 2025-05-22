@@ -1,91 +1,72 @@
-// src/pages/RezeptePage.jsx
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Für Links zu Detailseiten
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './RezeptePage.module.css';
+import recipeService from '../services/recipeService';
 import { useUser } from '../contexts/UserContext';
 
-// Dummy-Rezeptdaten (später durch API-Aufruf ersetzen)
-const dummyRecipes = [
-  {
-    id: 'golden-gut-curry', // Wird Teil der URL
-    name: 'Golden Gut Curry',
-    image: '/img/recipes/golden gut curry.jpg', // Pfad im public-Ordner
-    description: 'Mit heilenden Kräutern verfeinert, stärkt dieses Curry deine Verdauung und lässt dein inneres Strahlen erblühen.',
-    dosha: ['vata', 'pitta', 'kapha'], // Für welche Doshas ist es geeignet? (Array)
-  },
-  {
-    id: 'kitchari-detox',
-    name: 'Kitchari Detox Bowl',
-    image: '/img/recipes/kitchari.jpg', // Beispiel, Bild muss existieren
-    description: 'Ein leicht verdauliches und nährendes Gericht, perfekt zur Reinigung und Stärkung.',
-    dosha: ['vata', 'pitta', 'kapha'],
-  },
-  {
-    id: 'vata-beruhigungs-suppe',
-    name: 'Vata Beruhigungs-Suppe',
-    image: '/img/recipes/vata_suppe.jpg', // Beispiel
-    description: 'Eine wärmende und erdende Suppe, ideal um Vata auszugleichen und zur Ruhe zu kommen.',
-    dosha: ['vata'],
-  },
-  {
-    id: 'pitta-kuehl-salat',
-    name: 'Pitta Kühlender Salat',
-    image: '/img/recipes/pitta_salat.jpg', // Beispiel
-    description: 'Ein erfrischender und kühlender Salat, der Pitta besänftigt und den Geist klärt.',
-    dosha: ['pitta'],
-  },
-  {
-    id: 'kapha-anregungs-eintopf',
-    name: 'Kapha Anregungs-Eintopf',
-    image: '/img/recipes/kapha_eintopf.jpg', // Beispiel
-    description: 'Ein leichter und anregender Eintopf, der Kapha stimuliert und Energie spendet.',
-    dosha: ['kapha'],
-  }
-];
-
-
 const RezeptePage = () => {
-  const { doshaType: contextDoshaType, loadingKeycloak } = useUser(); // Hol den Dosha-Typ und Ladezustand aus dem Context
+  const { doshaType: contextDoshaType, loadingKeycloak } = useUser();
+
   const [recipes, setRecipes] = useState([]);
-  const [filteredRecipes, setFilteredRecipes] = useState([]);
-  // SelectedDosha wird nun initial vom Context oder 'all' gesetzt, wenn Context noch lädt oder kein Dosha bekannt
-  const [selectedDosha, setSelectedDosha] = useState('all'); // 'all', 'vata', 'pitta', 'kapha'
+  const [selectedDosha, setSelectedDosha] = useState('all'); // Default, wird ggf. überschrieben
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  // Effekt, um selectedDosha zu setzen, sobald der contextDoshaType verfügbar ist
+  // Hilfs-State, um sicherzustellen, dass der erste API-Call erst nach Initialisierung von selectedDosha erfolgt.
+  const [isInitialFilterSet, setIsInitialFilterSet] = useState(false);
+
+  // 1. Effekt: Setze den initialen selectedDosha basierend auf dem UserContext.
   useEffect(() => {
-    if (!loadingKeycloak && contextDoshaType) {
-      setSelectedDosha(contextDoshaType.toLowerCase());
-    } else if (!loadingKeycloak && !contextDoshaType) {
-      setSelectedDosha('all'); // Fallback, wenn kein Dosha bekannt
+    if (!loadingKeycloak) { // Warten bis Keycloak-Initialisierung abgeschlossen ist
+      if (contextDoshaType) {
+        setSelectedDosha(contextDoshaType.toLowerCase());
+      } else {
+        setSelectedDosha('all'); // Fallback, wenn kein Dosha im Context bekannt
+      }
+      setIsInitialFilterSet(true); // Signalisiert, dass der initiale Filter gesetzt ist
     }
-    // Wenn loadingKeycloak true ist, bleibt der Default 'all' vorerst
   }, [contextDoshaType, loadingKeycloak]);
 
-  // Lade Rezepte (hier Dummy-Daten, später API)
+  // 2. Effekt: Lade Rezepte basierend auf selectedDosha, sobald der initiale Filter gesetzt ist.
   useEffect(() => {
-    // TODO: Hier API-Aufruf implementieren, um Rezepte zu laden
-    setRecipes(dummyRecipes);
-  }, []);
-
-  // Filter Rezepte, wenn sich selectedDosha oder die Haupt-Rezeptliste ändert
-  useEffect(() => {
-    if (selectedDosha === 'all') {
-      setFilteredRecipes(recipes);
-    } else {
-      setFilteredRecipes(
-        recipes.filter(recipe => recipe.dosha.includes(selectedDosha))
-      );
+    // Nur laden, wenn Keycloak bereit ist UND der initiale Filterwert gesetzt wurde.
+    if (loadingKeycloak || !isInitialFilterSet) {
+      return;
     }
-  }, [selectedDosha, recipes]);
+
+    const fetchRecipesFromApi = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        // 'all' wird an den recipeService übergeben, der es als 'null' (für alle Rezepte) interpretiert.
+        const doshaToFetch = selectedDosha === 'all' ? null : selectedDosha;
+        const fetchedData = await recipeService.getAllRecipes(doshaToFetch);
+        setRecipes(fetchedData || []);
+      } catch (err) {
+        setError(err.message || "Fehler beim Laden der Rezepte.");
+        setRecipes([]);
+        console.error("Error fetching recipes:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipesFromApi();
+  }, [selectedDosha, loadingKeycloak, isInitialFilterSet]); // Abhängigkeiten
 
   const handleDoshaChange = (event) => {
     setSelectedDosha(event.target.value);
   };
 
-  // Wenn der Context noch lädt, könnte man einen Ladezustand anzeigen oder einfach 'all' beibehalten
-  if (loadingKeycloak && selectedDosha === 'all' && !contextDoshaType) {
-     // Optional: Zeige eine Ladeanzeige, bis der DoshaTyp vom Context geladen ist
-     // console.log("RezeptePage: Warte auf UserContext Initialisierung für Dosha-Filter...");
+  if (loading && !isInitialFilterSet) { // Zeige Ladeindikator, wenn Keycloak noch lädt
+    return <div className={styles.loadingMessage}>Initialisiere Filter...</div>;
+  }
+  if (loading && isInitialFilterSet) { // Zeige Ladeindikator, wenn Rezepte geladen werden
+    return <div className={styles.loadingMessage}>Lade Rezepte...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.noRecipesMessage}>Fehler: {error}</div>;
   }
 
   return (
@@ -156,26 +137,30 @@ const RezeptePage = () => {
       </section>
 
       <section className={styles.recipesGrid}>
-        {filteredRecipes.length > 0 ? (
-          filteredRecipes.map(recipe => (
+        {recipes.length > 0 ? (
+          recipes.map(recipe => (
             <div key={recipe.id} className={styles.recipeCard}>
               <div className={styles.imagePreview}>
-                <img src={recipe.image} alt={recipe.name} />
+                <img 
+                    src={recipe.imageUrl || '/img/recipes/default_recipe_image.jpg'} 
+                    alt={recipe.title} 
+                />
               </div>
               <div className={styles.recipeInfo}>
-                <p className={styles.recipeName}>{recipe.name}</p>
-                <p className={styles.description}>{recipe.description}</p>
+                <p className={styles.recipeName}>{recipe.title}</p>
+                <p className={styles.description}>{recipe.previewDescription}</p>
               </div>
-              {/* Link zur Detailseite des Rezepts */}
               <Link to={`/rezepte/${recipe.id}`} className={styles.discoverRecipe}>
                 Mehr
               </Link>
             </div>
           ))
         ) : (
-          <p className={styles.noRecipesMessage}>
-            Keine Rezepte für die Auswahl "{selectedDosha}" gefunden.
-          </p>
+          !loading && ( 
+            <p className={styles.noRecipesMessage}>
+              Keine Rezepte für die Auswahl "{selectedDosha === 'all' ? 'Alle' : selectedDosha.charAt(0).toUpperCase() + selectedDosha.slice(1)}" gefunden.
+            </p>
+          )
         )}
       </section>
     </div>

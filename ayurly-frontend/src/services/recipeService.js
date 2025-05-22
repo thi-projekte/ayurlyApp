@@ -4,6 +4,26 @@ import keycloakService from './keycloakService'; // Um Token zu bekommen für Ak
 const API_BASE_URL = '/api/recipes';
 
 /**
+ * Ruft alle Rezepte oder nach Dosha-Typ gefilterte Rezepte vom Backend ab.
+ * @param {string|null} doshaType - Optionaler Dosha-Typ zum Filtern (z.B. 'vata', 'pitta', 'kapha').
+ * Bei null oder 'all' (serverseitig interpretiert) werden alle Rezepte geladen.
+ * @returns {Promise<Array<object>>} Eine Liste von Rezept-Datenobjekten.
+ */
+const getAllRecipes = async (doshaType = null) => {
+  const token = keycloakService.getToken(); // Token für eventuelle Authentifizierung oder personalisierte Daten
+  let url = API_BASE_URL;
+  if (doshaType && doshaType !== 'all') {
+    url += `?doshaType=${encodeURIComponent(doshaType)}`;
+  }
+  // Wenn der 'personalized' Endpunkt für eingeloggte User ohne Dosha-Filter genutzt werden soll:
+  // if (isLoggedIn && (!doshaType || doshaType === 'all')) {
+  //   url = `${API_BASE_URL}/personalized`;
+  // }
+
+  return apiRequest(url, 'GET', null, token);
+};
+
+/**
  * Ruft ein einzelnes Rezept anhand seiner ID vom Backend ab.
  * @param {string} recipeId - Die UUID des Rezepts.
  * @returns {Promise<object>} Das Rezept-Datenobjekt.
@@ -60,6 +80,7 @@ const unlikeRecipe = async (recipeId) => {
 
 
 export default {
+  getAllRecipes,
   getRecipeById,
   likeRecipe,
   unlikeRecipe,
