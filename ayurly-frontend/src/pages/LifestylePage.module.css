@@ -242,7 +242,10 @@
 }
 
 @media (max-width: 768px) {
-  .top {
+  .zoomOutimage {
+    height: 600px;
+  }
+    .top {
     font-size: 13pt;
   }
   .statement {
