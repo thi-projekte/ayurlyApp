@@ -1,50 +1,56 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RezepteDetailPage.module.css';
-import recipeService from '../services/recipeService'; // NEU
-import { useUser } from '../contexts/UserContext'; // NEU für Like-Funktion
-
-// Importiere Icons (Beispiel, passe Pfade/Namen an deine Flaticon-Integration an)
-// Alternativ kannst du SVG-Icons direkt als Komponenten importieren.
-// Für dieses Beispiel verwenden wir FontAwesome-ähnliche Klassen als Platzhalter für Flaticon.
-// Du müsstest sicherstellen, dass die entsprechenden Flaticon-Klassen global verfügbar sind
-// oder die i-Tags durch img/svg ersetzen.
-// z.B. <i className="fi fi-rr-clock-five"></i> für Zeit
+import recipeService from '../services/recipeService'; 
+import { useUser } from '../contexts/UserContext'; 
+// Importiere Icons von react-icons (Font Awesome)
+import { FaRegThumbsUp, FaThumbsUp, FaRegClock, FaUsers } from 'react-icons/fa'; // Oder FiThumbsUp, FiClock etc. von Feather
 
 const RezepteDetailPage = () => {
   const { rezeptId } = useParams();
-  const { isLoggedIn, login } = useUser(); // isLoggedIn und login für Like-Button
+  const { isLoggedIn, login, loadingKeycloak, keycloakInstance } = useUser(); // Hole Keycloak-Status,Token-Instanz, isLoggedIn und login für Like-Button
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchRecipe = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await recipeService.getRecipeById(rezeptId);
-      setRecipe(data);
-    } catch (err) {
-      setError(err.message || 'Fehler beim Laden des Rezepts.');
-      console.error("Error fetching recipe:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [rezeptId]);
-
+  // loadRecipe in useEffect, um Abhängigkeiten korrekt zu handhaben
   useEffect(() => {
-    fetchRecipe();
-  }, [fetchRecipe]);
+    // Funktion zum Laden des Rezepts definieren
+    const loadRecipe = async () => {
+      if (loadingKeycloak) {
+        // Wenn Keycloak noch lädt, nicht fortfahren.
+        // Der useEffect wird erneut getriggert, wenn loadingKeycloak sich ändert.
+        return;
+      }
+      setLoading(true);
+      setError(null);
+      try {
+        // recipeService.getRecipeById sollte den Token intern über keycloakService beziehen können.
+        // Die Abhängigkeit von isLoggedIn stellt sicher, dass bei Login/Logout neu geladen wird,
+        // und somit `likedByCurrentUser` korrekt vom Backend kommt.
+        const data = await recipeService.getRecipeById(rezeptId);
+        setRecipe(data);
+      } catch (err) {
+        setError(err.message || 'Fehler beim Laden des Rezepts.');
+        console.error("Error fetching recipe:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRecipe(); // Führe die Ladefunktion aus
+
+  }, [rezeptId, loadingKeycloak, isLoggedIn]); // Abhängigkeiten: Neu laden, wenn ID, Keycloak-Ladezustand oder Login-Status sich ändert
 
   const handleLikeToggle = async () => {
     if (!isLoggedIn) {
-      // Optional: Hinweis anzeigen oder direkt zum Login weiterleiten
       alert("Bitte melde dich an, um Rezepte zu liken.");
       login(); // Keycloak Login starten
       return;
     }
     if (!recipe) return;
 
+    setLoading(true); // Zeige einen Ladeindikator während der Like-Aktion
     try {
       let updatedRecipeData;
       if (recipe.likedByCurrentUser) {
@@ -52,9 +58,6 @@ const RezepteDetailPage = () => {
       } else {
         updatedRecipeData = await recipeService.likeRecipe(recipe.id);
       }
-      // Backend sollte das aktualisierte Rezept oder zumindest den neuen Like-Status/Count zurückgeben.
-      // RecipeContentResource.java gibt LikeResponseDto zurück.
-      // Wir aktualisieren das Frontend basierend auf dieser Antwort.
       setRecipe(prevRecipe => ({
         ...prevRecipe,
         likeCount: updatedRecipeData.likeCount,
@@ -63,11 +66,12 @@ const RezepteDetailPage = () => {
     } catch (err) {
       setError(err.message || "Fehler bei der Like-Aktion.");
       console.error("Error toggling like:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-
-  if (loading) {
+  if (loadingKeycloak || loading) { // Zeige Ladeindikator, wenn Keycloak oder Rezeptdaten laden
     return <div className={styles.loading}>Rezept wird geladen...</div>;
   }
 
@@ -79,7 +83,6 @@ const RezepteDetailPage = () => {
     return <div className={styles.error}>Rezept nicht gefunden.</div>;
   }
 
-  // Hilfsfunktion für Dosha-Tags (aus altem Code übernommen)
   const getDoshaTagClass = (dosha) => {
     switch (dosha.toLowerCase()) {
         case 'vata': return styles.doshaTagVata;
@@ -90,16 +93,12 @@ const RezepteDetailPage = () => {
     }
   };
 
-  // Simuliere "Benefits"-Liste aus dem String, falls API es nicht als Array liefert.
-  // Besser wäre es, wenn die API `benefits` als String-Array liefert.
-  // Hier ein einfacher Split bei Zeilenumbruch oder Semikolon.
   const benefitsList = Array.isArray(recipe.benefits) ? recipe.benefits.map(b => b.trim()).filter(b => b) : [];
-  const benefitIcons = ["✨", "🌿", "🔥", "💨", "💧"]; // Beispiel-Icons
 
-  return (
+
+   return (
     <div className={styles.pageContainer}>
       <article className={styles.recipeDetailWrapper}>
-        {/* Hero Section */}
         <section className={styles.heroSection}>
           <div className={styles.heroImageContainer}>
             <img src={recipe.imageUrl || '/img/recipes/default_recipe_image.jpg'} alt={recipe.title} className={styles.heroImage} />
@@ -109,13 +108,13 @@ const RezepteDetailPage = () => {
             <div className={styles.metaInfoBar}>
               {recipe.preparationTimeMinutes && (
                 <span className={styles.metaItem}>
-                  <i className="fi fi-rr-clock-five"></i> {/* Flaticon Beispiel */}
+                  <FaRegClock /> {/* react-icon */}
                   {recipe.preparationTimeMinutes} min
                 </span>
               )}
               {recipe.numberOfPortions && (
                 <span className={styles.metaItem}>
-                  <i className="fi fi-rr-users-alt"></i> {/* Flaticon Beispiel */}
+                  <FaUsers /> {/* react-icon */}
                   {recipe.numberOfPortions} Portionen
                 </span>
               )}
@@ -123,9 +122,9 @@ const RezepteDetailPage = () => {
                 onClick={handleLikeToggle}
                 className={`${styles.likeButton} ${recipe.likedByCurrentUser ? styles.liked : ''}`}
                 aria-label={recipe.likedByCurrentUser ? "Unlike this recipe" : "Like this recipe"}
+                disabled={loading} // Deaktiviere Button während Like-Aktion
               >
-                {/*<i className={`fi fi-${recipe.likedByCurrentUser ? 'ss' : 'rr'}-heart`}></i>  Solid vs Regular Heart */}
-                <i className={`fi fi-${recipe.likedByCurrentUser ? 'ss' : 'rr'}-thumbs-up`}></i>
+                {recipe.likedByCurrentUser ? <FaThumbsUp /> : <FaRegThumbsUp />} {/* react-icons */}
                 <span className={styles.likeCount}>{recipe.likeCount}</span>
               </button>
             </div>
@@ -154,7 +153,6 @@ const RezepteDetailPage = () => {
           </div>
         </section>
 
-        {/* Content Section (Zutaten & Zubereitung) */}
         <section className={styles.contentSection}>
           {recipe.ingredients && recipe.ingredients.length > 0 && (
             <div className={styles.ingredientsContainer}>
@@ -175,7 +173,7 @@ const RezepteDetailPage = () => {
             <div className={styles.preparationContainer}>
               <h2 className={styles.sectionTitle}>Zubereitung</h2>
               <ol className={styles.preparationList}>
-                {recipe.preparationSteps.map((step) => ( // sortiert nach step.stepNumber in der API/DB
+                {recipe.preparationSteps.map((step) => (
                   <li key={step.stepNumber} className={styles.preparationStep}>
                     <span className={styles.stepNumber}>{step.stepNumber}.</span>
                     <p className={styles.stepDescription}>{step.description}</p>
