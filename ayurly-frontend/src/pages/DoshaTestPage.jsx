@@ -600,6 +600,8 @@ const DoshaTestPage = () => {
         <div className={styles.quizWrapper}>
           <div className={styles.gamificationCard} id="result-container">
             <p className={styles.resultText} id="result-text">{resultText || 'Ergebnis wird geladen...'}</p>
+            
+            {/* Primäre Aktionen zum Ergebnis */}
             <div className={styles.resultActions}>
               {resultDosha && (
                 <button className={styles.resultButton} onClick={openModalForDosha}>
@@ -613,11 +615,13 @@ const DoshaTestPage = () => {
                 Yoga für {resultDosha ? resultDosha.charAt(0).toUpperCase() + resultDosha.slice(1) : 'Dein Dosha'}
               </button>
             </div>
+
+            {/* Sekundäre Navigations-Aktionen */}
             <div className={styles.navigationButtons}>
               <button className={styles.resultButton} onClick={restartTest}>
                 Test neu starten
               </button>
-              <button className={styles.resultButton} onClick={() => navigate('/account')} style={{ marginLeft: '10px' }}>
+              <button className={styles.resultButton} onClick={() => navigate('/account')}>
                 Zum Account
               </button>
             </div>
