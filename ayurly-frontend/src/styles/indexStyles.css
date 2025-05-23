@@ -54,11 +54,6 @@
 }
 
 /* Allgemeine Section-Stylings für Konsistenz */
-section {
-    padding-left: 20px;
-    /* Grundlegendes Seiten-Padding */
-    padding-right: 20px;
-}
 
 section:not(#ground):not(.parallax) {
     margin-bottom: 10px;
