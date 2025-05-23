@@ -1,8 +1,8 @@
-// src/pages/DoshaTestPage.jsx
-import React, { useState } from 'react'; // useEffect nicht mehr benötigt für diese Logik
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import styles from './DoshaTestPage.module.css';
 import { useUser } from '../contexts/UserContext';
+import Modal from '../components/UI/Modal'; // Modal-Komponente importieren
 
 const questions = [
   {
@@ -68,8 +68,23 @@ const DoshaTestPage = () => {
   });
   const [showResult, setShowResult] = useState(false);
   const [resultText, setResultText] = useState('');
+  const [resultDosha, setResultDosha] = useState(null);
   const navigate = useNavigate();
   const { updateUserDosha } = useUser();
+
+  const [showDoshaDetailModal, setShowDoshaDetailModal] = useState(false);
+
+  // Body scroll verhindern, wenn Modal offen ist
+  useEffect(() => {
+    if (showDoshaDetailModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showDoshaDetailModal]);
 
   const progressPercent = questions.length > 0 ? Math.round(((currentQuestionIndex) / questions.length) * 100) : 0;
 
@@ -79,17 +94,19 @@ const DoshaTestPage = () => {
 
     if (sortedDoshas.length === 0 || sortedDoshas[0][1] === 0) {
       setResultText("Fehler bei der Ergebnisermittlung. Bitte neu starten.");
+      setResultDosha(null);
       localStorage.removeItem("selectedDosha");
       return;
     }
 
     const maxDosha = sortedDoshas[0][0];
+    setResultDosha(maxDosha);
     let text = "Du bist hauptsächlich: ";
     switch (maxDosha) {
       case "vata": text += "🌀 Vata – kreativ, beweglich, aber manchmal unruhig."; break;
       case "pitta": text += "🔥 Pitta – zielstrebig, stark, aber schnell reizbar."; break;
       case "kapha": text += "🌱 Kapha – stabil, liebevoll, aber neigt zur Trägheit."; break;
-      default: text = "Ergebnis konnte nicht ermittelt werden.";
+      default: text = "Ergebnis konnte nicht ermittelt werden."; setResultDosha(null);
     }
     setResultText(text);
     // Den ermittelten Dosha-Typ über den Context aktualisieren
@@ -131,12 +148,449 @@ const DoshaTestPage = () => {
     setDoshaCounts(questions[0] ? Object.keys(questions[0].answers).reduce((acc, key) => ({ ...acc, [key]: 0 }), {}) : {});
     setShowResult(false);
     setResultText('');
+    setResultDosha(null);
+    setShowDoshaDetailModal(false);
+  };
+
+  const openModalForDosha = () => {
+    if (resultDosha) {
+        setShowDoshaDetailModal(true);
+    }
+  };
+  const closeModal = () => setShowDoshaDetailModal(false);
+
+  // ##### MODAL CONTENT #####
+  const VataModalContent = () => (
+    <>
+      <div className="generalInfo">
+        <video src="/videos/index/vata.mp4" type="video/mp4" autoPlay loop muted playsInline></video>
+        <div className="modalText"> {/* Klasse modalText für Konsistenz mit indexStyles.css */}
+          <h2 id="VataName">Vata</h2>
+          <p>
+            Vata ist eines der drei Doshas im Ayurveda und repräsentiert die
+            Elemente Luft und Äther (Raum). Es ist verantwortlich für
+            Bewegung, Kommunikation, Atmung und das Nervensystem. Vata
+            dominiert typischerweise in den kälteren Jahreszeiten,
+            insbesondere im Herbst und Winter.
+          </p>
+        </div>
+      </div>
+      <div className="characteristics">
+            <div className="firstRow">
+              <div className="rowContent">
+                <p className="characteristic">Körperbau</p>
+                <p>Schlank, leicht, zart gebaut</p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic">Haut & Haare</p>
+                <p>Trockene Haut und Haare</p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic">Temperatur</p>
+                <p>Neigung zu kalten Händen und Füßen</p>
+              </div>
+            </div>
+            <div className="secondRow">
+              <div className="rowContent">
+                <p className="characteristic">Verdauung</p>
+                <p>Unregelmäßiger Appetit und Verdauung</p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic">Geist & Emotionen</p>
+                <p>
+                  Kreativ, lebhaft, enthusiastisch, aber auch anfällig für
+                  Sorgen, Ängste und Schlafstörungen.
+                </p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic">Schlaf</p>
+                <p>Leichter Schlaf, neigt zu Schlaflosigkeit.</p>
+              </div>
+            </div>
+        </div>
+        <div className="problems">
+            <h3 className="spacerHeading">Probleme bei Vata Überschuss</h3>
+            <div className="problem">
+              <p className="problemName">🫀 Körperliche Symptome</p>
+              <p className="problemDescription">
+                Trockene Haut, Verstopfung, Blähungen, Gelenkschmerzen,
+                Muskelverspannungen.
+              </p>
+            </div>
+            <div className="problem">
+              <p className="problemName">🧠 Psychische Symptome</p>
+              <p className="problemDescription">
+                Angstzustände, Nervosität, Konzentrationsschwierigkeiten,
+                Schlaflosigkeit.
+              </p>
+            </div>
+            <div className="problem">
+              <p className="problemName">🤝 Verhalten</p>
+              <p className="problemDescription">
+                Unruhe, Überforderung, Schwierigkeiten, zur Ruhe zu kommen.
+              </p>
+            </div>
+        </div>
+        <div className="tips">
+            <h3 className="spacerHeading">10 Tipps Für den Vata-Typ</h3>
+            <img src="/img/index/VataTipp.gif" alt="Vata Tipps" />
+        </div>
+        <div className="foodTips">
+            <h3 className="spacerHeading">Ernährungstipps</h3>
+            <div className="foodtip">
+              <div className="tipCard">
+                <p>Bevorzugte Geschmacksrichtungen 👍</p>
+                <div className="list" id="positive">
+                  <p>Süß</p>
+                  <p>Sauer</p>
+                  <p>Salzig</p>
+                </div>
+              </div>
+              <div className="tipCard">
+                <p>Zu vermeiden 👎</p>
+                <div className="list" id="negative">
+                  <p>
+                    Rohkost. Rohes Gemüse und Salate können schwer verdaulich
+                    sein.
+                  </p>
+                  <p>
+                    Trockene Lebensmittel. Cracker, Chips, Trockenfrüchte ohne
+                    Einweichen.
+                  </p>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div className="recommendations">
+            <h3 className="spacerHeading">Empfohlene Lebensmittel</h3>
+            <div className="recommendationRow">
+              <div className="recommendation">
+                <img src="/img/index/getreide.jpg" alt="Getreide" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Getreide</p>
+                  <p>Reis, Hafer, Dinkel, Weizen.</p>
+                </div>
+              </div>
+              <div className="recommendation">
+                <img src="/img/index/gemuese.jpg" alt="Gemüse" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Gemüse</p>
+                  <p>Karotten, Rüben, Kürbis, Zucchini, Süßkartoffel.</p>
+                </div>
+              </div>
+            </div>
+            <div className="recommendationRow">
+              <div className="recommendation">
+                <img src="/img/index/obst.jpg" alt="Obst" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Obst</p>
+                  <p>Reife, süße Früchte, wie Bananen, Mangos oder Äpfel.</p>
+                </div>
+              </div>
+              <div className="recommendation">
+                <img src="/img/index/huelsenfruechte.jpg" alt="Hülsenfrüchte" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Hülsenfrüchte</p>
+                  <p>In Maßen, gut gekocht und gewürzt.</p>
+                </div>
+              </div>
+            </div>
+        </div>
+    </>
+  );
+
+  const PittaModalContent = () => (
+    <>
+        <div className="generalInfo">
+            <video src="/videos/index/Pitta.mp4" type="video/mp4" autoPlay loop muted playsInline id="pittaVideo"></video>
+            <div className="modalText">
+              <h2 id="PittaName">Pitta</h2>
+              <p>
+                Pitta ist eines der drei Doshas im Ayurveda und repräsentiert
+                die Elemente Feuer und Wasser. Es ist verantwortlich für
+                Stoffwechsel, Verdauung, Körpertemperatur und Intellekt. Ein
+                ausgeglichenes Pitta-Dosha zeigt sich in guter Verdauung, klarer
+                Sehkraft, ausgeglichener Körpertemperatur sowie in einem klaren,
+                leistungsfähigen Intellekt und ausgeglichenen Emotionen.
+              </p>
+            </div>
+          </div>
+          <div className="characteristics">
+            <div className="firstRow">
+              <div className="rowContent">
+                <p className="characteristic" id="PittaCharacteristicName">Körperbau</p>
+                <p>Athletisch, mittelgroß, gut proportioniert.</p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic" id="PittaCharacteristicName">Haut & Haare</p>
+                <p>
+                  Helle, empfindliche Haut mit Neigung zu Rötungen; blondes oder
+                  rotes Haar, oft fein und licht.
+                </p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic" id="PittaCharacteristicName">Temperatur</p>
+                <p>Neigung zu Hitzeempfindlichkeit und Schwitzen.</p>
+              </div>
+            </div>
+            <div className="secondRow">
+              <div className="rowContent">
+                <p className="characteristic" id="PittaCharacteristicName">Verdauung</p>
+                <p>Starker Appetit und schnelle Verdauung.</p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic" id="PittaCharacteristicName">Geist & Emotionen</p>
+                <p>
+                  Scharfer Intellekt, zielstrebig, organisiert, aber auch
+                  anfällig für Ungeduld und Reizbarkeit.
+                </p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic" id="PittaCharacteristicName">Schlaf</p>
+                <p>
+                  In der Regel guter, tiefer Schlaf, aber oft nicht sehr lang.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="problems">
+            <h3 className="spacerHeading">Probleme bei Pitta Überschuss</h3>
+            <div className="problem">
+              <p className="problemName">🫀 Körperliche Symptome</p>
+              <p className="problemDescription">
+                Entzündungen, Hautprobleme (z.B. Akne, Rötungen), Sodbrennen,
+                übermäßiges Schwitzen.
+              </p>
+            </div>
+            <div className="problem">
+              <p className="problemName">🧠 Psychische Symptome</p>
+              <p className="problemDescription">
+                Reizbarkeit, Zorn, Ungeduld, Perfektionismus.
+              </p>
+            </div>
+            <div className="problem">
+              <p className="problemName">🤝 Verhalten</p>
+              <p className="problemDescription">
+                Übermäßiger Ehrgeiz, Konkurrenzdenken, Neigung zu Kritik.
+              </p>
+            </div>
+          </div>
+          <div className="tips">
+            <h3 className="spacerHeading">10 Tipps Für den Pitta-Typ</h3>
+            <img src="/img/index/PittaTipp.gif" alt="Pitta Tipps" />
+          </div>
+          <div className="foodTips">
+            <h3 className="spacerHeading">Ernährungstipps</h3>
+            <div className="foodtip">
+              <div className="tipCard">
+                <p>Bevorzugte Geschmacksrichtungen 👍</p>
+                <div className="list" id="positive">
+                  <p>Süß</p>
+                  <p>Bitter</p>
+                  <p>Herb</p>
+                </div>
+              </div>
+              <div className="tipCard">
+                <p>Zu vermeiden 👎</p>
+                <div className="list" id="negative">
+                  <p>
+                    Scharfe, saure und salzige Speisen: Chili, Essig, gesalzene
+                    Snacks.
+                  </p>
+                  <p>
+                    Koffein (z.B. Kaffee, schwarzer Tee) – wirkt erhitzend und
+                    reizt den Magen.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="recommendations">
+            <h3 className="spacerHeading">Empfohlene Lebensmittel</h3>
+            <div className="recommendationRow">
+              <div className="recommendation">
+                <img src="/img/index/getreide.jpg" alt="Getreide" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Getreide</p>
+                  <p>Reis, Gerste, Hafer.</p>
+                </div>
+              </div>
+              <div className="recommendation">
+                <img src="/img/index/gemuese.jpg" alt="Gemüse" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Gemüse</p>
+                  <p>Artischocken, Spargel, Spinat, Brokkoli, Zucchini.</p>
+                </div>
+              </div>
+            </div>
+            <div className="recommendationRow">
+              <div className="recommendation">
+                <img src="/img/index/obst.jpg" alt="Obst" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Obst</p>
+                  <p>Süße, saftige Früchte wie Melonen, Birnen, Kirschen.</p>
+                </div>
+              </div>
+              <div className="recommendation">
+                <img src="/img/index/milk.jpg" alt="Milchprodukte" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Milchprodukte</p>
+                  <p>Ghee, Milch, Butter in Maßen</p>
+                </div>
+              </div>
+            </div>
+          </div>
+    </>
+  );
+
+  const KaphaModalContent = () => (
+    <>
+        <div className="generalInfo">
+            <video src="/videos/index/Kapha.mp4" type="video/mp4" autoPlay loop muted playsInline id="kaphaVideo"></video>
+            <div className="modalText">
+              <h2 id="KaphaName">Kapha</h2>
+              <p>
+                Kapha ist eines der drei Doshas im Ayurveda und repräsentiert
+                die Elemente Erde und Wasser. Es steht für Struktur, Stabilität
+                und Ausdauer. Kapha verleiht dem Körper Form und Festigkeit und
+                ist verantwortlich für die Schmierung der Gelenke sowie die
+                Aufrechterhaltung der Immunität.
+              </p>
+            </div>
+          </div>
+          <div className="characteristics">
+            <div className="firstRow">
+              <div className="rowContent">
+                <p className="characteristic" id="KaphaCharacteristicName">Körperbau</p>
+                <p>Kräftig, stabil, neigen zu Übergewicht.</p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic" id="KaphaCharacteristicName">Haut & Haare</p>
+                <p>Fettige Haut, volles und kräftiges Haar.</p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic" id="KaphaCharacteristicName">Temperatur</p>
+                <p>Kühlere Körpertemperatur, mag Wärme.</p>
+              </div>
+            </div>
+            <div className="secondRow">
+              <div className="rowContent">
+                <p className="characteristic" id="KaphaCharacteristicName">Verdauung</p>
+                <p>Langsamer Stoffwechsel, neigen zu Gewichtszunahme.</p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic" id="KaphaCharacteristicName">Energie</p>
+                <p>Langsame, aber ausdauernde Energie; neigen zu Trägheit.</p>
+              </div>
+              <div className="rowContent">
+                <p className="characteristic" id="KaphaCharacteristicName">Schlaf</p>
+                <p>Tiefer und langer Schlaf.</p>
+              </div>
+            </div>
+          </div>
+          <div className="problems">
+            <h3 className="spacerHeading">Probleme bei Kapha Überschuss</h3>
+            <div className="problem">
+              <p className="problemName">🫀 Körperliche Symptome</p>
+              <p className="problemDescription">
+                Übergewicht, Wassereinlagerungen, Schleimbildung,
+                Verdauungsprobleme.
+              </p>
+            </div>
+            <div className="problem">
+              <p className="problemName">🧠 Psychische Symptome</p>
+              <p className="problemDescription">
+                Antriebslosigkeit, Depression, übermäßige Anhänglichkeit.
+              </p>
+            </div>
+            <div className="problem">
+              <p className="problemName">🤝 Verhalten</p>
+              <p className="problemDescription">
+                Trägheit, Widerstand gegen Veränderung.
+              </p>
+            </div>
+          </div>
+          <div className="tips">
+            <h3 className="spacerHeading">10 Tipps Für den Kapha-Typ</h3>
+            <img src="/img/index/KaphaTipp.gif" alt="Kapha Tipps" />
+          </div>
+          <div className="foodTips">
+            <h3 className="spacerHeading">Ernährungstipps</h3>
+            <div className="foodtip">
+              <div className="tipCard">
+                <p>Bevorzugte Geschmacksrichtungen 👍</p>
+                <div className="list" id="positive">
+                  <p>Scharf</p>
+                  <p>Bitter</p>
+                  <p>Herb</p>
+                </div>
+              </div>
+              <div className="tipCard">
+                <p>Zu vermeiden 👎</p>
+                <div className="list" id="negative">
+                  <p>
+                    Schwere und fettige Speisen. Frittierte Lebensmittel, Käse,
+                    Sahne.
+                  </p>
+                  <p>Süßigkeiten und Zucker. Begrenze den Konsum von Süßem.</p>
+                  <p>
+                    Kalte und rohe Speisen. Vermeide kalte Getränke und rohe
+                    Lebensmittel.
+                  </p>
+                  <p>Salz. Reduziere die Salzaufnahme.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="recommendations">
+            <h3 className="spacerHeading">Empfohlene Lebensmittel</h3>
+            <div className="recommendationRow">
+              <div className="recommendation">
+                <img src="/img/index/getreide.jpg" alt="Getreide" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Getreide</p>
+                  <p>Gerste, Buchweizen, Hirse.</p>
+                </div>
+              </div>
+              <div className="recommendation">
+                <img src="/img/index/gemuese.jpg" alt="Gemüse" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Gemüse</p>
+                  <p>Grünes Blattgemüse, Brokkoli, Blumenkohl, Spargel.</p>
+                </div>
+              </div>
+            </div>
+            <div className="recommendationRow">
+              <div className="recommendation">
+                <img src="/img/index/gewuerze.jpg" alt="Gewürze" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Gewürze</p>
+                  <p>Ingwer, Pfeffer, Kurkuma, Kreuzkümmel.</p>
+                </div>
+              </div>
+              <div className="recommendation">
+                <img src="/img/index/huelsenfruechte.jpg" alt="Hülsenfrüchte" />
+                <div className="recommendationDescription">
+                  <p className="recommendationName">Hülsenfrüchte</p>
+                  <p>Linsen, Kichererbsen, Bohnen.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+    </>
+  );
+
+  const getModalContent = () => {
+    switch (resultDosha) {
+      case 'vata': return <VataModalContent />;
+      case 'pitta': return <PittaModalContent />;
+      case 'kapha': return <KaphaModalContent />;
+      default: return null;
+    }
   };
 
 
   // ==================== JSX RENDERING ====================
-
-  // Ergebnis-Ansicht
   if (showResult) {
     return (
       <div className={styles.contentWrapper}>
@@ -146,16 +600,34 @@ const DoshaTestPage = () => {
         <div className={styles.quizWrapper}>
           <div className={styles.gamificationCard} id="result-container">
             <p className={styles.resultText} id="result-text">{resultText || 'Ergebnis wird geladen...'}</p>
-            <div className={styles.buttons}>
-              <button className={styles.neuStartenButton} onClick={restartTest}>
-                Neu starten
+            <div className={styles.resultActions}>
+              {resultDosha && (
+                <button className={styles.resultButton} onClick={openModalForDosha}>
+                  Mehr über {resultDosha.charAt(0).toUpperCase() + resultDosha.slice(1)} erfahren
+                </button>
+              )}
+              <Link to={`/rezepte?doshaType=${resultDosha || 'all'}`} className={styles.resultButton}>
+                Passende Rezepte finden
+              </Link>
+              <button className={`${styles.actionButton} ${styles.resultButton}`} onClick={() => alert('Yoga-Bereich kommt bald!')}>
+                Yoga für {resultDosha ? resultDosha.charAt(0).toUpperCase() + resultDosha.slice(1) : 'Dein Dosha'}
               </button>
-              <button className={styles.neuStartenButton} onClick={() => navigate('/account')} style={{ marginLeft: '10px' }}>
+            </div>
+            <div className={styles.navigationButtons}>
+              <button className={styles.resultButton} onClick={restartTest}>
+                Test neu starten
+              </button>
+              <button className={styles.resultButton} onClick={() => navigate('/account')} style={{ marginLeft: '10px' }}>
                 Zum Account
               </button>
             </div>
           </div>
         </div>
+        {resultDosha && (
+            <Modal show={showDoshaDetailModal} onClose={closeModal}>
+                {getModalContent()}
+            </Modal>
+        )}
       </div>
     );
   }
