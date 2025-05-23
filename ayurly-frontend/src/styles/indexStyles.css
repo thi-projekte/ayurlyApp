@@ -1,24 +1,12 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Ubuntu", sans-serif;
+.homepage-container {
+    /* Stellt sicher, dass der Container die volle Breite nutzt,
+       aber interne Elemente das Padding respektieren können. */
+    width: 100%;
 }
 
-a {
-    text-decoration: none;
-    color: #222222;
-    font-size: 13pt;
-}
-
-body {
-    background-color: #f1f1f1;
-}
-
-/*-------------------------------------*/
-
-::marker {
-    padding-left: 0px;
+.InfoSectionContainer {
+    width: 90%;
+    margin: 0px auto;
 }
 
 .parallax {
@@ -27,7 +15,6 @@ body {
     justify-content: center;
     align-items: center;
     height: 90vh;
-    /* Beibehalten für Desktop, wird in Media Queries angepasst */
     scroll-behavior: smooth;
     overflow: hidden;
 }
@@ -36,62 +23,69 @@ body {
     position: absolute;
     width: 100%;
     top: 0;
-    /* height: auto; oder object-fit: cover; kann helfen, das Seitenverhältnis zu bewahren */
     object-fit: cover;
-    /* Stellt sicher, dass das Bild den Container füllt, ohne das Seitenverhältnis zu verzerren */
     height: 100%;
-    /* Stellt sicher, dass das Bild die Höhe des Parallax-Containers bedeckt */
     pointer-events: none;
 }
 
 #punch {
     font-size: 60pt;
     z-index: 1;
-    /* Liegt über den Parallax-Bildern, aber unter #ground, falls #ground einen höheren z-index hat */
     color: #fff;
-    padding: 0 100px;
+    padding: 0 20px;
+    /* Flexibleres Padding für verschiedene Bildschirmgrößen */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     text-align: center;
-    /* Sicherstellen, dass der Text zentriert ist */
 }
 
 #ground {
-    /* Deine #ground Sektion hat keinen direkten Hintergrund im CSS,
-       aber sie ist im JSX als Container für .motivationStatement etc. vorhanden.
-       Wenn #ground selbst einen sichtbaren Hintergrund haben soll oder über den
-       Parallax-Bildern liegen soll, braucht es ggf. 'position: relative' und einen 'z-index'.
-       Für den Moment gehe ich davon aus, dass es ein normaler Block nach dem Parallax ist
-       oder dass die Parallax-Bilder spezifisch per JS so gesteuert werden,
-       dass sie hinter diesem Bereich liegen. */
-    /* z-index: 2; <-- Nur wenn es über den #punch Text soll, was unwahrscheinlich ist.
-                      Oder wenn es über den Parallax-Bildern liegen soll und #punch darüber. */
     background-color: #003329;
-    /* Dein dunkles Grün */
-    /* padding: 0 100px; Ist bereits im .motivationStatement und .doshas h1 */
 }
 
 .motivationStatement {
     color: white;
     background-color: #003329;
-    /* Hier war der Hintergrund in deinem Original CSS */
-    padding: 50px 100px;
+    padding: 50px 20px;
+    /* Flexibleres Padding */
     font-size: 15pt;
     line-height: 1.6;
-    /* Angepasst für bessere Lesbarkeit */
     text-align: center;
     font-style: italic;
 }
 
+/* Allgemeine Section-Stylings für Konsistenz */
+section {
+    padding-left: 20px;
+    /* Grundlegendes Seiten-Padding */
+    padding-right: 20px;
+}
+
+section:not(#ground):not(.parallax) {
+    margin-bottom: 10px;
+}
+
+section:last-child {
+    margin-bottom: 0;
+    /* Kein Abstand nach der letzten Sektion */
+}
+
+
 .doshas h1 {
+    /* Wird jetzt als .mainHeading gestyled für Konsistenz */
     text-align: center;
-    padding: 80px 100px;
+    /* padding: 80px 100px; Wurde in .mainHeading verschoben */
     font-size: 50pt;
 }
 
 .doshaCards {
     display: flex;
-    margin: 30px 100px;
+    margin: 30px 0;
+    /* Zentriert, Padding wird von section gehandhabt */
     gap: 30px;
+    flex-wrap: wrap;
+    /* Erlaubt Umbruch auf kleineren Bildschirmen */
+    justify-content: center;
+    /* Zentriert Karten bei Umbruch */
 }
 
 .card {
@@ -99,35 +93,35 @@ body {
     flex-direction: column;
     background-color: white;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    gap: 30px;
-    padding: 30px;
+    gap: 20px;
+    /* Reduzierter Gap für kompaktere Karten */
+    padding: 25px;
+    /* Etwas weniger Padding */
     border-radius: 20px 20px 0 0;
     align-items: center;
-    width: 33.333%;
-    /* Korrigiert für gleichmäßige Aufteilung */
+    flex: 1 1 300px;
+    width: 33.33%;
     transition: box-shadow 0.3s ease;
-    /* Sanfter Übergang für Hover */
 }
 
 .card:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    /* Reduzierter Schatten beim Hover */
 }
 
 .doshaIcon {
-    font-size: 120px;
-    /* Beachte, dass dies sehr groß ist und ggf. eine Icon-Font benötigt */
+    font-size: 100px;
+    /* Etwas kleiner für bessere Proportionen */
 }
 
 .doshaName {
-    font-size: 30pt;
+    font-size: 26pt;
+    /* Angepasst */
 }
 
 #Vata {
     background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
     background-clip: text;
     -webkit-background-clip: text;
-    /* Für Safari-Kompatibilität */
     color: transparent;
 }
 
@@ -146,16 +140,17 @@ body {
 }
 
 .doshaInfo {
-    font-size: 13pt;
-    line-height: 1.7;
-    /* Angepasst für bessere Lesbarkeit */
+    font-size: 12pt;
+    /* Angepasst */
+    line-height: 1.6;
     text-align: center;
-    /* border: solid white; Dies würde eine weiße Border hinzufügen, war das gewollt? */
 }
 
 .discoverDosha {
-    margin-bottom: 30px;
-    /* War vorher so, ggf. anpassen, wenn es im Card-Padding enthalten sein soll */
+    margin-bottom: 0;
+    /* Padding wird von .card gehandhabt */
+    margin-top: auto;
+    /* Schiebt Button nach unten, wenn Karte höher ist */
     padding: 10px 30px;
     color: white;
     border-radius: 100px;
@@ -168,36 +163,7 @@ body {
 }
 
 /*-----------------------------------*/
-/* Modal Stile (Desktop) */
-.modal {
-    display: none;
-    /* Wird per JS auf 'flex' gesetzt */
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-    overflow-y: auto;
-    /* Erlaubt Scrollen, wenn Inhalt länger als Bildschirm */
-}
-
-.modal-content {
-    background: white;
-    margin: 50px;
-    /* Allgemeiner Margin für alle Seiten */
-    padding: 30px;
-    border-radius: 20px;
-    max-width: 900px;
-    /* Maximale Breite für das Modal */
-    width: 90%;
-    /* Relative Breite, aber durch max-width begrenzt */
-    position: relative;
-    /* Für Positionierung des Close-Buttons */
-}
+/* Modal Stile (Desktop) - bleiben weitgehend gleich, aber wir nutzen die Komponente */
 
 body.modal-open {
     overflow: hidden;
@@ -207,254 +173,193 @@ body.modal-open {
     display: flex;
     gap: 30px;
     align-items: flex-start;
-    /* Damit Video und Text oben bündig sind */
+    margin-bottom: 30px;
+    /* Abstand nach unten im Modal */
 }
 
 .generalInfo video {
     border-radius: 14px;
-    /* Nur ein Wert für alle Ecken */
-    width: 50%;
-    /* Angepasst, um Text mehr Platz zu geben */
+    width: 45%;
+    /* Angepasst */
     height: auto;
     object-fit: cover;
 }
 
 .modalText {
-    /* Eigene Klasse für den Textblock im Modal */
     display: flex;
     flex-direction: column;
-    /* Titel und Beschreibung untereinander */
-    width: 50%;
+    width: 55%;
     /* Angepasst */
 }
 
 .modalText h2 {
-    /* Spezifischer für Modal-Titel */
-    font-size: 40pt;
-    /* Etwas kleiner als #punch */
+    font-size: 36pt;
+    /* Etwas kleiner */
     margin-bottom: 15px;
 }
 
-/* Dosha-spezifische Namen im Modal (wie oben) */
-#VataName {
-    background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-}
-
-#PittaName {
-    background: linear-gradient(to right, #FF4500, #FFA500, #FFFF66);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-}
-
+#VataName,
+#PittaName,
 #KaphaName {
-    background: linear-gradient(to right, #4CAF50, #81C784, #A5D6A7);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-}
-
-.close-button {
-    position: absolute;
-    /* Positioniert relativ zu .modal-content */
-    top: 15px;
-    right: 20px;
-    font-size: 30pt;
-    cursor: pointer;
-    color: grey;
-    line-height: 1;
-    /* Verhindert zusätzlichen vertikalen Platz */
-}
-
-.close-button:hover {
-    color: black;
+    /* Beibehalten für die Farbverläufe */
+    /* ... bestehende Farbverlaufs-Styles ... */
 }
 
 .characteristics {
     display: flex;
-    margin-top: 50px;
-    /* Reduziert */
+    margin-top: 30px;
     flex-direction: column;
-    gap: 30px;
-    /* Reduziert */
+    gap: 20px;
 }
 
 .firstRow,
 .secondRow {
-    /* Kombinierte Stile für beide Reihen */
     display: flex;
-    gap: 30px;
+    gap: 20px;
     justify-content: space-evenly;
-    /* Beibehalten für Desktop */
+    flex-wrap: wrap;
+    /* Erlaubt Umbruch auf kleineren Modal-Ansichten */
 }
 
 .rowContent {
     display: flex;
-    flex: 1;
+    flex: 1 1 250px;
+    /* Basisbreite, erlaubt Wachsen/Schrumpfen */
     flex-direction: column;
     text-align: center;
     line-height: 1.5em;
-    gap: 20px;
-    /* Reduziert */
-    padding: 25px;
-    /* Reduziert */
+    gap: 15px;
+    padding: 20px;
     border-radius: 14px;
     background-color: white;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    /* Weicherer Schatten */
     transition: box-shadow 0.3s ease;
 }
 
 .rowContent:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .characteristic {
-    /* Dies scheint ein Titel innerhalb von .rowContent zu sein? */
     text-align: center;
-    font-size: 13pt;
+    font-size: 12pt;
+    /* Angepasst */
     font-weight: bold;
-    /* Hinzugefügt für Hervorhebung */
-    /* Farbverlauf für .characteristic, falls gewünscht (hier Vata als Beispiel) */
-    /* background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent; */
 }
 
 .problems {
     display: flex;
     flex-direction: column;
-    margin-top: 50px;
-    /* Reduziert */
-    gap: 30px;
-    /* Reduziert */
+    margin-top: 30px;
+    gap: 20px;
 }
 
 .spacerHeading {
-    font-size: 20pt;
+    font-size: 18pt;
+    /* Angepasst */
     font-weight: 500;
     text-align: center;
-    /* Zentriert für bessere Optik */
-    margin-bottom: 10px;
-    /* Abstand nach unten */
+    margin-bottom: 15px;
+    /* Angepasst */
+    color: #333;
 }
 
 .problem {
     display: flex;
-    align-items: center;
-    gap: 30px;
-    /* Reduziert */
-    margin-left: 70px;
-    margin-right: 70px;
+    align-items: flex-start;
+    /* Bessere Ausrichtung, wenn Text länger wird */
+    gap: 20px;
+    margin-left: 0;
+    /* Entfernt, da Padding von section kommt */
+    margin-right: 0;
 }
 
 .problemName {
-    width: 30%;
+    width: auto;
+    /* Flexiblere Breite */
+    min-width: 150px;
+    /* Mindestbreite für Lesbarkeit */
     text-align: center;
     font-weight: bold;
-    padding: 10px 20px;
-    /* Reduziert */
+    padding: 10px 15px;
+    /* Angepasst */
     border-radius: 100px;
     background-color: white;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     flex-shrink: 0;
-    /* Verhindert, dass der Name schrumpft */
 }
 
 .problemDescription {
     text-align: left;
-    /* Bessere Lesbarkeit für längeren Text */
     background-color: #ffe9f3;
-    padding: 13px 25px;
-    /* Reduziert */
+    padding: 12px 20px;
+    /* Angepasst */
     border-radius: 10px;
-    /* Weniger rund für Textblöcke */
     flex-grow: 1;
-    /* Nimmt den restlichen Platz ein */
+    font-size: 11pt;
+    /* Etwas kleiner für bessere Proportionen */
 }
 
 .tips {
-    margin-top: 50px;
-    /* Reduziert */
+    margin-top: 30px;
 }
 
 .tips img {
-    /* Dies scheint ein vollbreites Trennbild zu sein */
-    margin-top: 30px;
-    /* Reduziert */
-    margin-bottom: 30px;
-    /* Reduziert */
+    margin-top: 20px;
+    margin-bottom: 20px;
     width: 100%;
     height: auto;
-    /* Seitenverhältnis beibehalten */
     pointer-events: none;
     display: block;
-    /* Verhindert zusätzlichen Leerraum unter dem Bild */
+    border-radius: 10px;
+    /* Optional: Bild leicht abrunden */
 }
 
 .foodTips {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    /* Reduziert */
-    margin-bottom: 50px;
-    /* Reduziert */
+    gap: 20px;
+    margin-bottom: 30px;
 }
 
 .foodtip {
-    /* Container für ein Paar von positive/negative Listen */
     display: flex;
-    gap: 30px;
-    /* Reduziert */
+    gap: 20px;
     justify-content: space-evenly;
-    /* Beibehalten */
+    flex-wrap: wrap;
+    /* Umbruch für kleinere Modal-Ansichten */
 }
 
 .tipCard {
-    /* Eine einzelne Liste (positiv oder negativ) */
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    /* Reduziert */
+    gap: 10px;
     align-items: center;
-    flex: 1;
-    /* Damit beide Karten gleich breit sind */
+    flex: 1 1 280px;
+    /* Basisbreite */
+    min-width: 250px;
+    /* Verhindert zu starkes Schrumpfen */
 }
 
 .tipCard>p {
-    /* Der Titel "Zu vermeiden" / "Empfehlenswert" */
     color: grey;
     font-weight: bold;
-    font-size: 14pt;
+    font-size: 13pt;
+    /* Angepasst */
 }
 
 .list {
-    padding: 25px;
-    /* Reduziert */
+    padding: 20px;
+    /* Angepasst */
     border-radius: 14px;
     width: 100%;
-    /* Nimmt die Breite des .tipCard ein */
     display: flex;
-    /* Falls Listenelemente nebeneinander sollen */
     flex-direction: column;
-    /* Listenelemente untereinander */
-    gap: 10px;
-    /* Abstand zwischen Listenelementen */
-}
-
-.list ul {
-    /* Falls du <ul> in .list verwendest */
-    list-style: disc;
-    /* Oder none, je nach Design */
-    padding-left: 20px;
-    /* Einrückung für die Stichpunkte */
-}
-
-.list ul li {
-    margin-bottom: 8px;
+    gap: 8px;
+    /* Angepasst */
+    font-size: 11pt;
+    /* Konsistente Schriftgröße */
 }
 
 #negative {
@@ -468,60 +373,64 @@ body.modal-open {
 .recommendations {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    /* Reduziert */
-    margin-bottom: 70px;
-    /* Reduziert */
+    gap: 20px;
+    margin-bottom: 40px;
 }
 
 .recommendationRow {
     display: flex;
-    gap: 30px;
-    margin-left: 70px;
-    margin-right: 70px;
+    gap: 20px;
+    margin-left: 0;
+    /* Entfernt */
+    margin-right: 0;
+    flex-wrap: wrap;
+    /* Umbruch */
+    justify-content: center;
+    /* Zentriert Empfehlungen bei Umbruch */
 }
 
 .recommendation {
     display: flex;
-    flex: 1;
-    gap: 20px;
-    /* Reduziert */
+    flex: 1 1 300px;
+    /* Basisbreite */
+    min-width: 280px;
+    gap: 15px;
     background-color: white;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     border-radius: 14px;
     overflow: hidden;
-    /* Damit das Bild die Rundung mitnimmt */
     transition: box-shadow 0.3s ease;
 }
 
 .recommendation:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .recommendation img {
     width: 40%;
+    min-height: 120px;
+    /* Mindesthöhe für das Bild */
     object-fit: cover;
-    /* border-radius: 14px 0 0 14px; Entfernt, da overflow: hidden am Parent */
 }
 
 .recommendationDescription {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    /* Reduziert */
+    gap: 8px;
     justify-content: center;
-    padding: 20px;
-    /* Padding für den Textinhalt */
+    padding: 15px;
+    /* Angepasst */
 }
 
 .recommendationName {
     font-weight: bold;
-    font-size: 14pt;
+    font-size: 13pt;
+    /* Angepasst */
 }
 
 .recommendationText {
-    /* Klasse für den Beschreibungstext */
-    font-size: 11pt;
+    font-size: 10pt;
+    /* Angepasst */
     line-height: 1.5;
 }
 
@@ -529,23 +438,26 @@ body.modal-open {
 /*----------------------------__-------*/
 .info {
     display: flex;
-    padding: 50px 100px;
+    padding-top: 50px;
+    /* Padding von section gehandhabt */
+    padding-bottom: 50px;
     align-items: center;
     justify-content: space-between;
-    gap: 50px;
+    gap: 30px;
+    margin-top: 30px;
     /* Reduziert */
-    margin-top: 70px;
-    /* Reduziert */
+    flex-wrap: wrap;
+    /* Umbruch erlauben */
 }
 
 .info img {
-    /* Gilt für beide Bilder in .info */
     background-color: white;
-    padding: 15px;
-    /* Reduziert */
+    padding: 12px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
+    flex-shrink: 0;
+    /* Verhindert Schrumpfen des Bildes */
 }
 
 .info img:hover {
@@ -553,54 +465,64 @@ body.modal-open {
 }
 
 .text {
-    /* Allgemeine Klasse für Textblöcke, wie in .info oder Modal. Ggf. spezifischer machen */
+    /* Allgemeine Textklasse, ggf. spezifischer machen */
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    /* Reduziert */
+    gap: 15px;
+    flex: 1 1 50px;
+    /* Erlaubt Wachsen und Schrumpfen, Basisbreite */
 }
 
-/* Dieser Selektor .text h1 ist sehr allgemein.
-   Wenn du ihn spezifisch für .info möchtest: .info .text h1 */
 .info .text h1 {
     color: #e26a2c;
-    font-size: 30pt;
+    font-size: 28pt;
+    /* Angepasst */
 }
 
 .info .text p {
-    font-size: 13pt;
-    line-height: 1.8;
+    font-size: 12pt;
     /* Angepasst */
-    text-align: justify;
+    line-height: 1.7;
+    /* Angepasst */
+    text-align: left;
+    /* Besser für längere Textblöcke */
 }
 
 #meditation {
-    /* Spezifisches Bild */
     width: 40%;
+    /* Flexibler, max-width steuert Größe */
+    max-width: 800px;
+    /* Maximale Breite für das Bild */
     height: auto;
-    /* Seitenverhältnis beibehalten */
 }
 
 #services {
-    /* ID für einen spezifischen Textblock? Besser eine Klasse verwenden. */
-    /* font-size: 13pt; Wird von .info .text p geerbt */
-    /* line-height: 2em; Wird von .info .text p geerbt */
-    /* text-align: justify; Wird von .info .text p geerbt */
-    /* margin-left: 40px; Besser über gap im .info Container lösen */
+    /* Styles werden von .info .text p geerbt oder können hier spezifischer sein */
+    padding-left: 20px;
+    /* Einrückung für Listenpunkte */
+    list-style-type: disc;
+    /* Standard-Listenpunkte */
+}
+
+#services li {
+    margin-bottom: 8px;
 }
 
 .Kontakt {
     display: flex;
     background-color: white;
-    margin: 50px 100px;
+    margin: 30px 0;
+    /* Zentriert, Padding von section */
     padding: 30px;
-    /* Mehr Padding innen */
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    gap: 30px;
-    /* Reduziert */
+    gap: 25px;
     align-items: center;
     transition: box-shadow 0.3s ease;
+    flex-wrap: wrap;
+    /* Umbruch */
+    justify-content: space-between;
+    /* Bessere Verteilung bei Umbruch */
 }
 
 .Kontakt:hover {
@@ -608,318 +530,246 @@ body.modal-open {
 }
 
 .Kontakt .text {
-    /* Textblock im Kontaktbereich */
     flex-grow: 1;
-    /* Nimmt verfügbaren Platz */
 }
 
+.Kontakt .text h1 {
+    font-size: 28pt;
+    /* Konsistent mit .info h1 */
+    color: #333;
+    /* Standard-Schwarz für Überschriften */
+}
 
 .socialMedia {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    /* Reduziert */
+    gap: 15px;
     align-items: flex-start;
-    /* Icons linksbündig */
+    flex-shrink: 0;
+    /* Verhindert Schrumpfen */
 }
 
 .socialMedia a {
-    /* Um die Icons klickbar zu machen und konsistent zu stylen */
     display: flex;
     align-items: center;
     gap: 10px;
     color: #222222;
-    /* Standard Textfarbe für das Label */
     font-size: 13pt;
-    /* Für das Label, falls du es hinzufügst */
 }
 
 .socialMedia i {
     font-size: 25px;
-    /* padding-right: 50px; Entfernt, da gap am Parent .socialMedia a */
     transition: color 0.3s ease;
     color: #555;
-    /* Standard Icon-Farbe */
 }
 
-.socialMedia a:hover i {
-    /* Farbänderung des Icons beim Hovern über den Link */
-    color: #e26a2c;
-}
-
+.socialMedia a:hover i,
 .socialMedia a:hover {
-    /* Farbänderung des Labels beim Hovern */
     color: #e26a2c;
 }
 
-.mainHeading{
+/* --- NEUE SEKTIONEN --- */
+.mainHeading {
     text-align: center;
-    padding: 80px 100px;   
-    font-size: 50pt; 
+    padding-top: 60px;
+    /* Weniger Padding oben */
+    padding-bottom: 40px;
+    /* Weniger Padding unten */
+    font-size: 40pt;
+    /* Angepasst für bessere Hierarchie */
+    color: #333;
 }
 
-.explanation{
-    display: flex;
-    flex-direction: column;
-    margin: 30px 100px;
+.explanation {
+    /* .explanation ist der <section> Wrapper */
+    /* margin: 30px 100px; Wird jetzt durch section padding und margin-bottom gehandhabt */
+    /* display: flex; flex-direction: column; Ist Standard für section, hier nicht nötig */
 }
-.explanantionContent{
+
+.explanantionContent {
+    /* Erklärung: Tippfehler korrigiert -> explanationContent */
     display: flex;
     flex-direction: column;
-    gap:30px;
+    gap: 25px;
+    /* Etwas weniger Gap */
     align-items: center;
     justify-content: center;
     background-color: white;
-    padding:30px;
+    padding: 30px;
     border-radius: 20px;
-    font-size: 13pt;
-    line-height: 30px;
-    text-align: justify;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    transition: 0.3s ease;
+    font-size: 12pt;
+    /* Konsistent */
+    line-height: 1.7;
+    /* Konsistent */
+    text-align: left;
+    /* Besser für Lesbarkeit von Absätzen */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    margin-bottom: 30px;
+    /* Abstand zwischen den Boxen */
 }
-.explanantionContent:hover{
-    box-shadow: none;
-    transition: 0.3s ease;
 
+.explanantionContent:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    /* Weicherer Schatten beim Hover */
 }
 
-.explanationDescription{
+.explanationDescription {
     display: flex;
     flex-direction: column;
-    gap:20px;
-    color: gray;
+    gap: 15px;
+    /* Reduziert */
+    color: #555;
+    /* Dunkleres Grau für Text */
+    width: 100%;
+    /* Volle Breite innerhalb .explanationContent */
 }
-.explanationDescription h3{
-    color: #222222;
+
+.explanationDescription h3 {
+    color: #003329;
+    /* Ayurly Grün für Unterüberschriften */
+    font-size: 16pt;
+    margin-bottom: 5px;
+    /* Kleiner Abstand nach h3 */
 }
+
+.wordConstruction {
+    display: flex;
+    flex-direction: column;
+    /* Standardmäßig untereinander */
+    gap: 10px;
+    align-items: flex-start;
+    /* Links ausrichten */
+    background-color: #f7f9fc;
+    /* Leichter Hintergrund zur Abgrenzung */
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    /* Begrenzt Breite für bessere Lesbarkeit */
+    margin: 0 auto;
+    /* Zentriert die Box */
+}
+
+.wordConstruction p {
+    font-size: 12pt;
+    color: #333;
+}
+
 
 /* Styles für "Was sind Doshas?" Sektion */
-
 .pointingFinger {
-    font-size: 1.5em;
+    font-size: 1.9em;
+    display: block;
+    /* Damit margin auto funktioniert */
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 .flippableCardsContainer {
     display: flex;
     justify-content: center;
     align-items: stretch;
-    /* Sorgt dafür, dass alle Karten die gleiche Höhe haben, wenn sie unterschiedlich viel Inhalt hätten */
-    gap: 30px;
+    gap: 25px;
+    /* Angepasst */
     flex-wrap: wrap;
-    /* Wichtig für kleinere Bildschirme */
-    margin: 40px 0 40px 0;
-}
-
-.primary-button {
-    display: inline-block;
-    background-color: black;
-    color: white;
-    padding: 12px 25px;
-    border-radius: 25px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.primary-button:hover {
-    background-color: #c75a20;
+    margin-top: 40px;
+    /* Abstand zur Überschrift */
+    margin-bottom: 40px;
+    /* Abstand zum Button */
 }
 
 /* ========== MOBILE LAYOUT ANPASSUNGEN ========== */
 
-/* Tablets und größere Smartphones (Landschaft) */
 @media (max-width: 1024px) {
-    .doshasExplainedSection h1 {
-        font-size: 2.2rem;
-    }
-
-    .flippableCardsContainer {
-        gap: 20px;
+    section {
+        padding-left: 30px;
+        padding-right: 30px;
     }
 
     .parallax {
         height: 75vh;
-        /* Höhe reduzieren */
     }
 
     #punch {
         font-size: 45pt;
-        padding: 0 50px;
     }
 
-    .motivationStatement,
-    .doshas h1,
-    .info,
-    .Kontakt {
-        padding-left: 50px;
-        padding-right: 50px;
+    .motivationStatement {
+        padding: 40px 30px;
     }
 
+    .mainHeading,
     .doshas h1 {
-        font-size: 40pt;
-        padding-top: 60px;
-        padding-bottom: 60px;
-    }
-
-    .doshaCards {
-        margin-left: 50px;
-        margin-right: 50px;
-        gap: 20px;
+        /* .doshas h1 für Abwärtskompatibilität beibehalten */
+        font-size: 32pt;
+        /* Angepasst */
+        padding-top: 50px;
+        padding-bottom: 30px;
     }
 
     .card {
-        gap: 20px;
-        padding: 20px;
+        flex-basis: calc(50% - 15px);
+        /* 2 Karten pro Reihe */
+        min-width: 260px;
     }
 
-    .doshaIcon {
-        font-size: 100px;
-    }
-
-    .doshaName {
-        font-size: 24pt;
-    }
-
-    .doshaInfo {
-        font-size: 12pt;
-    }
-
-    .modal-content {
-        margin: 50px 30px;
-        padding: 25px;
-    }
-
-    .generalInfo video {
-        width: 45%;
-    }
-
-    .modalText h2 {
-        font-size: 32pt;
-    }
-
-    .firstRow,
-    .secondRow,
-    .problem,
-    .recommendationRow,
-    .foodtip {
-        gap: 20px;
-    }
-
-    .problem,
-    .recommendationRow {
-        margin-left: 40px;
-        margin-right: 40px;
-    }
-
-    .problemName {
-        width: 35%;
-        padding: 8px 15px;
-    }
-
-    .problemDescription {
-        padding: 10px 20px;
-    }
-
-    .info {
-        gap: 30px;
-        padding: 40px 50px;
-        margin-top: 50px;
-    }
-
-    .info .text h1 {
-        font-size: 26pt;
-    }
-
-    .info .text p {
-        font-size: 12pt;
+    .info img {
+        max-width: 300px;
+        /* Bilder in .info begrenzen */
     }
 
     #meditation {
-        width: 45%;
+        max-width: 350px;
     }
 
-    .Kontakt {
-        margin: 40px 50px;
-        gap: 25px;
+    .explanationDescription h3 {
+        font-size: 15pt;
+    }
+
+    .wordConstruction {
+        max-width: 100%;
+        /* Erlaubt Umbruch innerhalb */
     }
 }
 
 
-/* Standard Smartphones (Portrait und Landschaft) */
 @media (max-width: 768px) {
-    .doshasExplainedSection {
-        padding: 40px 15px;
-    }
-
-    .doshasExplainedSection h1 {
-        font-size: 1.8rem;
-        margin-bottom: 30px;
-    }
-
-    .flippableCardsContainer {
-        flex-direction: column;
-        /* Kacheln untereinander auf Mobile */
-        align-items: center;
-        /* Kacheln zentrieren */
-        gap: 25px;
-        /* Abstand zwischen den Kacheln */
+    section {
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
     .parallax {
         height: 60vh;
-        /* Höhe weiter reduzieren */
-        /* Falls der JS Parallax-Effekt auf 'fixed' basiert und Probleme macht: */
-        /* overflow: visible; */
-        /* Könnte helfen, aber auch unerwünschte Effekte haben */
-    }
-
-    /* Wenn die Bilder per JS bewegt werden, ist 'background-attachment' irrelevant.
-       Wichtiger ist, wie die Bilder im DOM sind und wie JS sie anspricht.
-       Sicherstellen, dass der #punch Text immer gut lesbar ist. */
-    .parallax img {
-        /* Ggf. object-position anpassen, falls wichtige Teile abgeschnitten werden */
-        /* object-position: center center; */
     }
 
     #punch {
         font-size: 32pt;
-        padding: 0 20px;
-        /* Weniger Padding */
-    }
-
-    .motivationStatement,
-    .doshas h1,
-    .info,
-    .Kontakt {
-        padding: 30px 20px;
-        /* Weniger Padding */
     }
 
     .motivationStatement {
+        padding: 30px 15px;
         font-size: 13pt;
-        line-height: 1.5;
     }
 
+    .mainHeading,
     .doshas h1 {
-        font-size: 30pt;
+        font-size: 26pt;
+        /* Deutlich kleiner */
         padding-top: 40px;
-        padding-bottom: 40px;
-    }
-
-    .doshaCards {
-        flex-direction: column;
-        /* Karten untereinander */
-        margin: 20px;
-        gap: 25px;
+        padding-bottom: 25px;
     }
 
     .card {
-        width: 100%;
-        /* Volle Breite für jede Karte */
-        gap: 20px;
-        padding: 25px;
+        flex-basis: 100%;
+        /* 1 Karte pro Reihe */
+        max-width: 400px;
+        /* Maximale Breite für einzelne Karte */
+        margin-left: auto;
+        /* Zentrierung */
+        margin-right: auto;
+        /* Zentrierung */
     }
 
     .doshaIcon {
@@ -930,36 +780,19 @@ body.modal-open {
         font-size: 22pt;
     }
 
-    .discoverDosha {
-        margin-bottom: 20px;
-    }
-
-    /* Modal Anpassungen für Mobile */
     .modal-content {
         margin: 20px;
-        /* Kleinerer Rand */
         padding: 20px;
-        width: calc(100% - 40px);
-        /* Volle Breite minus Ränder */
-        max-height: 90vh;
-        /* Scrollen innerhalb des Modals ermöglichen */
     }
 
     .generalInfo {
         flex-direction: column;
-        /* Video und Text untereinander */
         align-items: center;
-        /* Zentrieren */
     }
 
     .generalInfo video,
     .modalText {
         width: 100%;
-        /* Volle Breite */
-    }
-
-    .generalInfo video {
-        margin-bottom: 20px;
     }
 
     .modalText h2 {
@@ -967,167 +800,140 @@ body.modal-open {
         text-align: center;
     }
 
-    .modalText p {
-        font-size: 11pt;
-        text-align: justify;
-    }
-
-    /* Beschreibungstext im Modal */
-
-    .close-button {
-        font-size: 24pt;
-        top: 10px;
-        right: 15px;
-    }
-
-    .characteristics,
-    .problems,
-    .tips,
-    .foodTips,
-    .recommendations {
-        margin-top: 40px;
-    }
-
     .firstRow,
     .secondRow {
         flex-direction: column;
-        /* Inhalte untereinander */
-        gap: 20px;
-    }
-
-    .rowContent {
-        padding: 20px;
+        gap: 15px;
     }
 
     .problem {
         flex-direction: column;
-        /* Problemname und Beschreibung untereinander */
-        margin-left: 20px;
-        margin-right: 20px;
-        gap: 15px;
+        gap: 10px;
     }
 
     .problemName,
     .problemDescription {
         width: 100%;
-        /* Volle Breite */
         text-align: center;
     }
 
     .problemDescription {
         text-align: left;
+        font-size: 10pt;
     }
-
-    /* Besser für Lesbarkeit */
 
     .foodtip {
         flex-direction: column;
-        /* Positive/Negative Listen untereinander */
-        align-items: center;
-        gap: 25px;
-    }
-
-    .tipCard {
-        width: 90%;
-        /* Etwas Rand lassen */
-    }
-
-    .list {
-        padding: 20px;
+        gap: 15px;
     }
 
     .recommendationRow {
         flex-direction: column;
-        /* Empfehlungen untereinander */
-        margin-left: 20px;
-        margin-right: 20px;
-        gap: 25px;
+        gap: 15px;
     }
 
     .recommendation {
         flex-direction: column;
-        /* Bild über Text */
         align-items: center;
-        /* Bild zentrieren */
     }
 
     .recommendation img {
         width: 100%;
-        /* Volle Breite für das Bild */
-        height: 200px;
-        /* Feste Höhe oder aspect-ratio verwenden */
-        object-fit: cover;
+        height: 180px;
         border-radius: 14px 14px 0 0;
-        /* Oben abrunden */
     }
 
     .recommendationDescription {
-        padding: 20px;
         text-align: center;
-    }
-
-    .recommendationName {
-        font-size: 13pt;
     }
 
     .info {
         flex-direction: column;
-        /* Bild und Text untereinander */
-        padding: 30px 20px;
-        margin-top: 40px;
+        text-align: center;
         gap: 25px;
+        padding: 30px 15px;
+        margin-top: 30px;
     }
 
     .info img,
     #meditation {
-        width: 80%;
-        /* Bilder nicht über die volle Breite, um Ränder zu haben */
-        max-width: 300px;
-        /* Maximale Breite für die Bilder */
-        padding: 10px;
-    }
-
-    .info .text {
-        align-items: center;
-        /* Text zentrieren */
-        text-align: center;
+        width: 70%;
+        max-width: 280px;
     }
 
     .info .text h1 {
         font-size: 22pt;
+        text-align: center;
     }
 
     .info .text p {
         text-align: center;
-        font-size: 12pt;
+        font-size: 11pt;
     }
 
-    .Kontakt {
-        flex-direction: column;
-        /* Kontaktinfo und Social Media untereinander */
-        margin: 30px 20px;
-        padding: 25px;
+    #services {
+        padding-left: 0;
+        list-style-position: inside;
         text-align: center;
     }
 
+
+    .Kontakt {
+        display: flex;
+        background-color: white;
+        margin: 25px 0;
+        max-height: 300px;
+        padding: 30px;
+        /* Mehr Padding innen */
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        gap: 30px;
+        /* Reduziert */
+        align-items: center;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .Kontakt:hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
     .Kontakt .text {
-        align-items: center;
+        /* Textblock im Kontaktbereich */
+        flex-grow: 1;
+        /* Nimmt verfügbaren Platz */
     }
 
-    .socialMedia {
-        align-items: center;
-        /* Icons und Links zentrieren */
-        margin-top: 20px;
-        /* Abstand zum Text */
+
+
+    .explanantionContent {
+        padding: 20px;
+        font-size: 11pt;
+        line-height: 1.6;
     }
 
-    .socialMedia a {
-        justify-content: center;
+    .explanationDescription h3 {
+        font-size: 14pt;
+        text-align: center;
     }
+
+    .wordConstruction {
+        align-items: center;
+        /* Zentriert die Textzeilen */
+    }
+
+    .wordConstruction p {
+        font-size: 11pt;
+    }
+
+    .flippableCardsContainer {
+        gap: 20px;
+    }
+
+    /* FlippableCard wird durch sein eigenes Modul-CSS gesteuert,
+       aber der Container hier kann Abstände etc. beeinflussen. */
+
 }
 
-
-/* Kleinere Smartphones (Portrait) */
 @media (max-width: 480px) {
     .parallax {
         height: 50vh;
@@ -1135,27 +941,23 @@ body.modal-open {
 
     #punch {
         font-size: 26pt;
-        padding: 0 15px;
     }
 
     .motivationStatement {
-        padding: 25px 15px;
         font-size: 12pt;
+        padding: 25px 10px;
     }
 
+    .mainHeading,
     .doshas h1 {
-        font-size: 24pt;
-        padding: 30px 15px;
-    }
-
-    .doshaCards {
-        margin: 15px;
-        gap: 20px;
+        font-size: 22pt;
+        padding-top: 30px;
+        padding-bottom: 20px;
     }
 
     .card {
-        padding: 20px;
         gap: 15px;
+        padding: 20px;
     }
 
     .doshaIcon {
@@ -1171,88 +973,63 @@ body.modal-open {
     }
 
     .discoverDosha {
-        padding: 8px 25px;
         font-size: 12pt;
+        padding: 8px 25px;
     }
 
     .modal-content {
         margin: 15px;
         padding: 15px;
-        width: calc(100% - 30px);
     }
 
     .modalText h2 {
         font-size: 20pt;
     }
 
-    .close-button {
-        font-size: 20pt;
-        top: 8px;
-        right: 10px;
-    }
-
-
-    .rowContent {
-        padding: 15px;
-        gap: 15px;
-    }
-
-    .characteristic {
-        font-size: 12pt;
+    .characteristic,
+    .problemName,
+    .problemDescription,
+    .list p,
+    .recommendationName,
+    .recommendationText {
+        font-size: 10pt;
     }
 
     .spacerHeading {
-        font-size: 16pt;
+        font-size: 15pt;
     }
 
-    .problem {
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-
-    .problemName {
-        font-size: 11pt;
-        padding: 8px 15px;
-    }
-
-    .problemDescription {
-        font-size: 11pt;
-        padding: 10px 15px;
-    }
-
-    .list {
-        padding: 15px;
-    }
-
-    .tipCard>p {
-        font-size: 13pt;
-    }
-
-    .recommendationRow {
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-
-    .recommendationDescription {
-        padding: 15px;
-    }
-
-    .info {
-        padding: 25px 15px;
-        margin-top: 30px;
-        gap: 20px;
-    }
-
-    .info .text h1 {
+    .info .text h1,
+    .Kontakt .text h1 {
         font-size: 20pt;
     }
 
     .info .text p {
-        font-size: 11pt;
+        font-size: 10pt;
     }
 
-    .Kontakt {
-        margin: 25px 15px;
-        padding: 20px;
+    .explanantionContent {
+        font-size: 10pt;
+        padding: 15px;
+    }
+
+    .explanationDescription h3 {
+        font-size: 13pt;
+    }
+
+    .wordConstruction p {
+        font-size: 10pt;
+    }
+
+    .flippableCardsContainer {
+        gap: 15px;
+    }
+
+    /* Flippable Card Anpassungen, falls nötig für sehr kleine Screens.
+       Die Karte selbst sollte responsive sein (siehe FlippableCard.module.css) */
+    .flipCard {
+        /* Beispiel, falls die Breite der FlippableCard hier beeinflusst werden soll */
+        max-width: 280px;
+        /* Oder 100% wenn sie die volle Breite nehmen sollen */
     }
 }

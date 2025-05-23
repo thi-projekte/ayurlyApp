@@ -114,7 +114,7 @@ const HomePage = () => {
           nicht aus Eile <span className="quotations">"</span>.
         </p>
       </section>
-
+      <div className="InfoSectionContainer">
       <section>
         <div className="info">
           <img src="/img/index/ayurlyLogo.png" alt="Ayurly Logo" />
@@ -185,7 +185,7 @@ const HomePage = () => {
         <div className="explanantionContent">
             <h2>🧘‍♀️ Dein Dosha ist der Schlüssel zu deinem inneren Gleichgewicht.</h2>
             <p className="pointingFinger">👇</p>
-            <Link to="/dosha-test" className="primary-button">Starte deinen Dosha-Test!</Link>
+            <Link to="/dosha-test" className="discoverDosha">Starte deinen Dosha-Test!</Link>
         </div>
       </section>
 
@@ -679,6 +679,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 };
