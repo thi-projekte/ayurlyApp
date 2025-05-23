@@ -677,11 +677,7 @@ body.modal-open {
 /* ========== MOBILE LAYOUT ANPASSUNGEN ========== */
 
 @media (max-width: 1024px) {
-    section {
-        padding-left: 30px;
-        padding-right: 30px;
-    }
-
+    
     .parallax {
         height: 75vh;
     }
@@ -730,11 +726,7 @@ body.modal-open {
 
 
 @media (max-width: 768px) {
-    section {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
+    
     .parallax {
         height: 60vh;
     }
