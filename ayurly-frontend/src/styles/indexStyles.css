@@ -17,12 +17,17 @@ body {
 
 /*-------------------------------------*/
 
+::marker {
+    padding-left: 0px;
+}
+
 .parallax {
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 90vh; /* Beibehalten für Desktop, wird in Media Queries angepasst */
+    height: 90vh;
+    /* Beibehalten für Desktop, wird in Media Queries angepasst */
     scroll-behavior: smooth;
     overflow: hidden;
 }
@@ -32,18 +37,22 @@ body {
     width: 100%;
     top: 0;
     /* height: auto; oder object-fit: cover; kann helfen, das Seitenverhältnis zu bewahren */
-    object-fit: cover; /* Stellt sicher, dass das Bild den Container füllt, ohne das Seitenverhältnis zu verzerren */
-    height: 100%; /* Stellt sicher, dass das Bild die Höhe des Parallax-Containers bedeckt */
+    object-fit: cover;
+    /* Stellt sicher, dass das Bild den Container füllt, ohne das Seitenverhältnis zu verzerren */
+    height: 100%;
+    /* Stellt sicher, dass das Bild die Höhe des Parallax-Containers bedeckt */
     pointer-events: none;
 }
 
 #punch {
     font-size: 60pt;
-    z-index: 1; /* Liegt über den Parallax-Bildern, aber unter #ground, falls #ground einen höheren z-index hat */
+    z-index: 1;
+    /* Liegt über den Parallax-Bildern, aber unter #ground, falls #ground einen höheren z-index hat */
     color: #fff;
     padding: 0 100px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    text-align: center; /* Sicherstellen, dass der Text zentriert ist */
+    text-align: center;
+    /* Sicherstellen, dass der Text zentriert ist */
 }
 
 #ground {
@@ -56,16 +65,19 @@ body {
        dass sie hinter diesem Bereich liegen. */
     /* z-index: 2; <-- Nur wenn es über den #punch Text soll, was unwahrscheinlich ist.
                       Oder wenn es über den Parallax-Bildern liegen soll und #punch darüber. */
-    background-color: #003329; /* Dein dunkles Grün */
+    background-color: #003329;
+    /* Dein dunkles Grün */
     /* padding: 0 100px; Ist bereits im .motivationStatement und .doshas h1 */
 }
 
 .motivationStatement {
     color: white;
-    background-color: #003329; /* Hier war der Hintergrund in deinem Original CSS */
+    background-color: #003329;
+    /* Hier war der Hintergrund in deinem Original CSS */
     padding: 50px 100px;
     font-size: 15pt;
-    line-height: 1.6; /* Angepasst für bessere Lesbarkeit */
+    line-height: 1.6;
+    /* Angepasst für bessere Lesbarkeit */
     text-align: center;
     font-style: italic;
 }
@@ -91,16 +103,20 @@ body {
     padding: 30px;
     border-radius: 20px 20px 0 0;
     align-items: center;
-    width: 33.333%; /* Korrigiert für gleichmäßige Aufteilung */
-    transition: box-shadow 0.3s ease; /* Sanfter Übergang für Hover */
+    width: 33.333%;
+    /* Korrigiert für gleichmäßige Aufteilung */
+    transition: box-shadow 0.3s ease;
+    /* Sanfter Übergang für Hover */
 }
 
 .card:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Reduzierter Schatten beim Hover */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    /* Reduzierter Schatten beim Hover */
 }
 
 .doshaIcon {
-    font-size: 120px; /* Beachte, dass dies sehr groß ist und ggf. eine Icon-Font benötigt */
+    font-size: 120px;
+    /* Beachte, dass dies sehr groß ist und ggf. eine Icon-Font benötigt */
 }
 
 .doshaName {
@@ -110,7 +126,8 @@ body {
 #Vata {
     background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
     background-clip: text;
-    -webkit-background-clip: text; /* Für Safari-Kompatibilität */
+    -webkit-background-clip: text;
+    /* Für Safari-Kompatibilität */
     color: transparent;
 }
 
@@ -130,13 +147,15 @@ body {
 
 .doshaInfo {
     font-size: 13pt;
-    line-height: 1.7; /* Angepasst für bessere Lesbarkeit */
+    line-height: 1.7;
+    /* Angepasst für bessere Lesbarkeit */
     text-align: center;
     /* border: solid white; Dies würde eine weiße Border hinzufügen, war das gewollt? */
 }
 
 .discoverDosha {
-    margin-bottom: 30px; /* War vorher so, ggf. anpassen, wenn es im Card-Padding enthalten sein soll */
+    margin-bottom: 30px;
+    /* War vorher so, ggf. anpassen, wenn es im Card-Padding enthalten sein soll */
     padding: 10px 30px;
     color: white;
     border-radius: 100px;
@@ -151,7 +170,8 @@ body {
 /*-----------------------------------*/
 /* Modal Stile (Desktop) */
 .modal {
-    display: none; /* Wird per JS auf 'flex' gesetzt */
+    display: none;
+    /* Wird per JS auf 'flex' gesetzt */
     position: fixed;
     z-index: 1000;
     top: 0;
@@ -161,17 +181,22 @@ body {
     background: rgba(0, 0, 0, 0.7);
     justify-content: center;
     align-items: center;
-    overflow-y: auto; /* Erlaubt Scrollen, wenn Inhalt länger als Bildschirm */
+    overflow-y: auto;
+    /* Erlaubt Scrollen, wenn Inhalt länger als Bildschirm */
 }
 
 .modal-content {
     background: white;
-    margin: 50px; /* Allgemeiner Margin für alle Seiten */
+    margin: 50px;
+    /* Allgemeiner Margin für alle Seiten */
     padding: 30px;
     border-radius: 20px;
-    max-width: 900px; /* Maximale Breite für das Modal */
-    width: 90%; /* Relative Breite, aber durch max-width begrenzt */
-    position: relative; /* Für Positionierung des Close-Buttons */
+    max-width: 900px;
+    /* Maximale Breite für das Modal */
+    width: 90%;
+    /* Relative Breite, aber durch max-width begrenzt */
+    position: relative;
+    /* Für Positionierung des Close-Buttons */
 }
 
 body.modal-open {
@@ -181,24 +206,32 @@ body.modal-open {
 .generalInfo {
     display: flex;
     gap: 30px;
-    align-items: flex-start; /* Damit Video und Text oben bündig sind */
+    align-items: flex-start;
+    /* Damit Video und Text oben bündig sind */
 }
 
 .generalInfo video {
-    border-radius: 14px; /* Nur ein Wert für alle Ecken */
-    width: 50%; /* Angepasst, um Text mehr Platz zu geben */
+    border-radius: 14px;
+    /* Nur ein Wert für alle Ecken */
+    width: 50%;
+    /* Angepasst, um Text mehr Platz zu geben */
     height: auto;
     object-fit: cover;
 }
 
-.modalText { /* Eigene Klasse für den Textblock im Modal */
+.modalText {
+    /* Eigene Klasse für den Textblock im Modal */
     display: flex;
-    flex-direction: column; /* Titel und Beschreibung untereinander */
-    width: 50%; /* Angepasst */
+    flex-direction: column;
+    /* Titel und Beschreibung untereinander */
+    width: 50%;
+    /* Angepasst */
 }
 
-.modalText h2 { /* Spezifischer für Modal-Titel */
-    font-size: 40pt; /* Etwas kleiner als #punch */
+.modalText h2 {
+    /* Spezifischer für Modal-Titel */
+    font-size: 40pt;
+    /* Etwas kleiner als #punch */
     margin-bottom: 15px;
 }
 
@@ -225,29 +258,37 @@ body.modal-open {
 }
 
 .close-button {
-    position: absolute; /* Positioniert relativ zu .modal-content */
+    position: absolute;
+    /* Positioniert relativ zu .modal-content */
     top: 15px;
     right: 20px;
     font-size: 30pt;
     cursor: pointer;
     color: grey;
-    line-height: 1; /* Verhindert zusätzlichen vertikalen Platz */
+    line-height: 1;
+    /* Verhindert zusätzlichen vertikalen Platz */
 }
+
 .close-button:hover {
     color: black;
 }
 
 .characteristics {
     display: flex;
-    margin-top: 50px; /* Reduziert */
+    margin-top: 50px;
+    /* Reduziert */
     flex-direction: column;
-    gap: 30px; /* Reduziert */
+    gap: 30px;
+    /* Reduziert */
 }
 
-.firstRow, .secondRow { /* Kombinierte Stile für beide Reihen */
+.firstRow,
+.secondRow {
+    /* Kombinierte Stile für beide Reihen */
     display: flex;
     gap: 30px;
-    justify-content: space-evenly; /* Beibehalten für Desktop */
+    justify-content: space-evenly;
+    /* Beibehalten für Desktop */
 }
 
 .rowContent {
@@ -256,8 +297,10 @@ body.modal-open {
     flex-direction: column;
     text-align: center;
     line-height: 1.5em;
-    gap: 20px; /* Reduziert */
-    padding: 25px; /* Reduziert */
+    gap: 20px;
+    /* Reduziert */
+    padding: 25px;
+    /* Reduziert */
     border-radius: 14px;
     background-color: white;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -268,10 +311,12 @@ body.modal-open {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
-.characteristic { /* Dies scheint ein Titel innerhalb von .rowContent zu sein? */
+.characteristic {
+    /* Dies scheint ein Titel innerhalb von .rowContent zu sein? */
     text-align: center;
     font-size: 13pt;
-    font-weight: bold; /* Hinzugefügt für Hervorhebung */
+    font-weight: bold;
+    /* Hinzugefügt für Hervorhebung */
     /* Farbverlauf für .characteristic, falls gewünscht (hier Vata als Beispiel) */
     /* background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
     background-clip: text;
@@ -282,21 +327,26 @@ body.modal-open {
 .problems {
     display: flex;
     flex-direction: column;
-    margin-top: 50px; /* Reduziert */
-    gap: 30px; /* Reduziert */
+    margin-top: 50px;
+    /* Reduziert */
+    gap: 30px;
+    /* Reduziert */
 }
 
 .spacerHeading {
     font-size: 20pt;
     font-weight: 500;
-    text-align: center; /* Zentriert für bessere Optik */
-    margin-bottom: 10px; /* Abstand nach unten */
+    text-align: center;
+    /* Zentriert für bessere Optik */
+    margin-bottom: 10px;
+    /* Abstand nach unten */
 }
 
 .problem {
     display: flex;
     align-items: center;
-    gap: 30px; /* Reduziert */
+    gap: 30px;
+    /* Reduziert */
     margin-left: 70px;
     margin-right: 70px;
 }
@@ -305,73 +355,104 @@ body.modal-open {
     width: 30%;
     text-align: center;
     font-weight: bold;
-    padding: 10px 20px; /* Reduziert */
+    padding: 10px 20px;
+    /* Reduziert */
     border-radius: 100px;
     background-color: white;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0; /* Verhindert, dass der Name schrumpft */
+    flex-shrink: 0;
+    /* Verhindert, dass der Name schrumpft */
 }
 
 .problemDescription {
-    text-align: left; /* Bessere Lesbarkeit für längeren Text */
+    text-align: left;
+    /* Bessere Lesbarkeit für längeren Text */
     background-color: #ffe9f3;
-    padding: 13px 25px; /* Reduziert */
-    border-radius: 10px; /* Weniger rund für Textblöcke */
-    flex-grow: 1; /* Nimmt den restlichen Platz ein */
+    padding: 13px 25px;
+    /* Reduziert */
+    border-radius: 10px;
+    /* Weniger rund für Textblöcke */
+    flex-grow: 1;
+    /* Nimmt den restlichen Platz ein */
 }
 
 .tips {
-    margin-top: 50px; /* Reduziert */
+    margin-top: 50px;
+    /* Reduziert */
 }
 
-.tips img { /* Dies scheint ein vollbreites Trennbild zu sein */
-    margin-top: 30px; /* Reduziert */
-    margin-bottom: 30px; /* Reduziert */
+.tips img {
+    /* Dies scheint ein vollbreites Trennbild zu sein */
+    margin-top: 30px;
+    /* Reduziert */
+    margin-bottom: 30px;
+    /* Reduziert */
     width: 100%;
-    height: auto; /* Seitenverhältnis beibehalten */
+    height: auto;
+    /* Seitenverhältnis beibehalten */
     pointer-events: none;
-    display: block; /* Verhindert zusätzlichen Leerraum unter dem Bild */
+    display: block;
+    /* Verhindert zusätzlichen Leerraum unter dem Bild */
 }
 
 .foodTips {
     display: flex;
     flex-direction: column;
-    gap: 30px; /* Reduziert */
-    margin-bottom: 50px; /* Reduziert */
+    gap: 30px;
+    /* Reduziert */
+    margin-bottom: 50px;
+    /* Reduziert */
 }
 
-.foodtip { /* Container für ein Paar von positive/negative Listen */
+.foodtip {
+    /* Container für ein Paar von positive/negative Listen */
     display: flex;
-    gap: 30px; /* Reduziert */
-    justify-content: space-evenly; /* Beibehalten */
+    gap: 30px;
+    /* Reduziert */
+    justify-content: space-evenly;
+    /* Beibehalten */
 }
 
-.tipCard { /* Eine einzelne Liste (positiv oder negativ) */
+.tipCard {
+    /* Eine einzelne Liste (positiv oder negativ) */
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Reduziert */
+    gap: 15px;
+    /* Reduziert */
     align-items: center;
-    flex: 1; /* Damit beide Karten gleich breit sind */
+    flex: 1;
+    /* Damit beide Karten gleich breit sind */
 }
 
-.tipCard > p { /* Der Titel "Zu vermeiden" / "Empfehlenswert" */
+.tipCard>p {
+    /* Der Titel "Zu vermeiden" / "Empfehlenswert" */
     color: grey;
     font-weight: bold;
     font-size: 14pt;
 }
 
 .list {
-    padding: 25px; /* Reduziert */
+    padding: 25px;
+    /* Reduziert */
     border-radius: 14px;
-    width: 100%; /* Nimmt die Breite des .tipCard ein */
-    display: flex;       /* Falls Listenelemente nebeneinander sollen */
-    flex-direction: column; /* Listenelemente untereinander */
-    gap: 10px;           /* Abstand zwischen Listenelementen */
+    width: 100%;
+    /* Nimmt die Breite des .tipCard ein */
+    display: flex;
+    /* Falls Listenelemente nebeneinander sollen */
+    flex-direction: column;
+    /* Listenelemente untereinander */
+    gap: 10px;
+    /* Abstand zwischen Listenelementen */
 }
-.list ul { /* Falls du <ul> in .list verwendest */
-    list-style: disc; /* Oder none, je nach Design */
-    padding-left: 20px; /* Einrückung für die Stichpunkte */
+
+.list ul {
+    /* Falls du <ul> in .list verwendest */
+    list-style: disc;
+    /* Oder none, je nach Design */
+    padding-left: 20px;
+    /* Einrückung für die Stichpunkte */
 }
+
 .list ul li {
     margin-bottom: 8px;
 }
@@ -387,8 +468,10 @@ body.modal-open {
 .recommendations {
     display: flex;
     flex-direction: column;
-    gap: 30px; /* Reduziert */
-    margin-bottom: 70px; /* Reduziert */
+    gap: 30px;
+    /* Reduziert */
+    margin-bottom: 70px;
+    /* Reduziert */
 }
 
 .recommendationRow {
@@ -401,11 +484,13 @@ body.modal-open {
 .recommendation {
     display: flex;
     flex: 1;
-    gap: 20px; /* Reduziert */
+    gap: 20px;
+    /* Reduziert */
     background-color: white;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border-radius: 14px;
-    overflow: hidden; /* Damit das Bild die Rundung mitnimmt */
+    overflow: hidden;
+    /* Damit das Bild die Rundung mitnimmt */
     transition: box-shadow 0.3s ease;
 }
 
@@ -422,16 +507,20 @@ body.modal-open {
 .recommendationDescription {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Reduziert */
+    gap: 10px;
+    /* Reduziert */
     justify-content: center;
-    padding: 20px; /* Padding für den Textinhalt */
+    padding: 20px;
+    /* Padding für den Textinhalt */
 }
 
 .recommendationName {
     font-weight: bold;
     font-size: 14pt;
 }
-.recommendationText { /* Klasse für den Beschreibungstext */
+
+.recommendationText {
+    /* Klasse für den Beschreibungstext */
     font-size: 11pt;
     line-height: 1.5;
 }
@@ -443,13 +532,17 @@ body.modal-open {
     padding: 50px 100px;
     align-items: center;
     justify-content: space-between;
-    gap: 50px; /* Reduziert */
-    margin-top: 70px; /* Reduziert */
+    gap: 50px;
+    /* Reduziert */
+    margin-top: 70px;
+    /* Reduziert */
 }
 
-.info img { /* Gilt für beide Bilder in .info */
+.info img {
+    /* Gilt für beide Bilder in .info */
     background-color: white;
-    padding: 15px; /* Reduziert */
+    padding: 15px;
+    /* Reduziert */
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
@@ -459,10 +552,12 @@ body.modal-open {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
-.text { /* Allgemeine Klasse für Textblöcke, wie in .info oder Modal. Ggf. spezifischer machen */
+.text {
+    /* Allgemeine Klasse für Textblöcke, wie in .info oder Modal. Ggf. spezifischer machen */
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Reduziert */
+    gap: 20px;
+    /* Reduziert */
 }
 
 /* Dieser Selektor .text h1 ist sehr allgemein.
@@ -474,16 +569,20 @@ body.modal-open {
 
 .info .text p {
     font-size: 13pt;
-    line-height: 1.8; /* Angepasst */
+    line-height: 1.8;
+    /* Angepasst */
     text-align: justify;
 }
 
-#meditation { /* Spezifisches Bild */
+#meditation {
+    /* Spezifisches Bild */
     width: 40%;
-    height: auto; /* Seitenverhältnis beibehalten */
+    height: auto;
+    /* Seitenverhältnis beibehalten */
 }
 
-#services { /* ID für einen spezifischen Textblock? Besser eine Klasse verwenden. */
+#services {
+    /* ID für einen spezifischen Textblock? Besser eine Klasse verwenden. */
     /* font-size: 13pt; Wird von .info .text p geerbt */
     /* line-height: 2em; Wird von .info .text p geerbt */
     /* text-align: justify; Wird von .info .text p geerbt */
@@ -494,10 +593,12 @@ body.modal-open {
     display: flex;
     background-color: white;
     margin: 50px 100px;
-    padding: 30px; /* Mehr Padding innen */
+    padding: 30px;
+    /* Mehr Padding innen */
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    gap: 30px; /* Reduziert */
+    gap: 30px;
+    /* Reduziert */
     align-items: center;
     transition: box-shadow 0.3s ease;
 }
@@ -505,105 +606,275 @@ body.modal-open {
 .Kontakt:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
-.Kontakt .text { /* Textblock im Kontaktbereich */
-    flex-grow: 1; /* Nimmt verfügbaren Platz */
+
+.Kontakt .text {
+    /* Textblock im Kontaktbereich */
+    flex-grow: 1;
+    /* Nimmt verfügbaren Platz */
 }
 
 
 .socialMedia {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Reduziert */
-    align-items: flex-start; /* Icons linksbündig */
+    gap: 20px;
+    /* Reduziert */
+    align-items: flex-start;
+    /* Icons linksbündig */
 }
-.socialMedia a { /* Um die Icons klickbar zu machen und konsistent zu stylen */
+
+.socialMedia a {
+    /* Um die Icons klickbar zu machen und konsistent zu stylen */
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #222222; /* Standard Textfarbe für das Label */
-    font-size: 13pt; /* Für das Label, falls du es hinzufügst */
+    color: #222222;
+    /* Standard Textfarbe für das Label */
+    font-size: 13pt;
+    /* Für das Label, falls du es hinzufügst */
 }
 
 .socialMedia i {
     font-size: 25px;
     /* padding-right: 50px; Entfernt, da gap am Parent .socialMedia a */
     transition: color 0.3s ease;
-    color: #555; /* Standard Icon-Farbe */
+    color: #555;
+    /* Standard Icon-Farbe */
 }
-.socialMedia a:hover i { /* Farbänderung des Icons beim Hovern über den Link */
-    color: #e26a2c;
-}
-.socialMedia a:hover { /* Farbänderung des Labels beim Hovern */
+
+.socialMedia a:hover i {
+    /* Farbänderung des Icons beim Hovern über den Link */
     color: #e26a2c;
 }
 
+.socialMedia a:hover {
+    /* Farbänderung des Labels beim Hovern */
+    color: #e26a2c;
+}
+
+.mainHeading{
+    text-align: center;
+    padding: 80px 100px;   
+    font-size: 50pt; 
+}
+
+.explanation{
+    display: flex;
+    flex-direction: column;
+    margin: 30px 100px;
+}
+.explanantionContent{
+    display: flex;
+    flex-direction: column;
+    gap:30px;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    padding:30px;
+    border-radius: 20px;
+    font-size: 13pt;
+    line-height: 30px;
+    text-align: justify;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: 0.3s ease;
+}
+.explanantionContent:hover{
+    box-shadow: none;
+    transition: 0.3s ease;
+
+}
+
+.explanationDescription{
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+    color: gray;
+}
+.explanationDescription h3{
+    color: #222222;
+}
+
+/* Styles für "Was sind Doshas?" Sektion */
+
+.pointingFinger {
+    font-size: 1.5em;
+}
+
+.flippableCardsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    /* Sorgt dafür, dass alle Karten die gleiche Höhe haben, wenn sie unterschiedlich viel Inhalt hätten */
+    gap: 30px;
+    flex-wrap: wrap;
+    /* Wichtig für kleinere Bildschirme */
+    margin: 40px 0 40px 0;
+}
+
+.primary-button {
+    display: inline-block;
+    background-color: black;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button:hover {
+    background-color: #c75a20;
+}
 
 /* ========== MOBILE LAYOUT ANPASSUNGEN ========== */
 
 /* Tablets und größere Smartphones (Landschaft) */
 @media (max-width: 1024px) {
-    .parallax {
-        height: 75vh; /* Höhe reduzieren */
+    .doshasExplainedSection h1 {
+        font-size: 2.2rem;
     }
+
+    .flippableCardsContainer {
+        gap: 20px;
+    }
+
+    .parallax {
+        height: 75vh;
+        /* Höhe reduzieren */
+    }
+
     #punch {
         font-size: 45pt;
         padding: 0 50px;
     }
-    .motivationStatement, .doshas h1, .info, .Kontakt {
+
+    .motivationStatement,
+    .doshas h1,
+    .info,
+    .Kontakt {
         padding-left: 50px;
         padding-right: 50px;
     }
+
     .doshas h1 {
         font-size: 40pt;
         padding-top: 60px;
         padding-bottom: 60px;
     }
+
     .doshaCards {
         margin-left: 50px;
         margin-right: 50px;
         gap: 20px;
     }
+
     .card {
         gap: 20px;
         padding: 20px;
     }
-    .doshaIcon { font-size: 100px; }
-    .doshaName { font-size: 24pt; }
-    .doshaInfo { font-size: 12pt; }
+
+    .doshaIcon {
+        font-size: 100px;
+    }
+
+    .doshaName {
+        font-size: 24pt;
+    }
+
+    .doshaInfo {
+        font-size: 12pt;
+    }
 
     .modal-content {
         margin: 50px 30px;
         padding: 25px;
     }
-    .generalInfo video { width: 45%; }
-    .modalText h2 { font-size: 32pt; }
 
-    .firstRow, .secondRow, .problem, .recommendationRow, .foodtip {
+    .generalInfo video {
+        width: 45%;
+    }
+
+    .modalText h2 {
+        font-size: 32pt;
+    }
+
+    .firstRow,
+    .secondRow,
+    .problem,
+    .recommendationRow,
+    .foodtip {
         gap: 20px;
     }
-    .problem, .recommendationRow {
+
+    .problem,
+    .recommendationRow {
         margin-left: 40px;
         margin-right: 40px;
     }
-    .problemName { width: 35%; padding: 8px 15px; }
-    .problemDescription { padding: 10px 20px; }
 
-    .info { gap: 30px; padding: 40px 50px; margin-top: 50px;}
-    .info .text h1 { font-size: 26pt; }
-    .info .text p { font-size: 12pt; }
-    #meditation { width: 45%; }
+    .problemName {
+        width: 35%;
+        padding: 8px 15px;
+    }
 
-    .Kontakt { margin: 40px 50px; gap: 25px; }
+    .problemDescription {
+        padding: 10px 20px;
+    }
+
+    .info {
+        gap: 30px;
+        padding: 40px 50px;
+        margin-top: 50px;
+    }
+
+    .info .text h1 {
+        font-size: 26pt;
+    }
+
+    .info .text p {
+        font-size: 12pt;
+    }
+
+    #meditation {
+        width: 45%;
+    }
+
+    .Kontakt {
+        margin: 40px 50px;
+        gap: 25px;
+    }
 }
 
 
 /* Standard Smartphones (Portrait und Landschaft) */
 @media (max-width: 768px) {
-    .parallax {
-        height: 60vh; /* Höhe weiter reduzieren */
-        /* Falls der JS Parallax-Effekt auf 'fixed' basiert und Probleme macht: */
-        /* overflow: visible; */ /* Könnte helfen, aber auch unerwünschte Effekte haben */
+    .doshasExplainedSection {
+        padding: 40px 15px;
     }
+
+    .doshasExplainedSection h1 {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+    }
+
+    .flippableCardsContainer {
+        flex-direction: column;
+        /* Kacheln untereinander auf Mobile */
+        align-items: center;
+        /* Kacheln zentrieren */
+        gap: 25px;
+        /* Abstand zwischen den Kacheln */
+    }
+
+    .parallax {
+        height: 60vh;
+        /* Höhe weiter reduzieren */
+        /* Falls der JS Parallax-Effekt auf 'fixed' basiert und Probleme macht: */
+        /* overflow: visible; */
+        /* Könnte helfen, aber auch unerwünschte Effekte haben */
+    }
+
     /* Wenn die Bilder per JS bewegt werden, ist 'background-attachment' irrelevant.
        Wichtiger ist, wie die Bilder im DOM sind und wie JS sie anspricht.
        Sicherstellen, dass der #punch Text immer gut lesbar ist. */
@@ -611,136 +882,248 @@ body.modal-open {
         /* Ggf. object-position anpassen, falls wichtige Teile abgeschnitten werden */
         /* object-position: center center; */
     }
+
     #punch {
         font-size: 32pt;
-        padding: 0 20px; /* Weniger Padding */
+        padding: 0 20px;
+        /* Weniger Padding */
     }
 
-    .motivationStatement, .doshas h1, .info, .Kontakt {
-        padding: 30px 20px; /* Weniger Padding */
+    .motivationStatement,
+    .doshas h1,
+    .info,
+    .Kontakt {
+        padding: 30px 20px;
+        /* Weniger Padding */
     }
-    .motivationStatement { font-size: 13pt; line-height: 1.5; }
+
+    .motivationStatement {
+        font-size: 13pt;
+        line-height: 1.5;
+    }
 
     .doshas h1 {
         font-size: 30pt;
         padding-top: 40px;
         padding-bottom: 40px;
     }
+
     .doshaCards {
-        flex-direction: column; /* Karten untereinander */
+        flex-direction: column;
+        /* Karten untereinander */
         margin: 20px;
         gap: 25px;
     }
+
     .card {
-        width: 100%; /* Volle Breite für jede Karte */
+        width: 100%;
+        /* Volle Breite für jede Karte */
         gap: 20px;
         padding: 25px;
     }
-    .doshaIcon { font-size: 80px; }
-    .doshaName { font-size: 22pt; }
-    .discoverDosha { margin-bottom: 20px; }
+
+    .doshaIcon {
+        font-size: 80px;
+    }
+
+    .doshaName {
+        font-size: 22pt;
+    }
+
+    .discoverDosha {
+        margin-bottom: 20px;
+    }
 
     /* Modal Anpassungen für Mobile */
     .modal-content {
-        margin: 20px; /* Kleinerer Rand */
+        margin: 20px;
+        /* Kleinerer Rand */
         padding: 20px;
-        width: calc(100% - 40px); /* Volle Breite minus Ränder */
-        max-height: 90vh; /* Scrollen innerhalb des Modals ermöglichen */
+        width: calc(100% - 40px);
+        /* Volle Breite minus Ränder */
+        max-height: 90vh;
+        /* Scrollen innerhalb des Modals ermöglichen */
     }
+
     .generalInfo {
-        flex-direction: column; /* Video und Text untereinander */
-        align-items: center; /* Zentrieren */
+        flex-direction: column;
+        /* Video und Text untereinander */
+        align-items: center;
+        /* Zentrieren */
     }
-    .generalInfo video, .modalText {
-        width: 100%; /* Volle Breite */
+
+    .generalInfo video,
+    .modalText {
+        width: 100%;
+        /* Volle Breite */
     }
-    .generalInfo video { margin-bottom: 20px; }
-    .modalText h2 { font-size: 24pt; text-align: center; }
-    .modalText p { font-size: 11pt; text-align: justify;} /* Beschreibungstext im Modal */
 
-    .close-button { font-size: 24pt; top:10px; right: 15px;}
+    .generalInfo video {
+        margin-bottom: 20px;
+    }
 
-    .characteristics, .problems, .tips, .foodTips, .recommendations {
+    .modalText h2 {
+        font-size: 24pt;
+        text-align: center;
+    }
+
+    .modalText p {
+        font-size: 11pt;
+        text-align: justify;
+    }
+
+    /* Beschreibungstext im Modal */
+
+    .close-button {
+        font-size: 24pt;
+        top: 10px;
+        right: 15px;
+    }
+
+    .characteristics,
+    .problems,
+    .tips,
+    .foodTips,
+    .recommendations {
         margin-top: 40px;
     }
-     .firstRow, .secondRow {
-        flex-direction: column; /* Inhalte untereinander */
+
+    .firstRow,
+    .secondRow {
+        flex-direction: column;
+        /* Inhalte untereinander */
         gap: 20px;
     }
-    .rowContent{ padding: 20px; }
+
+    .rowContent {
+        padding: 20px;
+    }
 
     .problem {
-        flex-direction: column; /* Problemname und Beschreibung untereinander */
+        flex-direction: column;
+        /* Problemname und Beschreibung untereinander */
         margin-left: 20px;
         margin-right: 20px;
         gap: 15px;
     }
-    .problemName, .problemDescription {
-        width: 100%; /* Volle Breite */
+
+    .problemName,
+    .problemDescription {
+        width: 100%;
+        /* Volle Breite */
         text-align: center;
     }
-    .problemDescription { text-align: left; } /* Besser für Lesbarkeit */
+
+    .problemDescription {
+        text-align: left;
+    }
+
+    /* Besser für Lesbarkeit */
 
     .foodtip {
-        flex-direction: column; /* Positive/Negative Listen untereinander */
+        flex-direction: column;
+        /* Positive/Negative Listen untereinander */
         align-items: center;
         gap: 25px;
     }
-    .tipCard { width: 90%; /* Etwas Rand lassen */ }
-    .list { padding: 20px; }
+
+    .tipCard {
+        width: 90%;
+        /* Etwas Rand lassen */
+    }
+
+    .list {
+        padding: 20px;
+    }
 
     .recommendationRow {
-        flex-direction: column; /* Empfehlungen untereinander */
+        flex-direction: column;
+        /* Empfehlungen untereinander */
         margin-left: 20px;
         margin-right: 20px;
         gap: 25px;
     }
+
     .recommendation {
-        flex-direction: column; /* Bild über Text */
-        align-items: center; /* Bild zentrieren */
+        flex-direction: column;
+        /* Bild über Text */
+        align-items: center;
+        /* Bild zentrieren */
     }
+
     .recommendation img {
-        width: 100%; /* Volle Breite für das Bild */
-        height: 200px; /* Feste Höhe oder aspect-ratio verwenden */
+        width: 100%;
+        /* Volle Breite für das Bild */
+        height: 200px;
+        /* Feste Höhe oder aspect-ratio verwenden */
         object-fit: cover;
-        border-radius: 14px 14px 0 0; /* Oben abrunden */
+        border-radius: 14px 14px 0 0;
+        /* Oben abrunden */
     }
+
     .recommendationDescription {
         padding: 20px;
         text-align: center;
     }
-    .recommendationName { font-size: 13pt; }
+
+    .recommendationName {
+        font-size: 13pt;
+    }
 
     .info {
-        flex-direction: column; /* Bild und Text untereinander */
+        flex-direction: column;
+        /* Bild und Text untereinander */
         padding: 30px 20px;
-        margin: 40px 0 0 10px;
+        margin-top: 40px;
         gap: 25px;
     }
-    .info img, #meditation {
-        width: 80%; /* Bilder nicht über die volle Breite, um Ränder zu haben */
-        max-width: 300px; /* Maximale Breite für die Bilder */
+
+    .info img,
+    #meditation {
+        width: 80%;
+        /* Bilder nicht über die volle Breite, um Ränder zu haben */
+        max-width: 300px;
+        /* Maximale Breite für die Bilder */
         padding: 10px;
     }
-     .info .text {
-        align-items: center; /* Text zentrieren */
+
+    .info .text {
+        align-items: center;
+        /* Text zentrieren */
         text-align: center;
     }
-    .info .text h1 { font-size: 22pt; }
-    .info .text p { text-align: center; font-size: 12pt; }
+
+    .info .text h1 {
+        font-size: 22pt;
+    }
+
+    .info .text p {
+        text-align: center;
+        font-size: 12pt;
+    }
 
     .Kontakt {
-        flex-direction: column; /* Kontaktinfo und Social Media untereinander */
+        flex-direction: column;
+        /* Kontaktinfo und Social Media untereinander */
         margin: 30px 20px;
         padding: 25px;
         text-align: center;
     }
-    .Kontakt .text { align-items: center; }
-    .socialMedia {
-        align-items: center; /* Icons und Links zentrieren */
-        margin-top: 20px; /* Abstand zum Text */
+
+    .Kontakt .text {
+        align-items: center;
     }
-    .socialMedia a { justify-content: center; }
+
+    .socialMedia {
+        align-items: center;
+        /* Icons und Links zentrieren */
+        margin-top: 20px;
+        /* Abstand zum Text */
+    }
+
+    .socialMedia a {
+        justify-content: center;
+    }
 }
 
 
@@ -749,47 +1132,127 @@ body.modal-open {
     .parallax {
         height: 50vh;
     }
+
     #punch {
         font-size: 26pt;
         padding: 0 15px;
     }
+
     .motivationStatement {
         padding: 25px 15px;
         font-size: 12pt;
     }
+
     .doshas h1 {
         font-size: 24pt;
         padding: 30px 15px;
     }
-    .doshaCards { margin: 15px; gap: 20px; }
-    .card { padding: 20px; gap: 15px;}
-    .doshaIcon { font-size: 70px; }
-    .doshaName { font-size: 20pt; }
-    .doshaInfo { font-size: 11pt; }
-    .discoverDosha { padding: 8px 25px; font-size: 12pt;}
 
-    .modal-content { margin: 15px; padding: 15px; width: calc(100% - 30px); }
-    .modalText h2 { font-size: 20pt; }
-    .close-button {font-size: 20pt; top: 8px; right: 10px;}
+    .doshaCards {
+        margin: 15px;
+        gap: 20px;
+    }
+
+    .card {
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .doshaIcon {
+        font-size: 70px;
+    }
+
+    .doshaName {
+        font-size: 20pt;
+    }
+
+    .doshaInfo {
+        font-size: 11pt;
+    }
+
+    .discoverDosha {
+        padding: 8px 25px;
+        font-size: 12pt;
+    }
+
+    .modal-content {
+        margin: 15px;
+        padding: 15px;
+        width: calc(100% - 30px);
+    }
+
+    .modalText h2 {
+        font-size: 20pt;
+    }
+
+    .close-button {
+        font-size: 20pt;
+        top: 8px;
+        right: 10px;
+    }
 
 
-    .rowContent { padding: 15px; gap: 15px; }
-    .characteristic { font-size: 12pt; }
+    .rowContent {
+        padding: 15px;
+        gap: 15px;
+    }
 
-    .spacerHeading { font-size: 16pt; }
-    .problem { margin-left: 15px; margin-right: 15px; }
-    .problemName { font-size: 11pt; padding: 8px 15px;}
-    .problemDescription { font-size: 11pt; padding: 10px 15px; }
+    .characteristic {
+        font-size: 12pt;
+    }
 
-    .list { padding: 15px; }
-    .tipCard > p { font-size: 13pt; }
+    .spacerHeading {
+        font-size: 16pt;
+    }
 
-    .recommendationRow { margin-left: 15px; margin-right: 15px; }
-    .recommendationDescription { padding: 15px; }
+    .problem {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
 
-    .info { padding: 25px 15px; margin: 30px 0 0 5; gap: 20px;}
-    .info .text h1 { font-size: 20pt; }
-    .info .text p { font-size: 11pt; }
+    .problemName {
+        font-size: 11pt;
+        padding: 8px 15px;
+    }
 
-    .Kontakt { margin: 25px 15px; padding: 20px; }
+    .problemDescription {
+        font-size: 11pt;
+        padding: 10px 15px;
+    }
+
+    .list {
+        padding: 15px;
+    }
+
+    .tipCard>p {
+        font-size: 13pt;
+    }
+
+    .recommendationRow {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+    .recommendationDescription {
+        padding: 15px;
+    }
+
+    .info {
+        padding: 25px 15px;
+        margin-top: 30px;
+        gap: 20px;
+    }
+
+    .info .text h1 {
+        font-size: 20pt;
+    }
+
+    .info .text p {
+        font-size: 11pt;
+    }
+
+    .Kontakt {
+        margin: 25px 15px;
+        padding: 20px;
+    }
 }

@@ -101,7 +101,7 @@ const RezepteDetailPage = () => {
       <article className={styles.recipeDetailWrapper}>
         <section className={styles.heroSection}>
           <div className={styles.heroImageContainer}>
-            <img src={recipe.imageUrl || '/img/recipes/default_recipe_image.jpg'} alt={recipe.title} className={styles.heroImage} />
+            <img src={recipe.imageUrl || '/img/recipes/default_recipe_image.png'} alt={recipe.title} className={styles.heroImage} />
           </div>
           <div className={styles.heroInfo}>
             <h1 className={styles.recipeTitle}>{recipe.title}</h1>

@@ -1,0 +1,117 @@
+.flipCard {
+    background-color: transparent;
+    width: 400px;
+    /* Breite anpassen nach Bedarf */
+    height: 300px;
+    /* Höhe anpassen nach Bedarf */
+    perspective: 1000px;
+    /* Wichtig für den 3D-Effekt */
+    cursor: pointer;
+    border-radius: 18px;
+    /* Abrundung für die äußere Karte */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: 0.3s ease;
+}
+
+.flipCard:hover {
+    box-shadow: none;
+    transition: 0.3s ease;
+}
+
+.flipCardInner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.7s;
+    transform-style: preserve-3d;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    border-radius: 18px;
+    /* Abrundung auch für inneren Container */
+}
+
+.flipCard.flipped .flipCardInner,
+/* Ältere Referenz, wird durch isFlipped ersetzt */
+.flipCardInner.isFlipped {
+    transform: rotateY(180deg);
+}
+
+.flipCardFront,
+.flipCardBack {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    /* Safari */
+    backface-visibility: hidden;
+    border-radius: 18px;
+    /* Abrundung für Vorder- und Rückseite */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.flipCardFront {
+    background-color: #ffffff;
+    /* Weißer Hintergrund wie im Screenshot */
+    color: black;
+}
+
+.emoji {
+    font-size: 5rem;
+    /* Größe des Emojis */
+}
+
+.flipCardBack {
+    background-color: #ffffff;
+    /* Weißer Hintergrund */
+    color: #333;
+    /* Dunkler Text für gute Lesbarkeit */
+    transform: rotateY(180deg);
+    justify-content: flex-start;
+    /* Text oben beginnen lassen */
+    text-align: left;
+    /* Text linksbündig */
+}
+
+.cardText {
+    font-size: 1.3rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 992px) {
+    .flipCard {
+        width: 240px;
+        height: 280px;
+    }
+
+    .emoji {
+        font-size: 4rem;
+    }
+
+    .cardText {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .flipCard {
+        width: 100%;
+        /* Kacheln nehmen volle Breite auf Mobile ein */
+        max-width: 300px;
+        /* Aber nicht zu breit werden */
+        height: 280px;
+        /* Höhe kann gleich bleiben oder angepasst werden */
+        margin-bottom: 20px;
+        /* Abstand zwischen den Karten */
+    }
+
+    .flipCard:last-child {
+        margin-bottom: 0;
+    }
+}

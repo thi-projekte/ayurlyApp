@@ -209,7 +209,7 @@ const RezeptePage = () => {
               <Link to={`/rezepte/${recipe.id}`} className={styles.cardLinkWrapper}> {/* Link umschließt Bild und Titel */}
                 <div className={styles.imagePreview}>
                   <img
-                      src={recipe.imageUrl || '/img/recipes/default_recipe_image.jpg'}
+                      src={recipe.imageUrl || '/img/recipes/default_recipe_image.png'}
                       alt={recipe.title}
                   />
                 </div>

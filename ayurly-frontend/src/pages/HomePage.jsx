@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; // Für Links im Footer-Bereich
 import Modal from '../components/UI/Modal';
+import FlippableCard from '../components/UI/FlippableCard';
 import '../styles/indexStyles.css'; // Deine Styles für die Homepage
 import { useUser } from '../contexts/UserContext';
 
@@ -75,6 +76,21 @@ const HomePage = () => {
   };
   const closeModal = (setter) => () => setter(false);
 
+  const doshasExplainedData = [
+    {
+      emoji: '🏋️', // Gewichtheber-Emoji 
+      text: '🏋️ Jeder Mensch trägt alle drei Doshas in sich – jedoch in einer individuellen Zusammensetzung, die seine körperliche und geistige Konstitution prägt.'
+    },
+    {
+      emoji: '🌻', // Sonnenblumen-Emoji
+      text: '🌻 Die Doshas beeinflussen, wie wir denken, fühlen, verdauen, schlafen und sogar wie wir auf unsere Umwelt reagieren.'
+    },
+    {
+      emoji: '⚖️', // Waage-Emoji
+      text: '⚖️ Ein harmonisches Zusammenspiel der Doshas bedeutet Gesundheit, Vitalität und inneres Gleichgewicht. Gerät eines oder mehrere aus der Balance, können sich erste Unstimmigkeiten oder Beschwerden zeigen.'
+    }
+  ];
+
   return (
     <div className="homepage-container"> 
       <section className="parallax">
@@ -111,6 +127,65 @@ const HomePage = () => {
               (Dosha) und finde Routinen, die wirklich zu dir passen.
             </p>
           </div>
+        </div>
+      </section>
+
+      <section class="explanation">
+      <h1 class="mainHeading">Was ist Ayurveda?</h1>
+      <div class="explanantionContent">
+        <div class="explanationDescription">
+          <h3>🌿 Ayurveda – Das Wissen vom Leben</h3>
+          <p class="ayurveda">
+            Ayurveda ist das älteste überlieferte Gesundheitssystem der Welt und
+            hat seinen Ursprung in Indien. Der Name kommt aus dem Sanskrit und
+            setzt sich zusammen aus:
+          </p>
+        </div>
+        <div class="wordConstruction">
+          <p>🕉️ Ayus = Leben</p>
+          <p>📚 Veda = Wissen</p>
+          <p>➡️ „Wissen vom Leben“</p>
+        </div>
+        <div class="explanationDescription">
+          <h3 class="ayurveda">
+            🧠💚 Ganzheitliche Gesundheit statt nur Symptom-Behandlung
+          </h3>
+          <p>
+            Ayurveda betrachtet Gesundheit nicht nur als das Fehlen von
+            Krankheit, sondern als einen Zustand des harmonischen Gleichgewichts
+            zwischen Körper, Geist und Seele. Es ist ein tiefgründiger,
+            ganzheitlicher Ansatz, der darauf abzielt, das Wohlbefinden in allen
+            Bereichen deines Lebens zu fördern. Im Gegensatz zur westlichen
+            Medizin, die oft Symptome behandelt, geht es im Ayurveda darum, die
+            Ursache von Ungleichgewichten zu erkennen und das natürliche
+            Gleichgewicht wiederherzustellen.
+          </p>
+        </div>
+      </div>
+    </section>
+
+      <section className="explanation">
+        <h1 class="mainHeading">Und was sind Doshas?</h1>
+        <div className="explanantionContent"> 
+          <h2>🌬️🔥💧 Dosha – Die Bioenergien des Lebens</h2>
+          <p>
+            Im Ayurveda spielt das Konzept der Doshas eine zentrale Rolle. Der Begriff stammt aus dem Sanskrit und bedeutet so viel wie „Fehlfunktion“ oder „das, was aus dem Gleichgewicht geraten kann“ – doch in einem positiven Sinne beschreibt er die fundamentalen Bioenergien, die in jedem Menschen wirken.
+          </p>
+        </div>
+        <div className="flippableCardsContainer">
+          {doshasExplainedData.map((card, index) => (
+            <FlippableCard
+              key={index}
+              emoji={card.emoji}
+              text={card.text}
+              initialFlipped={false} // Alle Karten starten mit Emoji-Seite
+            />
+          ))}
+        </div>
+        <div className="explanantionContent">
+            <h2>🧘‍♀️ Dein Dosha ist der Schlüssel zu deinem inneren Gleichgewicht.</h2>
+            <p className="pointingFinger">👇</p>
+            <Link to="/dosha-test" className="primary-button">Starte deinen Dosha-Test!</Link>
         </div>
       </section>
 
