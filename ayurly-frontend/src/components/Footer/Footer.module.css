@@ -1,44 +1,43 @@
-/* src/components/Footer/Footer.module.css */
 .footerContainer {
-    background-color: #003329; /* Dein dunkles Grün */
+    background-color: #003329; 
     color: #fff;
-    padding: 80px 100px; /* Angepasst an dein Design, ggf. Werte anpassen */
+    padding: 80px 100px; 
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap; /* Für besseres Verhalten auf kleineren Bildschirmen */
-    gap: 30px; /* Abstand zwischen Logo-Teil und rechtem Teil, falls sie umbrechen */
+    flex-wrap: wrap; 
+    gap: 30px;
 }
 
-.logoArea h3 { /* Klasse für den "It's that simple. Ayurly." Teil */
-    font-size: 50pt; /* Wie in deinem Original */
-    margin: 0; /* Standard-Margin von h3 entfernen */
-    line-height: 1.2; /* Für bessere Zeilenhöhe bei großem Text */
+.logoArea h3 { 
+    font-size: 50pt; 
+    margin: 0; 
+    line-height: 1.2; 
 }
 
-.logoArea h3 span { /* Für "Ayurly." in Orange */
+.logoArea h3 span { 
     color: #e26a2c;
 }
 
-.rightSection { /* Der rechte Teil mit Links, Social Media und Copyright */
+.rightSection { 
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* Richtet den Inhalt rechtsbündig aus */
-    gap: 25px; /* Etwas reduzierter Abstand als im Original für Kompaktheit */
-    text-align: right; /* Stellt sicher, dass auch der Copyright-Text rechts ist */
+    align-items: flex-end; 
+    gap: 25px; 
+    text-align: right; 
 }
 
-.footerLinks { /* Container für die Navigationslinks im Footer */
+.footerLinks { 
     display: flex;
-    gap: 25px; /* Abstand zwischen den Links, ggf. anpassen */
-    flex-wrap: wrap; /* Links umbrechen lassen, falls nicht genug Platz */
-    justify-content: flex-end; /* Links rechtsbündig anordnen, wenn sie umbrechen */
+    gap: 25px; 
+    flex-wrap: wrap; 
+    justify-content: flex-end; 
 }
 
 .footerLinks a {
-    color: #949494; /* Dein Grau für Links */
+    color: #949494; 
     text-decoration: none;
-    font-size: 11pt; /* Etwas kleiner als in der Navbar, falls gewünscht */
+    font-size: 11pt; 
     transition: color 0.3s ease;
 }
 
@@ -49,18 +48,18 @@
 .socials {
     display: flex;
     align-items: center;
-    gap: 20px; /* Reduzierter Abstand zwischen Icons */
+    gap: 20px;
 }
 
-.socials i { /* Styling für deine Flaticon <i> Tags */
-    font-size: 28px; /* Ggf. anpassen */
+.socials i { 
+    font-size: 28px; 
     cursor: pointer;
-    color: #fff; /* Standardfarbe für Icons */
+    color: #fff;
     transition: color 0.1s ease;
 }
 
 .socials i:hover {
-    color: #e26a2c; /* Orange beim Hovern */
+    color: #e26a2c;
 }
 
 .copyright {
@@ -68,22 +67,21 @@
     color: #949494;
 }
 
-/* Responsive Anpassungen */
-@media (max-width: 1024px) { /* Etwas früherer Breakpoint für den Footer */
+@media (max-width: 1024px) { 
     .footerContainer {
-        padding: 60px 50px; /* Weniger Padding */
+        padding: 60px 50px; 
     }
     .logoArea h3 {
-        font-size: 40pt; /* Logo etwas kleiner */
+        font-size: 40pt; 
     }
 }
 
 
 @media (max-width: 768px) {
     .footerContainer {
-        flex-direction: column; /* Elemente untereinander anordnen */
-        align-items: center; /* Alles zentrieren im mobilen Layout */
-        text-align: center; /* Text zentrieren */
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center; 
         padding: 40px 20px;
     }
 
@@ -92,21 +90,21 @@
     }
     
     .logoArea h3 {
-        font-size: 32pt; /* Logo noch kleiner */
+        font-size: 32pt; 
     }
 
     .rightSection {
-        align-items: center; /* Rechten Bereich auch zentrieren */
-        text-align: center; /* Copyright Text zentrieren */
+        align-items: center;
+        text-align: center; 
         gap: 20px;
     }
 
     .footerLinks {
-        justify-content: center; /* Links zentrieren */
-        gap: 15px 20px; /* Kleinere Lücken, Zeilenumbruch-Lücke */
+        justify-content: center; 
+        gap: 15px 20px; 
     }
 
     .socials {
-        justify-content: center; /* Social Icons zentrieren */
+        justify-content: center; 
     }
 }

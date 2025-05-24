@@ -1,10 +1,9 @@
-/* src/pages/LoginPage.module.css (Beispielhafte Anpassung) */
 .loginPageContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 60vh; /* Nimmt einen guten Teil der Bildschirmhöhe ein */
+  min-height: 60vh; 
   padding: 20px;
   text-align: center;
 }
@@ -49,22 +48,22 @@
   width: 100%;
 }
 
-.actionButton { /* Standard-Login-Button-Stil */
-  background-color: #e26a2c; /* Orange */
+.actionButton { 
+  background-color: #e26a2c; 
   color: white;
 }
 
 .actionButton:hover {
-  background-color: #c75a20; /* Dunkleres Orange */
+  background-color: #c75a20; 
 }
 
 .registerButton {
-  background-color: #003329; /* Dein dunkles Grün */
+  background-color: #003329;
   color: white;
 }
 
 .registerButton:hover {
-  background-color: #00221c; /* Dunkleres Grün */
+  background-color: #00221c;
 }
 
 .infoText {

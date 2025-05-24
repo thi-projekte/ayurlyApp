@@ -9,7 +9,7 @@ const API_BASE_URL_UPLOADS = '/api/admin/uploads';
 
 const initialRecipeFormState = {
   title: '',
-  imageUrl: '', // Wird durch den Upload-Pfad ersetzt
+  imageUrl: '', 
   previewDescription: '',
   description: '',
   doshaTypes: [],
@@ -79,7 +79,7 @@ const ManageRecipes = () => {
     setSelectedFile(null);
     setImagePreview(null);
     if (fileInputRef.current) {
-        fileInputRef.current.value = ""; // Input-Feld zurücksetzen
+        fileInputRef.current.value = ""; 
     }
     setIsCreating(true);
     setError(null);
@@ -98,7 +98,7 @@ const ManageRecipes = () => {
       if (recipeToEdit) {
         setFormData({
           title: recipeToEdit.title || '',
-          imageUrl: recipeToEdit.imageUrl || '', // Bestehende URL anzeigen
+          imageUrl: recipeToEdit.imageUrl || '', 
           previewDescription: recipeToEdit.previewDescription || '',
           description: recipeToEdit.description || '',
           doshaTypes: recipeToEdit.doshaTypes || [],
@@ -248,16 +248,15 @@ const ManageRecipes = () => {
     setError(null);
     setSuccessMessage('');
 
-    let uploadedImageUrl = formData.imageUrl; // Bestehende URL oder leeren String verwenden
+    let uploadedImageUrl = formData.imageUrl; 
 
     // 1. Bild hochladen, falls ein neues ausgewählt wurde
     if (selectedFile) {
       const imageUploadFormData = new FormData();
       imageUploadFormData.append('file', selectedFile);
-      imageUploadFormData.append('subfolder', 'recipes'); // Optional, um Bilder zu organisieren
+      imageUploadFormData.append('subfolder', 'recipes'); 
 
       try {
-        // Verwende fetch direkt für FormData, da apiService für JSON konfiguriert ist
         const uploadResponse = await fetch(`${API_BASE_URL_UPLOADS}/image`, {
           method: 'POST',
           headers: {
@@ -272,7 +271,7 @@ const ManageRecipes = () => {
           throw new Error(errorData.message || `Bild-Upload fehlgeschlagen: ${uploadResponse.status}`);
         }
         const uploadResult = await uploadResponse.json();
-        uploadedImageUrl = uploadResult.filePath; // Pfad vom Backend verwenden
+        uploadedImageUrl = uploadResult.filePath; 
       } catch (uploadError) {
         setError(`Fehler beim Bild-Upload: ${uploadError.message}`);
         setIsLoading(false);
@@ -283,8 +282,8 @@ const ManageRecipes = () => {
     // 2. Rezeptdaten speichern
     const payload = {
       ...formData,
-      imageUrl: uploadedImageUrl, // Aktualisierte imageUrl
-      benefits: formData.benefits.map(b => b.text).filter(text => text.trim() !== ''), // Nur Text der Benefits senden
+      imageUrl: uploadedImageUrl, 
+      benefits: formData.benefits.map(b => b.text).filter(text => text.trim() !== ''), 
       ingredients: formData.ingredients.filter(ing => ing.name.trim() !== ''),
       preparationSteps: formData.preparationSteps.filter(step => step.description.trim() !== ''),
       preparationTimeMinutes: parseInt(formData.preparationTimeMinutes, 10) || 0,

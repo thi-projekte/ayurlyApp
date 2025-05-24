@@ -8,8 +8,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Wenn der User bereits eingeloggt ist, leite ihn von der Login-Seite weg,
-  // z.B. zur Account-Seite oder zur vorherigen Seite.
+  // Wenn der User bereits eingeloggt ist, leite ihn von der Login-Seite weg
   useEffect(() => {
     if (!loadingKeycloak && isLoggedIn) {
       const from = location.state?.from?.pathname || '/account'; // Zurück zur vorherigen Seite oder /account

@@ -18,16 +18,10 @@ services:
       KEYCLOAK_AUTH_SERVER_URL: ${KEYCLOAK_AUTH_SERVER_URL:-https://keycloak.winfprojekt.de/realms/Aryuveda}
       # Client-ID des Backends selbst. Kann auch eine Liste sein, wenn Tokens von Kogito weitergeleitet werden.
       KEYCLOAK_BACKEND_CLIENT_ID: ${KEYCLOAK_BACKEND_CLIENT_ID:-ayurly-data-service}
-      # Wenn Kogito Tokens weiterleitet und diese eine andere Audience haben (z.B. die Client-ID von Kogito):
+      # Wenn Kogito auch Tokens prüfen soll:
       # KOGITO_CLIENT_ID_FOR_AUDIENCE: ${KOGITO_CLIENT_ID_FOR_AUDIENCE:-kogito-api}
-      # In application.properties würdest du dann setzen:
+      # In application.properties dann:
       # quarkus.smallrye.jwt.verify.audiences=${KEYCLOAK_BACKEND_CLIENT_ID},${KOGITO_CLIENT_ID_FOR_AUDIENCE}
-      
-      # --- falls doch Keycloak OIDC Konfiguration ---
-      # Die tatsächlichen Property-Namen können je nach Quarkus OIDC Konfiguration variieren.
-      # QUARKUS_OIDC_AUTH_SERVER_URL: ${KEYCLOAK_AUTH_SERVER_URL:-https://keycloak.winfprojekt.de/realms/Aryuveda}
-      # QUARKUS_OIDC_CLIENT_ID: ${KEYCLOAK_BACKEND_CLIENT_ID:-ayurly-backend-client} # Client-ID für das Backend in Keycloak
-      # QUARKUS_OIDC_CREDENTIALS_SECRET: ${KEYCLOAK_BACKEND_CLIENT_SECRET} # Das Client-Secret aus Keycloak, via .env
 
       # --- Logging (optional) ---
       QUARKUS_LOG_LEVEL: INFO # Mögliche Werte: DEBUG, INFO, WARN, ERROR

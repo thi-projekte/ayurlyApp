@@ -18,7 +18,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
-import jakarta.annotation.security.RolesAllowed; // Wichtig für RESTEasy Reactive
+import jakarta.annotation.security.RolesAllowed; 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;

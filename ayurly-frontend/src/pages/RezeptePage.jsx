@@ -8,11 +8,11 @@ import { FaRegClock, FaRegThumbsUp, FaThumbsUp } from 'react-icons/fa';
 const TRIDOSHIC_VALUE = "tridoshic";
 
 const RezeptePage = () => {
-  const { doshaType: contextDoshaType, loadingKeycloak, isLoggedIn, login } = useUser(); // isLoggedIn und login für Like-Funktion
+  const { doshaType: contextDoshaType, loadingKeycloak, isLoggedIn, login } = useUser(); 
 
   const [allRecipes, setAllRecipes] = useState([]); // Speichert *alle* geladenen Rezepte
   const [filteredRecipes, setFilteredRecipes] = useState([]); // Die aktuell anzuzeigenden, gefilterten Rezepte
-  const [selectedDosha, setSelectedDosha] = useState('all'); // Default-Filter
+  const [selectedDosha, setSelectedDosha] = useState('all'); // Dosha-Filter
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [initialFilterApplied, setInitialFilterApplied] = useState(false);
@@ -27,8 +27,6 @@ const RezeptePage = () => {
       } else {
         setSelectedDosha('all'); // Fallback, wenn kein Dosha im Context bekannt
       }
-      // Wichtig: Wir signalisieren noch nicht, dass der Filter angewendet wurde,
-      // da das Filtern erst nach dem Laden der `allRecipes` Sinn ergibt.
     }
   }, [contextDoshaType, loadingKeycloak]);
 
@@ -53,15 +51,12 @@ const RezeptePage = () => {
     if (!loadingKeycloak) {
         fetchAllRecipesFromApi();
     }
-  }, [loadingKeycloak, isLoggedIn]); // Abhängigkeit von loadingKeycloak, um nach dessen Abschluss zu laden
+  }, [loadingKeycloak, isLoggedIn]);
 
   // 3. Effekt: Filter die Rezepte clientseitig, wenn sich selectedDosha oder allRecipes ändern.
-  // Dieser Effekt wird auch getriggert, nachdem allRecipes geladen wurden und selectedDosha initial gesetzt wurde.
   useEffect(() => {
-    // Stelle sicher, dass wir nicht filtern, bevor die Rezepte geladen sind oder Keycloak initialisiert ist.
+    // Stellt sicher, dass wir nicht filtern, bevor die Rezepte geladen sind oder Keycloak initialisiert ist.
     if (loadingKeycloak || loading) {
-      // Wenn noch geladen wird (entweder Keycloak oder die Rezepte),
-      // warte ab, bevor gefiltert wird. filteredRecipes wird dann beim nächsten Durchlauf gesetzt.
       return;
     }
 
@@ -116,7 +111,6 @@ const RezeptePage = () => {
       );
     } catch (err) {
       console.error("Error toggling like on recipe page:", err);
-      // Zeige dem User eine verständliche Fehlermeldung
       alert(err.message || "Es gab ein Problem beim Liken des Rezepts. Bitte versuche es später erneut.");
     } finally {
       setLikingRecipeId(null); // Ladezustand zurücksetzen
@@ -125,8 +119,7 @@ const RezeptePage = () => {
 
 
   // Ladezustand anzeigen
-  // Zeige "Initialisiere Filter...", wenn Keycloak lädt ODER der initiale Filter noch nicht angewendet wurde,
-  // nachdem die Rezepte prinzipiell geladen sein könnten.
+  // Zeige "Initialisiere Filter...", wenn Keycloak lädt ODER der initiale Filter noch nicht angewendet wurde, nachdem die Rezepte prinzipiell geladen sein könnten.
   if (loadingKeycloak || (loading && allRecipes.length === 0) || (!initialFilterApplied && !loading && !error)) {
     return <div className={styles.loadingMessage}>Lade Rezepte und Filter...</div>;
   }
@@ -233,8 +226,6 @@ const RezeptePage = () => {
                 </span>
                 <button
                   onClick={(e) => {
-                      // e.preventDefault(); // Nicht mehr nötig, da Button außerhalb des Links ist
-                      // e.stopPropagation(); // Nicht mehr nötig
                       handleLikeToggle(recipe.id);
                   }}
                   className={`${styles.likeButtonCard} ${recipe.likedByCurrentUser ? styles.liked : ''}`}

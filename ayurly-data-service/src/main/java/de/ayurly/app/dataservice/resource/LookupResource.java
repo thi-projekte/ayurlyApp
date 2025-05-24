@@ -40,7 +40,7 @@ import jakarta.ws.rs.core.Response;
 @Path("/api/lookups")
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON) // Wichtig für POST/PUT
+@Consumes(MediaType.APPLICATION_JSON) 
 @Tag(name = "Lookups", description = "Provides and manages values for dropdowns and selections.")
 public class LookupResource {
 
@@ -56,7 +56,6 @@ public class LookupResource {
     }
 
     // --- DTOs für CRUD-Operationen (Admin) ---
-    // Ein generisches DTO könnte verwendet werden, aber spezifische sind oft klarer.
     public static class LookupCreateUpdateDto {
         @NotBlank(message = "Value cannot be blank")
         @Size(max = 50, message = "Value can have a maximum of 50 characters")
@@ -78,7 +77,7 @@ public class LookupResource {
     @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = LookupValueDto.class, type = org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY)))
     public List<LookupValueDto> getPublicDoshaTypes() {
         List<LookupDoshaType> doshaTypesList = LookupDoshaType
-            .list("isActive", Sort.by("sortOrder").and("label"), true); // Hier sollte der Typ klar sein
+            .list("isActive", Sort.by("sortOrder").and("label"), true); 
 
         // Expliziter Stream mit dem korrekten Typ -> IDE inferiert sonst Typ nicht korrekt.
         Stream<LookupDoshaType> doshaTypeStream = doshaTypesList.stream(); 
@@ -248,10 +247,6 @@ public class LookupResource {
     @Transactional
     @SecurityRequirement(name = "jwtAuth")
     public Response deleteContentType(@PathParam("id") Integer id) {
-        // ACHTUNG: Überlege dir, was passiert, wenn ein Content-Typ gelöscht wird, der in content_items verwendet wird.
-        // Der CHECK Constraint in der DB würde neue Einträge verhindern, aber alte bleiben.
-        // Besser ist es, `isActive = false` zu setzen, anstatt physisch zu löschen.
-        // Für diese Demo implementiere ich den harten Delete.
         return handleDelete(LookupContentType::deleteById, id);
     }
 
@@ -331,7 +326,6 @@ public class LookupResource {
         } else if (entity instanceof LookupUnit) {
             ((LookupUnit) entity).value = dto.value;
             ((LookupUnit) entity).label = dto.label;
-            // Units haben aktuell kein Description-Feld in der Entität, ggf. hinzufügen
             ((LookupUnit) entity).isActive = dto.isActive;
             ((LookupUnit) entity).sortOrder = dto.sortOrder;
         }

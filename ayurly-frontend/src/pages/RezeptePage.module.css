@@ -1,23 +1,16 @@
 .mainContent {
-  /* Wrapper für den Hauptinhalt der Seite */
   padding: 20px 0;
-  /* Oben/Unten und Seiten-Padding */
   width: 100%;
-  /* Stelle sicher, dass mainContent die volle Breite nimmt, falls es von App.css beeinflusst wird */
 }
 
 /* Toggle-Gruppe für Dosha-Filter */
 .toggleGroup {
   display: flex;
   margin: 30px 100px;
-  /* Oben/Unten-Margin, Seiten-Margin durch .mainContent */
   justify-content: space-evenly;
-  /* Behält die gleichmäßige Verteilung bei, wenn Platz ist */
   align-items: center;
   gap: 30px;
-  /* Abstand zwischen den Buttons */
   flex-wrap: wrap;
-  /* Umbruch bei Bedarf */
 }
 
 .toggleLabel {
@@ -28,28 +21,11 @@
   border-radius: 10px;
   font-size: 1.1rem;
   padding: 15px 25px;
-  /* Beachte, dass dieses Padding zur Gesamtbreite beiträgt */
-
-  /* Feste Breitenberechnung basierend auf 4 Elementen */
-  /* Hier verwenden wir flex-basis für bessere Kontrolle im Flex-Kontext */
   flex-grow: 0;
-  /* Nicht wachsen lassen über die Basisbreite hinaus */
   flex-shrink: 0;
-  /* Nicht schrumpfen lassen unter die Basisbreite */
   flex-basis: calc(25% - (30px * 3 / 4));
-  /* (100% / 4 Spalten) - (Anteil am Gesamt-Gap) */
-  /* Gap ist 30px, 3 Gaps für 4 Elemente. Jeder Button "trägt" 3/4 eines Gaps */
-  /* Das sind 25% - 22.5px. */
-  /* Alternative, einfachere Berechnung, wenn Padding die Breite nicht sprengen soll: */
-  /* width: calc( (100% - (3 * 30px)) / 4 ); */
-  /* Deine ursprüngliche Formel */
-  /* Eine min-width kann sinnvoll sein, damit die Buttons nicht zu schmal werden bei sehr kleinen Screens,
-     bevor der Umbruch durch flex-wrap greift und die Buttons dann die volle Breite (durch eine neue Media Query) bekommen. */
   min-width: 150px;
-  /* Beispiel: Verhindert, dass Buttons unleserlich klein werden */
-
   box-sizing: border-box;
-  /* Stelle sicher, dass Padding und Border in die width/height-Berechnung einfließen */
   cursor: pointer;
   border: 2px solid transparent;
   transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
@@ -59,28 +35,21 @@
 .toggleLabel:hover {
   border-color: #ddd;
   transform: translateY(-2px);
-  /* Leichter Hover-Effekt */
 }
 
-/* Verstecke den Radio-Button selbst */
 .toggleButton {
   appearance: none;
   position: absolute;
-  /* Aus dem Layout nehmen */
   opacity: 0;
 }
 
-/* Styling für das ausgewählte Label */
 .toggleLabelChecked {
   border-color: #e26a2c;
-  /* Orange Rahmen */
   background-color: #fff7f2;
-  /* Sehr heller Orange-Ton als Hintergrund */
   font-weight: 600;
   color: #e26a2c;
 }
 
-/* Bereich für die Rezeptkarten */
 .recipesGrid {
   margin: 40px 100px;
   display: flex;
@@ -97,20 +66,11 @@
   overflow: hidden;
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   border: 1px solid #eee;
-
-  /* Anpassung für Flexbox-Kinder */
   flex-grow: 1;
-  /* Erlaube der Karte zu wachsen, um Leerraum zu füllen */
   flex-shrink: 1;
-  /* Erlaube der Karte zu schrumpfen, wenn nötig */
   flex-basis: calc(25% - 23px);
-  /* Ungefähre Basisbreite für 4 Spalten (22.5px ist 3/4 von 30px gap) - 
-                                    Diese Berechnung kann knifflig sein mit Gaps.
-                                    Eine feste min-width ist oft besser. */
   min-width: 280px;
-  /* Eine sinnvolle Mindestbreite */
   max-width: calc(25% - 23px);
-  /* Wenn sie nicht breiter als 1/4 sein soll */
 }
 
 /* Wrapper für Bild und Hauptinfo, um sie klickbar zu machen */
@@ -119,8 +79,7 @@
   color: inherit;
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* Nimmt den verfügbaren Platz ein, bevor der Button kommt */
-  /* Lässt diesen Bereich wachsen, um den Button nach unten zu drücken */
+  flex-grow: 1; 
 }
 
 .recipeCard:hover {
@@ -131,7 +90,6 @@
 .imagePreview {
   width: 100%;
   height: 200px;
-  /* Feste Höhe für das Vorschaubild */
   overflow: hidden;
 }
 
@@ -139,8 +97,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Stellt sicher, dass das Bild den Bereich füllt */
-  /* border-radius für oben wurde durch overflow:hidden auf .recipeCard ersetzt */
 }
 
 .recipeInfo {
@@ -168,10 +124,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px 15px 20px; /* Padding oben und unten angepasst */
+  padding: 10px 20px 15px 20px; 
   font-size: 0.85rem;
   color: #555;
-  border-top: 1px solid #f0f0f0; /* Leichte Trennlinie über diesem Bereich */
+  border-top: 1px solid #f0f0f0; 
 }
 
 .prepTime {
@@ -181,8 +137,8 @@
 }
 
 .prepTime svg {
-  font-size: 1em; /* relativ zum Text */
-  color: #e26a2c; /* Haupt-Akzentfarbe */
+  font-size: 1em;
+  color: #e26a2c; 
 }
 
 .likeButtonCard {
@@ -206,7 +162,7 @@
 }
 
 .likeButtonCard.liked {
-  background-color: #fff0f0; /* Heller Rotton */
+  background-color: #fff0f0;
   border-color: #ffc0c0;
   color: #c0392b;
 }
@@ -216,13 +172,13 @@
 }
 
 .likeButtonCard svg {
-  font-size: 1.1em; /* Etwas größer für bessere Sichtbarkeit */
-  color: #999; /* Standard-Herzfarbe */
+  font-size: 1.1em; 
+  color: #999;
   transition: color 0.2s ease;
 }
 
 .likeButtonCard:hover:not(:disabled) svg {
-  color: #e26a2c; /* Orange beim Hover für das Icon */
+  color: #e26a2c; 
 }
 
 .likeButtonCard:disabled {
@@ -232,7 +188,7 @@
 
 .likeCountCard {
   font-weight: 500;
-  min-width: 10px; /* Platzhalter für die Zahl */
+  min-width: 10px;
   text-align: left;
 }
 
@@ -245,55 +201,42 @@
   text-decoration: none;
   font-weight: 500;
   display: block;
-  /* Damit er die volle Breite annimmt und Padding korrekt wirkt */
   transition: background 0.2s ease;
 }
 
 .discoverRecipe:hover {
   background: linear-gradient(to right, #333, #1a1a1a);
-  /* Noch dunkler bei Hover */
 }
 
 /* Platzhalter, falls keine Rezepte gefunden wurden */
 .noRecipesMessage,
 .loadingMessage {
-  /* loadingMessage hinzugefügt */
   text-align: center;
   font-size: 1.2rem;
   color: #777;
   margin-top: 50px;
   width: 100%;
-  /* Nimmt die volle Breite des Grid-Containers ein */
 }
 
-/* --- Media Queries für Responsivität --- */
-
-/* Media Queries müssen dann auch flex-basis anpassen oder die Anzahl der gewünschten Elemente pro Zeile */
 @media (max-width: 1200px) {
 
   /* ... */
   .toggleLabel {
-    /* 3 Kacheln */
     width: calc((100% - 2 * 30px) / 3);
-    /* <-- HIER WIRD ES FÜR 3 ELEMENTE ANGEPASST */
   }
 
   .recipeCard {
     flex-basis: calc(33.333% - 20px);
-    /* Für 3 Karten */
   }
 }
 
 @media (max-width: 992px) {
   .toggleLabel {
-    /* 2 Kacheln */
     width: calc((100% - 1 * 30px) / 2);
-    /* <-- HIER WIRD ES FÜR 2 ELEMENTE ANGEPASST */
   }
 
   .recipeCard {
     flex-basis: calc(50% - 15px);
-    /* Für 2 Karten */
   }
 }
 
@@ -308,45 +251,33 @@
   }
 
   .toggleGroup {
-    /* Für das 2x2 Layout der Filter-Buttons auf Mobile */
     display: grid;
-    /* Wechsle zu Grid für präzise 2x2 Kontrolle */
     grid-template-columns: repeat(2, 1fr);
-    /* Zwei Spalten, die den verfügbaren Platz teilen */
     justify-items: center;
-    /* Zentriert die Items in ihren Grid-Zellen */
   }
 
   .toggleLabel {
     flex-basis: auto;
-    /* Entferne die Desktop-Basisbreite */
     width: 100%;
-    /* Nimm die volle Breite der Grid-Spalte ein */
     min-width: 0;
-    /* Überschreibe Desktop-min-width */
     padding: 12px 10px;
-    /* Ggf. Padding anpassen für kleinere Buttons */
     font-size: 1rem;
-    /* Ggf. Schriftgröße anpassen */
   }
 
   /* Rezeptkarten: Einspaltiges, zentriertes Grid */
   .recipesGrid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr); /* Eine Spalte, die maximal verfügbare Breite nimmt */
-                                          /* Oder eine spezifische max-width, z.B. minmax(0, 400px) */
-    justify-content: center; /* Zentriert das Grid selbst, wenn es schmaler als der Parent ist */
-    padding: 0 10px; /* Etwas seitliches Padding, damit Karten nicht am Rand kleben */
+    grid-template-columns: minmax(0, 1fr); 
+    justify-content: center; 
+    padding: 0 10px; 
   }
   .recipeCard {
-    flex-basis: auto; /* Desktop Flex-Basis aufheben */
-    width: 100%;      /* Karte nimmt volle Breite der Grid-Spalte */
-    min-width: 0;     /* Desktop min-width aufheben */
-    max-width: 450px; /* Maximale Breite für einzelne Karten auf Mobile, um Lesbarkeit zu gewährleisten */
-                      /* Wird zentriert durch justify-items auf dem Grid-Container (falls gesetzt)
-                         oder wenn das Grid selbst zentriert ist und die Spalte schmaler ist. */
-    margin-left: auto; /* Zentriert die Karte innerhalb der Grid-Spalte, falls die Spalte breiter als max-width ist */
-    margin-right: auto;/* Zentriert die Karte innerhalb der Grid-Spalte */
+    flex-basis: auto; 
+    width: 100%;      
+    min-width: 0;     
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .imagePreview {

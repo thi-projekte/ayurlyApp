@@ -8,11 +8,9 @@ export const UserProvider = ({ children }) => {
   const [keycloak, setKeycloak] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userProfile, setUserProfile] = useState(null); // Backend-Profil: { keycloakId, username, email, firstName, lastName, doshaType }
-  const [loadingKeycloak, setLoadingKeycloak] = useState(true); // Umbenannt für Klarheit
+  const [loadingKeycloak, setLoadingKeycloak] = useState(true); 
 
-  // Dedizierter State für den Dosha-Typ anonymer Nutzer
   const [anonymousDoshaType, setAnonymousDoshaType] = useState(() => {
-    // Initialisiere aus localStorage beim ersten Laden
     return localStorage.getItem('doshaTypeContextual');
   });
 
@@ -24,7 +22,6 @@ export const UserProvider = ({ children }) => {
         setUserProfile(profileFromBackend);
         console.log("UserContext: Profile from backend:", profileFromBackend);
 
-        // Spezielle Logik für Dosha-Typ Synchronisation
         const localContextualDosha = localStorage.getItem('doshaTypeContextual');
         if (localContextualDosha && !profileFromBackend.doshaType) {
           console.log(`UserContext: User ${profileFromBackend.keycloakId} has no DoshaType in backend. Attempting to sync local contextual Dosha: ${localContextualDosha}`);
@@ -38,9 +35,8 @@ export const UserProvider = ({ children }) => {
                 console.log("UserContext: Contextual DoshaType synced to backend and removed from local storage.");
             } catch (syncError) {
                 console.error("UserContext: Failed to sync contextual DoshaType to backend:", syncError);
-                // Behalte den lokalen Wert vorerst, falls das Backend-Update fehlschlägt
             }
-          }, 1500); // Kleine Verzögerung
+          }, 1500); 
         } else if (profileFromBackend.doshaType) {
             // Wenn Backend einen Dosha-Typ hat, stelle sicher, dass der lokale kontextuelle entfernt wird
             localStorage.removeItem('doshaTypeContextual');
@@ -103,8 +99,6 @@ export const UserProvider = ({ children }) => {
         setAnonymousDoshaType(null); // Der anonyme Wert ist nicht mehr relevant
       } catch (error) {
         console.error("UserContext: Failed to update DoshaType in backend:", error);
-        // Optional: Fallback-Logik oder Fehlermeldung anzeigen
-        // Als Fallback könnte man es lokal speichern, aber das Ziel ist die Backend-Synchronität
         localStorage.setItem('doshaTypeContextual', newDosha); // Notfall-Fallback
         setUserProfile(prev => ({ ...prev, doshaType: newDosha })); // Optimistisches UI-Update
       }
@@ -112,15 +106,7 @@ export const UserProvider = ({ children }) => {
       // Nicht eingeloggter User: Nur im localStorage für den Kontext speichern
       console.log(`UserContext: Setting contextual DoshaType to ${newDosha} for anonymous user.`);
       localStorage.setItem('doshaTypeContextual', newDosha);
-      setAnonymousDoshaType(newDosha); // Den React State aktualisieren
-      // Kein userProfile zu aktualisieren, da nicht eingeloggt
-      // Der "doshaType" im Context wird dann indirekt über den userProfile (wenn null) und localStorage geladen
-      // oder sollte direkt im UserProvider einen eigenen State dafür haben.
-      // Besser: Einen eigenen State für den kontextuellen Dosha-Typ, wenn kein User eingeloggt ist.
-      // Für dieses Beispiel: Wir verlassen uns darauf, dass Komponenten, die den Dosha-Typ für anonyme User brauchen,
-      // ihn direkt aus dem localStorage oder über eine Prop bekommen. Der Context fokussiert sich auf den eingeloggten User.
-      // Wenn du einen globalen "aktuellen Dosha-Typ" brauchst, der immer da ist, dann:
-      // setLocalOrContextualDosha(newDosha); // Eine neue State-Variable
+      setAnonymousDoshaType(newDosha); 
     }
   };
 
@@ -135,19 +121,18 @@ export const UserProvider = ({ children }) => {
     if (isLoggedIn && userProfile) {
       return userProfile.doshaType;
     }
-    // Für nicht eingeloggte Nutzer den reaktiven State verwenden
     return anonymousDoshaType;
   };
 
   return (
     <UserContext.Provider value={{
       isLoggedIn,
-      userProfile, // Enthält jetzt den Dosha-Typ vom Backend
+      userProfile,
       doshaType: getEffectiveDoshaType(),
       login,
       logout,
       register,
-      updateUserDosha: updateDoshaTypeContextual, // Umbenannt für Klarheit
+      updateUserDosha: updateDoshaTypeContextual, 
       keycloakInstance: keycloak,
       loadingKeycloak,
       accountManagementUrl: keycloak?.authenticated ? keycloak.createAccountUrl() : null

@@ -1,6 +1,4 @@
 .homepage-container {
-    /* Stellt sicher, dass der Container die volle Breite nutzt,
-       aber interne Elemente das Padding respektieren können. */
     width: 100%;
 }
 
@@ -33,7 +31,6 @@
     z-index: 1;
     color: #fff;
     padding: 0 20px;
-    /* Flexibleres Padding für verschiedene Bildschirmgrößen */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
@@ -46,14 +43,11 @@
     color: white;
     background-color: #003329;
     padding: 50px 20px;
-    /* Flexibleres Padding */
     font-size: 15pt;
     line-height: 1.6;
     text-align: center;
     font-style: italic;
 }
-
-/* Allgemeine Section-Stylings für Konsistenz */
 
 section:not(#ground):not(.parallax) {
     margin-bottom: 10px;
@@ -61,26 +55,20 @@ section:not(#ground):not(.parallax) {
 
 section:last-child {
     margin-bottom: 0;
-    /* Kein Abstand nach der letzten Sektion */
 }
 
 
 .doshas h1 {
-    /* Wird jetzt als .mainHeading gestyled für Konsistenz */
     text-align: center;
-    /* padding: 80px 100px; Wurde in .mainHeading verschoben */
     font-size: 50pt;
 }
 
 .doshaCards {
     display: flex;
     margin: 30px 0;
-    /* Zentriert, Padding wird von section gehandhabt */
     gap: 30px;
     flex-wrap: wrap;
-    /* Erlaubt Umbruch auf kleineren Bildschirmen */
     justify-content: center;
-    /* Zentriert Karten bei Umbruch */
 }
 
 .card {
@@ -89,9 +77,7 @@ section:last-child {
     background-color: white;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     gap: 20px;
-    /* Reduzierter Gap für kompaktere Karten */
     padding: 25px;
-    /* Etwas weniger Padding */
     border-radius: 20px 20px 0 0;
     align-items: center;
     flex: 1 1 300px;
@@ -105,12 +91,10 @@ section:last-child {
 
 .doshaIcon {
     font-size: 100px;
-    /* Etwas kleiner für bessere Proportionen */
 }
 
 .doshaName {
     font-size: 26pt;
-    /* Angepasst */
 }
 
 #Vata {
@@ -143,9 +127,7 @@ section:last-child {
 
 .discoverDosha {
     margin-bottom: 0;
-    /* Padding wird von .card gehandhabt */
     margin-top: auto;
-    /* Schiebt Button nach unten, wenn Karte höher ist */
     padding: 10px 30px;
     color: white;
     border-radius: 100px;
@@ -158,7 +140,6 @@ section:last-child {
 }
 
 /*-----------------------------------*/
-/* Modal Stile (Desktop) - bleiben weitgehend gleich, aber wir nutzen die Komponente */
 
 body.modal-open {
     overflow: hidden;
@@ -169,13 +150,11 @@ body.modal-open {
     gap: 30px;
     align-items: flex-start;
     margin-bottom: 30px;
-    /* Abstand nach unten im Modal */
 }
 
 .generalInfo video {
     border-radius: 14px;
     width: 45%;
-    /* Angepasst */
     height: auto;
     object-fit: cover;
 }
@@ -184,20 +163,17 @@ body.modal-open {
     display: flex;
     flex-direction: column;
     width: 55%;
-    /* Angepasst */
 }
 
 .modalText h2 {
     font-size: 36pt;
-    /* Etwas kleiner */
     margin-bottom: 15px;
 }
 
 #VataName,
 #PittaName,
 #KaphaName {
-    /* Beibehalten für die Farbverläufe */
-    /* ... bestehende Farbverlaufs-Styles ... */
+
 }
 
 .characteristics {
@@ -213,13 +189,11 @@ body.modal-open {
     gap: 20px;
     justify-content: space-evenly;
     flex-wrap: wrap;
-    /* Erlaubt Umbruch auf kleineren Modal-Ansichten */
 }
 
 .rowContent {
     display: flex;
     flex: 1 1 250px;
-    /* Basisbreite, erlaubt Wachsen/Schrumpfen */
     flex-direction: column;
     text-align: center;
     line-height: 1.5em;
@@ -228,7 +202,6 @@ body.modal-open {
     border-radius: 14px;
     background-color: white;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-    /* Weicherer Schatten */
     transition: box-shadow 0.3s ease;
 }
 
@@ -239,7 +212,6 @@ body.modal-open {
 .characteristic {
     text-align: center;
     font-size: 12pt;
-    /* Angepasst */
     font-weight: bold;
 }
 
@@ -252,33 +224,26 @@ body.modal-open {
 
 .spacerHeading {
     font-size: 18pt;
-    /* Angepasst */
     font-weight: 500;
     text-align: center;
     margin-bottom: 15px;
-    /* Angepasst */
     color: #333;
 }
 
 .problem {
     display: flex;
     align-items: flex-start;
-    /* Bessere Ausrichtung, wenn Text länger wird */
     gap: 20px;
     margin-left: 0;
-    /* Entfernt, da Padding von section kommt */
     margin-right: 0;
 }
 
 .problemName {
     width: auto;
-    /* Flexiblere Breite */
     min-width: 150px;
-    /* Mindestbreite für Lesbarkeit */
     text-align: center;
     font-weight: bold;
     padding: 10px 15px;
-    /* Angepasst */
     border-radius: 100px;
     background-color: white;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
@@ -289,11 +254,9 @@ body.modal-open {
     text-align: left;
     background-color: #ffe9f3;
     padding: 12px 20px;
-    /* Angepasst */
     border-radius: 10px;
     flex-grow: 1;
     font-size: 11pt;
-    /* Etwas kleiner für bessere Proportionen */
 }
 
 .tips {
@@ -308,7 +271,6 @@ body.modal-open {
     pointer-events: none;
     display: block;
     border-radius: 10px;
-    /* Optional: Bild leicht abrunden */
 }
 
 .foodTips {
@@ -323,7 +285,6 @@ body.modal-open {
     gap: 20px;
     justify-content: space-evenly;
     flex-wrap: wrap;
-    /* Umbruch für kleinere Modal-Ansichten */
 }
 
 .tipCard {
@@ -332,29 +293,23 @@ body.modal-open {
     gap: 10px;
     align-items: center;
     flex: 1 1 280px;
-    /* Basisbreite */
     min-width: 250px;
-    /* Verhindert zu starkes Schrumpfen */
 }
 
 .tipCard>p {
     color: grey;
     font-weight: bold;
     font-size: 13pt;
-    /* Angepasst */
 }
 
 .list {
     padding: 20px;
-    /* Angepasst */
     border-radius: 14px;
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    /* Angepasst */
     font-size: 11pt;
-    /* Konsistente Schriftgröße */
 }
 
 #negative {
@@ -376,18 +331,14 @@ body.modal-open {
     display: flex;
     gap: 20px;
     margin-left: 0;
-    /* Entfernt */
     margin-right: 0;
     flex-wrap: wrap;
-    /* Umbruch */
     justify-content: center;
-    /* Zentriert Empfehlungen bei Umbruch */
 }
 
 .recommendation {
     display: flex;
     flex: 1 1 300px;
-    /* Basisbreite */
     min-width: 280px;
     gap: 15px;
     background-color: white;
@@ -404,7 +355,6 @@ body.modal-open {
 .recommendation img {
     width: 40%;
     min-height: 120px;
-    /* Mindesthöhe für das Bild */
     object-fit: cover;
 }
 
@@ -414,18 +364,15 @@ body.modal-open {
     gap: 8px;
     justify-content: center;
     padding: 15px;
-    /* Angepasst */
 }
 
 .recommendationName {
     font-weight: bold;
     font-size: 13pt;
-    /* Angepasst */
 }
 
 .recommendationText {
     font-size: 10pt;
-    /* Angepasst */
     line-height: 1.5;
 }
 
@@ -434,15 +381,12 @@ body.modal-open {
 .info {
     display: flex;
     padding-top: 50px;
-    /* Padding von section gehandhabt */
     padding-bottom: 50px;
     align-items: center;
     justify-content: space-between;
     gap: 30px;
     margin-top: 30px;
-    /* Reduziert */
     flex-wrap: wrap;
-    /* Umbruch erlauben */
 }
 
 .info img {
@@ -452,7 +396,6 @@ body.modal-open {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
     flex-shrink: 0;
-    /* Verhindert Schrumpfen des Bildes */
 }
 
 .info img:hover {
@@ -460,43 +403,32 @@ body.modal-open {
 }
 
 .text {
-    /* Allgemeine Textklasse, ggf. spezifischer machen */
     display: flex;
     flex-direction: column;
     gap: 15px;
     flex: 1 1 50px;
-    /* Erlaubt Wachsen und Schrumpfen, Basisbreite */
 }
 
 .info .text h1 {
     color: #e26a2c;
     font-size: 28pt;
-    /* Angepasst */
 }
 
 .info .text p {
     font-size: 12pt;
-    /* Angepasst */
     line-height: 1.7;
-    /* Angepasst */
     text-align: left;
-    /* Besser für längere Textblöcke */
 }
 
 #meditation {
     width: 40%;
-    /* Flexibler, max-width steuert Größe */
     max-width: 800px;
-    /* Maximale Breite für das Bild */
     height: auto;
 }
 
 #services {
-    /* Styles werden von .info .text p geerbt oder können hier spezifischer sein */
     padding-left: 20px;
-    /* Einrückung für Listenpunkte */
     list-style-type: disc;
-    /* Standard-Listenpunkte */
 }
 
 #services li {
@@ -507,7 +439,6 @@ body.modal-open {
     display: flex;
     background-color: white;
     margin: 30px 0;
-    /* Zentriert, Padding von section */
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -515,9 +446,7 @@ body.modal-open {
     align-items: center;
     transition: box-shadow 0.3s ease;
     flex-wrap: wrap;
-    /* Umbruch */
     justify-content: space-between;
-    /* Bessere Verteilung bei Umbruch */
 }
 
 .Kontakt:hover {
@@ -530,9 +459,7 @@ body.modal-open {
 
 .Kontakt .text h1 {
     font-size: 28pt;
-    /* Konsistent mit .info h1 */
     color: #333;
-    /* Standard-Schwarz für Überschriften */
 }
 
 .socialMedia {
@@ -541,7 +468,6 @@ body.modal-open {
     gap: 15px;
     align-items: flex-start;
     flex-shrink: 0;
-    /* Verhindert Schrumpfen */
 }
 
 .socialMedia a {
@@ -563,87 +489,60 @@ body.modal-open {
     color: #e26a2c;
 }
 
-/* --- NEUE SEKTIONEN --- */
 .mainHeading {
     text-align: center;
     padding-top: 60px;
-    /* Weniger Padding oben */
     padding-bottom: 40px;
-    /* Weniger Padding unten */
     font-size: 40pt;
-    /* Angepasst für bessere Hierarchie */
     color: #333;
 }
 
-.explanation {
-    /* .explanation ist der <section> Wrapper */
-    /* margin: 30px 100px; Wird jetzt durch section padding und margin-bottom gehandhabt */
-    /* display: flex; flex-direction: column; Ist Standard für section, hier nicht nötig */
-}
-
 .explanantionContent {
-    /* Erklärung: Tippfehler korrigiert -> explanationContent */
     display: flex;
     flex-direction: column;
     gap: 25px;
-    /* Etwas weniger Gap */
     align-items: center;
     justify-content: center;
     background-color: white;
     padding: 30px;
     border-radius: 20px;
     font-size: 12pt;
-    /* Konsistent */
     line-height: 1.7;
-    /* Konsistent */
     text-align: left;
-    /* Besser für Lesbarkeit von Absätzen */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
     margin-bottom: 30px;
-    /* Abstand zwischen den Boxen */
 }
 
 .explanantionContent:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    /* Weicherer Schatten beim Hover */
 }
 
 .explanationDescription {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    /* Reduziert */
     color: #555;
-    /* Dunkleres Grau für Text */
     width: 100%;
-    /* Volle Breite innerhalb .explanationContent */
 }
 
 .explanationDescription h3 {
     color: #003329;
-    /* Ayurly Grün für Unterüberschriften */
     font-size: 16pt;
     margin-bottom: 5px;
-    /* Kleiner Abstand nach h3 */
 }
 
 .wordConstruction {
     display: flex;
     flex-direction: column;
-    /* Standardmäßig untereinander */
     gap: 10px;
     align-items: flex-start;
-    /* Links ausrichten */
     background-color: #f7f9fc;
-    /* Leichter Hintergrund zur Abgrenzung */
     padding: 20px;
     border-radius: 10px;
     width: 100%;
     max-width: 400px;
-    /* Begrenzt Breite für bessere Lesbarkeit */
     margin: 0 auto;
-    /* Zentriert die Box */
 }
 
 .wordConstruction p {
@@ -652,11 +551,9 @@ body.modal-open {
 }
 
 
-/* Styles für "Was sind Doshas?" Sektion */
 .pointingFinger {
     font-size: 1.9em;
     display: block;
-    /* Damit margin auto funktioniert */
     text-align: center;
     margin-bottom: 10px;
 }
@@ -666,12 +563,9 @@ body.modal-open {
     justify-content: center;
     align-items: stretch;
     gap: 25px;
-    /* Angepasst */
     flex-wrap: wrap;
     margin-top: 40px;
-    /* Abstand zur Überschrift */
     margin-bottom: 40px;
-    /* Abstand zum Button */
 }
 
 /* ========== MOBILE LAYOUT ANPASSUNGEN ========== */
@@ -692,22 +586,18 @@ body.modal-open {
 
     .mainHeading,
     .doshas h1 {
-        /* .doshas h1 für Abwärtskompatibilität beibehalten */
         font-size: 32pt;
-        /* Angepasst */
         padding-top: 50px;
         padding-bottom: 30px;
     }
 
     .card {
         flex-basis: calc(50% - 15px);
-        /* 2 Karten pro Reihe */
         min-width: 260px;
     }
 
     .info img {
         max-width: 300px;
-        /* Bilder in .info begrenzen */
     }
 
     #meditation {
@@ -720,7 +610,6 @@ body.modal-open {
 
     .wordConstruction {
         max-width: 100%;
-        /* Erlaubt Umbruch innerhalb */
     }
 }
 
@@ -743,20 +632,15 @@ body.modal-open {
     .mainHeading,
     .doshas h1 {
         font-size: 26pt;
-        /* Deutlich kleiner */
         padding-top: 40px;
         padding-bottom: 25px;
     }
 
     .card {
         flex-basis: 100%;
-        /* 1 Karte pro Reihe */
         max-width: 400px;
-        /* Maximale Breite für einzelne Karte */
         margin-left: auto;
-        /* Zentrierung */
         margin-right: auto;
-        /* Zentrierung */
     }
 
     .doshaIcon {
@@ -871,11 +755,9 @@ body.modal-open {
         margin: 25px 0;
         max-height: 300px;
         padding: 30px;
-        /* Mehr Padding innen */
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         gap: 30px;
-        /* Reduziert */
         align-items: center;
         transition: box-shadow 0.3s ease;
     }
@@ -885,9 +767,7 @@ body.modal-open {
     }
 
     .Kontakt .text {
-        /* Textblock im Kontaktbereich */
         flex-grow: 1;
-        /* Nimmt verfügbaren Platz */
     }
 
 
@@ -905,7 +785,6 @@ body.modal-open {
 
     .wordConstruction {
         align-items: center;
-        /* Zentriert die Textzeilen */
     }
 
     .wordConstruction p {
@@ -915,9 +794,6 @@ body.modal-open {
     .flippableCardsContainer {
         gap: 20px;
     }
-
-    /* FlippableCard wird durch sein eigenes Modul-CSS gesteuert,
-       aber der Container hier kann Abstände etc. beeinflussen. */
 
 }
 
@@ -1012,11 +888,7 @@ body.modal-open {
         gap: 15px;
     }
 
-    /* Flippable Card Anpassungen, falls nötig für sehr kleine Screens.
-       Die Karte selbst sollte responsive sein (siehe FlippableCard.module.css) */
     .flipCard {
-        /* Beispiel, falls die Breite der FlippableCard hier beeinflusst werden soll */
         max-width: 280px;
-        /* Oder 100% wenn sie die volle Breite nehmen sollen */
     }
 }

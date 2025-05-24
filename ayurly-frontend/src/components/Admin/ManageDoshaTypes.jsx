@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useUser } from '../../contexts/UserContext'; // Für Token
-import styles from '../../pages/AdminPage.module.css'; // Wiederverwenden der Admin-Styles
+import { useUser } from '../../contexts/UserContext'; 
+import styles from '../../pages/AdminPage.module.css';
 
-// Service-Funktionen für API-Aufrufe (müssen noch erstellt werden)
-// Beispiel für einen allgemeinen API-Service (apiService.js)
-const API_BASE_URL = '/api/lookups/admin/dosha-types'; // Backend-Endpunkt
+const API_BASE_URL = '/api/lookups/admin/dosha-types'; 
 
 const apiRequest = async (url, method = 'GET', body = null, token) => {
   const headers = {
@@ -53,7 +51,7 @@ const ManageDoshaTypes = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
 
-  const [editingDosha, setEditingDosha] = useState(null); // null oder { id?, value: '', label: '', description: '', isActive: true, sortOrder: 0 }
+  const [editingDosha, setEditingDosha] = useState(null); 
   const [isCreating, setIsCreating] = useState(false);
 
   const fetchDoshaTypes = useCallback(async () => {
@@ -96,7 +94,7 @@ const ManageDoshaTypes = () => {
       try {
         await apiRequest(`${API_BASE_URL}/${id}`, 'DELETE', null, keycloakInstance.token);
         setSuccessMessage('Dosha-Typ erfolgreich gelöscht.');
-        fetchDoshaTypes(); // Liste neu laden
+        fetchDoshaTypes(); 
       } catch (err) {
         setError(err.message || 'Fehler beim Löschen des Dosha-Typs.');
       } finally {
@@ -145,7 +143,7 @@ const ManageDoshaTypes = () => {
   };
 
 
-  if (isLoading && !editingDosha) { // Ladeindikator nur für die Liste, nicht wenn Formular offen
+  if (isLoading && !editingDosha) {
     return <p>Lade Dosha-Typen...</p>;
   }
 

@@ -62,7 +62,6 @@ const questions = [
 const DoshaTestPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [doshaCounts, setDoshaCounts] = useState(() => {
-    // Sicherere Initialisierung
     if (questions.length === 0 || !questions[0]) return {};
     return Object.keys(questions[0].answers).reduce((acc, key) => ({ ...acc, [key]: 0 }), {});
   });
@@ -88,7 +87,6 @@ const DoshaTestPage = () => {
 
   const progressPercent = questions.length > 0 ? Math.round(((currentQuestionIndex) / questions.length) * 100) : 0;
 
-  // Ergebnisberechnung ausgelagert
   const calculateAndSetResult = async (finalCounts) => {
     const sortedDoshas = Object.entries(finalCounts).sort(([, a], [, b]) => b - a);
 
@@ -109,13 +107,11 @@ const DoshaTestPage = () => {
       default: text = "Ergebnis konnte nicht ermittelt werden."; setResultDosha(null);
     }
     setResultText(text);
-    // Den ermittelten Dosha-Typ über den Context aktualisieren
     try {
       await updateUserDosha(maxDosha); // Ruft die Funktion aus dem UserContext auf
       console.log(`Dosha-Test: Ergebnis '${maxDosha}' an UserContext übergeben.`);
     } catch (error) {
       console.error("Dosha-Test: Fehler beim Aktualisieren des Dosha-Typs über Context:", error);
-      // Hier könnte eine Fehlermeldung für den Benutzer angezeigt werden
     }
   };
 
@@ -601,7 +597,6 @@ const DoshaTestPage = () => {
           <div className={styles.gamificationCard} id="result-container">
             <p className={styles.resultText} id="result-text">{resultText || 'Ergebnis wird geladen...'}</p>
             
-            {/* Primäre Aktionen zum Ergebnis */}
             <div className={styles.resultActions}>
               {resultDosha && (
                 <button className={styles.resultButton} onClick={openModalForDosha}>
@@ -616,7 +611,6 @@ const DoshaTestPage = () => {
               </button>
             </div>
 
-            {/* Sekundäre Navigations-Aktionen */}
             <div className={styles.navigationButtons}>
               <button className={styles.resultButton} onClick={restartTest}>
                 Test neu starten

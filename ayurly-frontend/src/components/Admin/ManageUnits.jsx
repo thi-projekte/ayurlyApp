@@ -34,7 +34,7 @@ const ManageUnits = () => {
   }, [fetchUnits]);
 
   const handleCreateNew = () => {
-    setEditingUnit({ value: '', label: '', isActive: true, sortOrder: 0 }); // description hier nicht nötig
+    setEditingUnit({ value: '', label: '', isActive: true, sortOrder: 0 }); 
     setIsCreating(true);
     setError(null);
     setSuccessMessage('');
@@ -77,7 +77,6 @@ const ManageUnits = () => {
     const payload = {
         value: editingUnit.value,
         label: editingUnit.label,
-        // description: editingUnit.description, // Einheiten haben aktuell keine Beschreibung
         isActive: editingUnit.isActive,
         sortOrder: parseInt(editingUnit.sortOrder, 10) || 0,
     };
@@ -128,7 +127,6 @@ const ManageUnits = () => {
             <label htmlFor="label">Anzeige-Label (z.B. "Gramm"):</label>
             <input type="text" id="label" name="label" value={editingUnit.label} onChange={handleChange} />
           </div>
-          {/* Optional: Feld für Beschreibung hinzufügen, wenn in Entität LookupUnit vorhanden */}
            <div>
             <label htmlFor="sortOrder">Sortierreihenfolge:</label>
             <input type="number" id="sortOrder" name="sortOrder" value={editingUnit.sortOrder} onChange={handleChange} />

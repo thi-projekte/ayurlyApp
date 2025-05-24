@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; // Für Links im Footer-Bereich
+import { Link } from 'react-router-dom'; 
 import Modal from '../components/UI/Modal';
 import FlippableCard from '../components/UI/FlippableCard';
-import '../styles/indexStyles.css'; // Deine Styles für die Homepage
+import '../styles/indexStyles.css'; 
 import { useUser } from '../contexts/UserContext';
 
 const HomePage = () => {
-  const { isLoggedIn, userProfile, loadingKeycloak } = useUser(); // User-Infos aus dem Context
-  const [welcomeMessage, setWelcomeMessage] = useState('Willkommen bei Ayurly'); // Default
+  const { isLoggedIn, userProfile, loadingKeycloak } = useUser(); 
+  const [welcomeMessage, setWelcomeMessage] = useState('Willkommen bei Ayurly');
   const [showVataModal, setShowVataModal] = useState(false);
   const [showPittaModal, setShowPittaModal] = useState(false);
   const [showKaphaModal, setShowKaphaModal] = useState(false);
@@ -16,7 +16,6 @@ const HomePage = () => {
   useEffect(() => {
     if (!loadingKeycloak) { // Erst handeln, wenn Keycloak-Initialisierung abgeschlossen ist
       if (isLoggedIn && userProfile) {
-        // userProfile.firstName kommt aus dem Keycloak Token oder der /me Antwort
         const firstName = userProfile.firstName || userProfile.username || 'Nutzer'; 
         setWelcomeMessage(`Willkommen, ${firstName}`);
       } else {
@@ -34,14 +33,6 @@ const HomePage = () => {
       const hill1 = document.getElementById('hill1');
       const hill4 = document.getElementById('hill4');
       const hill5 = document.getElementById('hill5');
-      // const parallaxSection = document.querySelector(".parallax");
-
-      // Begrenzung des Scroll-Wertes 
-      // const maxScroll = parallaxSection ? parallaxSection.offsetHeight : Infinity;
-      // if (value > maxScroll) { // Diese Logik muss ggf. angepasst werden, da `value` hier nur eine Kopie ist
-      //   value = maxScroll;
-      // }
-
       if (punch) punch.style.marginTop = value * 2.5 + 'px';
       if (leaf) leaf.style.top = value * -1.5 + 'px';
       if (hill5) hill5.style.left = value * 1.5 + 'px';
@@ -238,9 +229,7 @@ const HomePage = () => {
               insbesondere im Herbst und Winter.
             </p>
           </div>
-          {/* Der Schließen-Button ist jetzt in der Modal-Komponente, hier ggf. entfernen, wenn er in indexStyles.css anders gestyled ist */}
         </div>
-        {/* ... Restlicher Inhalt für Vata Modal (characteristics, problems, tips, foodTips, recommendations) ... */}
         <div className="characteristics">
             <div className="firstRow">
               <div className="rowContent">
@@ -306,7 +295,7 @@ const HomePage = () => {
             <div className="foodtip">
               <div className="tipCard">
                 <p>Bevorzugte Geschmacksrichtungen 👍</p>
-                <div className="list" id="positive"> {/* IDs für Styling beibehalten */}
+                <div className="list" id="positive">
                   <p>Süß</p>
                   <p>Sauer</p>
                   <p>Salzig</p>
@@ -354,7 +343,7 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="recommendation">
-                <img src="/img/index/huelsenfruechte.jpg" alt="Hülsenfrüchte" /> {/* Korrigierter Umlaut */}
+                <img src="/img/index/huelsenfruechte.jpg" alt="Hülsenfrüchte" />
                 <div className="recommendationDescription">
                   <p className="recommendationName">Hülsenfrüchte</p>
                   <p>In Maßen, gut gekocht und gewürzt.</p>
@@ -380,11 +369,10 @@ const HomePage = () => {
               </p>
             </div>
           </div>
-          {/* ... Restlicher Inhalt für Pitta Modal ... */}
           <div className="characteristics">
             <div className="firstRow">
               <div className="rowContent">
-                <p className="characteristic" id="PittaName">Körperbau</p> {/* ID für Styling beibehalten, falls spezifisch */}
+                <p className="characteristic" id="PittaName">Körperbau</p> 
                 <p>Athletisch, mittelgroß, gut proportioniert.</p>
               </div>
               <div className="rowContent">
@@ -523,7 +511,6 @@ const HomePage = () => {
               </p>
             </div>
           </div>
-          {/* ... Restlicher Inhalt für Kapha Modal ... */}
           <div className="characteristics">
             <div className="firstRow">
               <div className="rowContent">
@@ -535,7 +522,7 @@ const HomePage = () => {
                 <p>Fettige Haut, volles und kräftiges Haar.</p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="KaphaName">Temperatur</p> {/* Im Original HTML stand hier Text zu Geist & Emotionen, angepasst */}
+                <p className="characteristic" id="KaphaName">Temperatur</p> 
                 <p>Kühlere Körpertemperatur, mag Wärme.</p>
               </div>
             </div>
@@ -545,7 +532,7 @@ const HomePage = () => {
                 <p>Langsamer Stoffwechsel, neigen zu Gewichtszunahme.</p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="KaphaName">Energie</p> {/* Im Original HTML stand hier Geist & Emotionen, angepasst */}
+                <p className="characteristic" id="KaphaName">Energie</p> 
                 <p>Langsame, aber ausdauernde Energie; neigen zu Trägheit.</p>
               </div>
               <div className="rowContent">

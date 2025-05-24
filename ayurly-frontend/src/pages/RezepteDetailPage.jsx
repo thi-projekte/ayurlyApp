@@ -4,18 +4,17 @@ import styles from './RezepteDetailPage.module.css';
 import recipeService from '../services/recipeService'; 
 import { useUser } from '../contexts/UserContext'; 
 // Importiere Icons von react-icons (Font Awesome)
-import { FaRegThumbsUp, FaThumbsUp, FaRegClock, FaUsers } from 'react-icons/fa'; // Oder FiThumbsUp, FiClock etc. von Feather
+import { FaRegThumbsUp, FaThumbsUp, FaRegClock, FaUsers } from 'react-icons/fa'; 
 
 const RezepteDetailPage = () => {
   const { rezeptId } = useParams();
-  const { isLoggedIn, login, loadingKeycloak, keycloakInstance } = useUser(); // Hole Keycloak-Status,Token-Instanz, isLoggedIn und login für Like-Button
+  const { isLoggedIn, login, loadingKeycloak, keycloakInstance } = useUser(); 
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // loadRecipe in useEffect, um Abhängigkeiten korrekt zu handhaben
   useEffect(() => {
-    // Funktion zum Laden des Rezepts definieren
     const loadRecipe = async () => {
       if (loadingKeycloak) {
         // Wenn Keycloak noch lädt, nicht fortfahren.

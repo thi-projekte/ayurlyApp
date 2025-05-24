@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '../../contexts/UserContext';
-import apiRequest from '../../services/apiService'; // Importiere den zentralen API-Service
+import apiRequest from '../../services/apiService'; 
 import styles from '../../pages/AdminPage.module.css';
 
 const API_BASE_URL_CONTENT_TYPES = '/api/lookups/admin/content-types';

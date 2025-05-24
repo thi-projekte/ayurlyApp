@@ -1,7 +1,7 @@
 package de.ayurly.app.dataservice.resource; 
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.jboss.logging.Logger; // Besser als @RolesAllowed({}) wenn nur Authentifizierung nötig ist
+import org.jboss.logging.Logger; 
 
 import de.ayurly.app.dataservice.entity.AppUser;
 import io.quarkus.security.Authenticated;
@@ -29,7 +29,7 @@ public class AppUserResource {
 
     @GET
     @Path("/me")
-    @Authenticated // Stellt sicher, dass ein gültiges JWT vorhanden ist
+    @Authenticated 
     @Transactional
     public Response getCurrentUserAccount() {
         if (jwt == null || jwt.getSubject() == null) {
@@ -46,8 +46,6 @@ public class AppUserResource {
         if (appUser == null) {
             LOG.infof("AppUser mit Keycloak-ID %s nicht in lokaler DB gefunden. Erstelle neuen Eintrag.", keycloakUserId);
             appUser = new AppUser(keycloakUserId);
-            // Optional: email aus Token initial setzen, falls gewünscht und in AppUser-Entität vorhanden
-            // appUser.email = jwt.getClaim("email");
             // doshaType ist initial null und wird über den PUT-Endpunkt gesetzt.
 
             try {
@@ -91,12 +89,9 @@ public class AppUserResource {
         if (appUser == null) {
             // Fall: User ist in Keycloak, aber noch nicht in unserer app_user Tabelle.
             // Das sollte idealerweise durch einen vorherigen GET /me Aufruf angelegt worden sein.
-            // Wir könnten ihn hier auch anlegen:
+            // aber sicherheitshalber hier auch der Fallback ihn anzulegen
             LOG.infof("AppUser für Keycloak-ID %s nicht gefunden beim Dosha-Update, lege ihn an.", keycloakUserId);
             appUser = new AppUser(keycloakUserId);
-            // Optional: username/email hier auch setzen, falls doch noch zu AppUser hinzugefügt
-            // appUser.username = jwt.getClaim("preferred_username");
-            // appUser.email = jwt.getClaim("email");
         }
 
         appUser.doshaType = request.doshaType;

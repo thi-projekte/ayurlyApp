@@ -1,4 +1,3 @@
-// src/components/Footer/Footer.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Footer.module.css'; // Importiere das CSS-Modul
@@ -8,7 +7,7 @@ const Footer = () => {
     <footer className={styles.footerContainer}>
       <div className={styles.logoArea}>
         <h3>
-          It's that simple.<br></br> <span className={styles.ayurlySpan}>Ayurly.</span> {/* Ggf. eine eigene Klasse für das Span, falls nötig */}
+          It's that simple.<br></br> <span className={styles.ayurlySpan}>Ayurly.</span> 
         </h3>
       </div>
       <div className={styles.rightSection}>
@@ -18,10 +17,8 @@ const Footer = () => {
           <Link to="/rezepte">Rezepte</Link>
           <Link to="/lifestyle">Lifestyle</Link>
           <Link to="/login">Login</Link>
-          {/* Du könntest hier noch einen bedingten Account-Link hinzufügen, wenn der Benutzer eingeloggt ist */}
         </div>
         <div className={styles.socials}>
-          {/* Stelle sicher, dass die Flaticon Klassen global verfügbar sind oder importiere Icons als Komponenten */}
           <a href="https://www.instagram.com/ayurly.balance/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
             <i className="fi fi-brands-instagram"></i>
           </a>

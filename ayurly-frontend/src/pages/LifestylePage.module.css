@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   gap: 50px;
-  margin-bottom: 50px; /* Abstand zur nächsten Sektion */
+  margin-bottom: 50px; 
 }
 
 .top {
@@ -19,9 +19,9 @@
   color: #626262;
 }
 
-.statement { /* ID als Klasse verwenden für CSS Modules */
+.statement { 
   font-size: 40pt;
-  color: #222; /* Bessere Lesbarkeit als #626262 für großen Text */
+  color: #222; 
 }
 
 .statement span {
@@ -32,15 +32,14 @@
 .zoomOut {
   display: flex;
   align-items: center;
-  justify-content: center; /* Bild zentrieren, falls es nicht volle Breite hat */
-  overflow: hidden; /* Hilft, falls das Bild durch Skalierung überlappt */
+  justify-content: center; 
+  overflow: hidden; 
 }
 
 .zoomOutimage {
   width: 100%;
-  transition: transform 0.1s ease-out, border-radius 0.1s ease-out; /* Border-Radius auch animieren */
+  transition: transform 0.1s ease-out, border-radius 0.1s ease-out; 
   object-fit: cover;
-  /* border-radius initial, falls gewünscht (wird durch JS angepasst) */
 }
 
 .descriptionAndBubbles {
@@ -58,15 +57,15 @@
 }
 
 .descriptionAndBubbles:hover {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Subtilerer Schatten beim Hover */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); 
 }
 
 .bubbles {
   flex: 1;
-  display: flex; /* Bubbles nebeneinander anordnen */
-  flex-direction: column; /* Falls sie doch untereinander sollen, oder Logik anpassen */
-  align-items: center; /* Zentriert die Bubbles horizontal, wenn sie untereinander sind */
-  gap: 20px; /* Abstand zwischen den Bubbles */
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 20px; 
 }
 
 .perimeter {
@@ -74,30 +73,26 @@
   padding: 10px;
   border-radius: 100px;
   width: min-content;
-  /* Die spezifischen Margins für #bubbleMiddle und #bubbleBottom könnten in einer Mobile-Ansicht
-     zu Problemen führen. Flexbox/Grid auf .bubbles wäre robuster für die Positionierung. */
 }
 
-.bubbleMiddle { /* ID als Klasse */
-  /* margin-left: 200px; Beispiel für Desktop, ggf. durch Flexbox-Align ersetzen */
-  align-self: center; /* Beispiel für Flexbox */
+.bubbleMiddle { 
+  align-self: center; 
 }
 
-.bubbleBottom { /* ID als Klasse */
-  /* margin-left: 30px; Beispiel für Desktop */
-  align-self: flex-start; /* Beispiel für Flexbox */
+.bubbleBottom { 
+  align-self: flex-start; 
 }
 
 
 .bubble {
   width: 100px;
   height: 100px;
-  border-radius: 85% 70% 78% 73%; /* Beibehalten für "organische" Form */
+  border-radius: 85% 70% 78% 73%; 
   animation: rotate_bubbles 7s linear infinite;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative; /* Für die Positionierung des Emojis */
+  position: relative; 
 }
 
 @keyframes rotate_bubbles {
@@ -109,21 +104,20 @@
   }
 }
 
-.body { /* ID als Klasse */
+.body { 
   background: linear-gradient(135deg, #C1E1C1, #88B04B);
 }
 
-.mind { /* ID als Klasse */
+.mind { 
   background: linear-gradient(135deg, #BFD7ED, #4A90E2);
 }
 
-.soul { /* ID als Klasse */
+.soul { 
   background: linear-gradient(135deg, #F7CAC9, #FFD700);
 }
 
 .emoji {
   font-size: 50pt;
-  /* position: absolute; nicht mehr unbedingt nötig, wenn bubble flex ist */
   animation: counterRotate 7s linear infinite;
 }
 
@@ -138,24 +132,24 @@
 
 .text {
   flex: 2;
-  line-height: 1.8rem; /* Angepasst für bessere Lesbarkeit */
+  line-height: 1.8rem; 
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 25px; /* Etwas weniger Gap */
-  color: #555; /* Etwas dunkleres Grau */
+  gap: 25px; 
+  color: #555;
 }
 
 .headline {
   font-size: 20pt;
-  color: #333; /* Dunkler für Headline */
+  color: #333;
   font-weight: 600;
 }
 
 .description {
-    font-size: 1em; /* Standard Textgröße */
+    font-size: 1em; 
 }
 
 .discover {
@@ -184,13 +178,12 @@
   display: flex;
   flex-direction: column;
   border-radius: 20px;
-  /* gap: 20px; Entfernt, da Text absolut positioniert ist */
   position: relative;
   align-items: center;
   height: 350px;
   transition: transform 0.5s ease;
-  overflow: hidden; /* Damit das Bild nicht über den Radius hinausgeht */
-  text-decoration: none; /* Für a-Tags */
+  overflow: hidden; 
+  text-decoration: none; 
 }
 
 .item:hover {
@@ -200,7 +193,7 @@
 .item img {
   width: 100%;
   height: 350px;
-  border-radius: 20px; /* Wird durch overflow:hidden auf .item behandelt */
+  border-radius: 20px; 
   object-fit: cover;
 }
 
@@ -208,32 +201,31 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  border-radius: 20px 0 0 0; /* Angepasst für die Ecke unten rechts, aber nicht über die Kante der Karte */
+  border-radius: 20px 0 0 0; 
   color: white;
-  background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.1)); /* Dunkler für besseren Kontrast */
-  backdrop-filter: blur(5px); /* Etwas weniger Blur */
+  background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.1)); 
+  backdrop-filter: blur(5px); 
   -webkit-backdrop-filter: blur(5px);
-  padding: 10px 25px; /* Padding angepasst */
-  font-size: 18pt; /* Etwas kleiner */
+  padding: 10px 25px; 
+  font-size: 18pt; 
   font-weight: bold;
-  margin: 10px; /* Kleiner Abstand vom Rand */
-  border-top-left-radius: 10px; /* Obere linke Ecke des Textblocks abrunden */
+  margin: 10px; 
+  border-top-left-radius: 10px; 
 }
 
-/* Responsive Anpassungen */
 @media (max-width: 1024px) {
   .descriptionAndBubbles {
     margin-left: 50px;
     margin-right: 50px;
-    flex-direction: column; /* Bubbles über Text */
+    flex-direction: column; 
     gap: 30px;
   }
   .bubbles {
-    flex-direction: row; /* Bubbles wieder nebeneinander */
+    flex-direction: row;
     justify-content: space-around;
     width: 100%;
   }
-  .perimeter { /* Reset margins for mobile */
+  .perimeter {
     margin-left: 0 !important;
   }
   .discover {
@@ -284,11 +276,11 @@
     gap: 20px;
   }
   .row {
-    flex-direction: column; /* Items untereinander auf Mobile */
+    flex-direction: column; 
     gap: 20px;
   }
   .item {
-    height: 250px; /* Höhe anpassen für Mobile */
+    height: 250px; 
   }
   .item p {
     font-size: 16pt;
@@ -304,7 +296,7 @@
         font-size: 18pt;
     }
     .bubbles {
-      gap: 10px; /* Noch weniger Gap zwischen Bubbles */
-      transform: scale(0.9); /* Bubbles kleiner machen, wenn es sehr eng wird */
+      gap: 10px;
+      transform: scale(0.9);
     }
 }

@@ -1,7 +1,5 @@
  .accountPageContainer {
-  /* Optional: Fügt etwas Padding für die gesamte Seite hinzu,
-     damit die Karten nicht ganz am Rand kleben, wenn der Bildschirm schmal ist. */
-   padding: 1px 0; /* 1px, um ggf. Margin-Collapsing zu verhindern */
+   padding: 1px 0; 
  }
 
  /*
@@ -10,19 +8,17 @@
   ============================================
   */
 
-/* Basis-Styling für die Sections, damit sie zentriert werden */
 .doshaStatus,
 .tagesroutineVorschlag,
 .progressSection {
-  max-width: 600px;  /* << WICHTIG: Breite begrenzen */
-  margin: 30px auto; /* << WICHTIG: Oben/Unten-Abstand und Horizontale Zentrierung */
-  padding: 0 15px;   /* Optional: Innerer Abstand, falls Bildschirm sehr schmal wird */
-  text-align: center;/* Zentriert die H2-Überschriften */
+  max-width: 600px;  
+  margin: 30px auto; 
+  padding: 0 15px;   
+  text-align: center;
 }
 
-/* Das Styling für die sichtbare weiße Karte */
 .doshaStatusCard {
-  display: inline-flex; /* Damit sich die Breite anpasst, aber zentriert werden kann */
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
   gap: 20px;
@@ -30,7 +26,7 @@
   padding: 20px 25px;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  margin-top: 20px; /* Abstand zur Überschrift */
+  margin-top: 20px;
   text-align: left;
   color: #3c7f7f;
 }
@@ -48,14 +44,13 @@
   cursor: pointer;
 }
 
-/* Styling für die Routine-Tipp Karte */
 .routineCard {
-   display: block; /* Nimmt die Breite der umgebenden Section ein */
+   display: block; 
    background-color: #ffffff;
    padding: 20px 25px;
    border-radius: 16px;
    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-   margin-top: 20px; /* Abstand zur Überschrift */
+   margin-top: 20px;
    color: #3c7f7f;
    text-align: left;
 }
@@ -72,23 +67,23 @@
   overflow: hidden;
   height: 24px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-top: 10px; /* Abstand zur Überschrift */
+  margin-top: 10px; 
 }
 
 .progressBar {
-  background-color: #3c7f7f; /* << WICHTIG: Hintergrundfarbe für Sichtbarkeit */
+  background-color: #3c7f7f; 
   height: 100%;
   text-align: center;
   color: white;
   line-height: 24px;
   font-weight: bold;
-  width: 0%; /* Wird per inline-style aus React gesetzt */
-  transition: width 0.4s ease-in-out; /* Animation */
+  width: 0%; 
+  transition: width 0.4s ease-in-out; 
 }
  .progressSuccess {
    text-align: center;
    margin-top: 10px;
-   color: #2e8540; /* Erfolgs-Grün */
+   color: #2e8540; 
    font-weight: 500;
  }
 
@@ -98,30 +93,27 @@
  ============================================
  */
 .dashboardContainer {
-   /* Optional: Wrapper, falls benötigt */
 }
 
  .routineGrid {
    display: flex;
    flex-direction: column;
-   align-items: center; /* Zentriert die Routine-Karte */
-   padding: 0; /* Kein extra Padding, da .routineCard schon welches hat */
+   align-items: center; 
+   padding: 0;
  }
 
-/* Das .routineCard-Styling von oben wird hier wiederverwendet,
-   aber wir stellen sicher, dass es als Block angezeigt wird. */
 .routineGrid .routineCard {
    display: block;
    width: 100%;
-   max-width: 600px; /* Breite an die anderen Sections anpassen */
-   margin: 0 auto; /* Zentrieren, falls parent breiter ist */
+   max-width: 600px; 
+   margin: 0 auto; 
 }
 .routineGrid .routineCard h3 {
   margin-bottom: 15px;
 }
 
 .checkboxLabel {
-  display: block; /* << WICHTIG: Jede Checkbox in eine neue Zeile */
+  display: block; 
   margin-bottom: 10px;
   cursor: pointer;
   text-align: left;
@@ -133,8 +125,7 @@
 .checkboxLabel input {
    margin-right: 10px;
    cursor: pointer;
-   /* Optional: Checkboxen etwas größer machen */
    width: 1.1em;
    height: 1.1em;
-   vertical-align: middle; /* Besser ausrichten */
+   vertical-align: middle; 
 }

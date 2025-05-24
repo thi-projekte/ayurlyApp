@@ -18,7 +18,6 @@ let initialized = false; // Flag, um Mehrfachinitialisierung zu verhindern
 const initKeycloak = (onAuthenticated, onAuthError) => {
   if (initialized) {
     console.warn("Keycloak instance already initialized or initialization in progress.");
-    // Optional: Wenn bereits initialisiert und ein Zustand bekannt ist, direkt den Callback aufrufen
     if (kc.authenticated !== undefined) { // Prüft, ob eine vorherige init() einen Zustand gesetzt hat
         onAuthenticated(kc.authenticated ? kc : null);
     }
@@ -42,8 +41,7 @@ const initKeycloak = (onAuthenticated, onAuthError) => {
     })
     .catch((error) => {
       console.error("Keycloak init failed:", error);
-      initialized = false; // Bei Fehler ggf. erneute Initialisierung erlauben? Oder App-Fehler behandeln.
-                           // Für den Moment setzen wir es zurück, aber in einer komplexen App könnte das anders gehandhabt werden.
+      initialized = false; 
       onAuthError(error);
     });
 
@@ -67,11 +65,11 @@ const initKeycloak = (onAuthenticated, onAuthError) => {
 const login = () => kc.login();
 const logout = (redirectUri = window.location.origin) => kc.logout({ redirectUri });
 const register = () => kc.register();
-const accountManagement = () => kc.accountManagement(); // Link zur Keycloak Account Management Seite
+const accountManagement = () => kc.accountManagement(); 
 
 const getToken = () => kc.token;
 const getTokenParsed = () => kc.tokenParsed;
-const isAuthenticated = () => !!kc.token; // Eine einfache Prüfung, ob ein Token vorhanden ist
+const isAuthenticated = () => !!kc.token; 
 const updateToken = (minValidity) => kc.updateToken(minValidity);
 
 export default {
@@ -84,6 +82,6 @@ export default {
   getTokenParsed,
   isAuthenticated,
   updateToken,
-  keycloakInstance: kc, // Direkter Zugriff auf die Instanz, falls benötigt
-  isInitialized: () => initialized, // Exportiere einen Weg, um den Initialisierungsstatus zu prüfen
+  keycloakInstance: kc, 
+  isInitialized: () => initialized, 
 };

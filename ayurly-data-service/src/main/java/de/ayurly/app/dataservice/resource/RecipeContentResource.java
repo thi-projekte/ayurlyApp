@@ -1,4 +1,3 @@
-// src/main/java/de/ayurly/app/dataservice/resource/RecipeContentResource.java
 package de.ayurly.app.dataservice.resource;
 
 import java.net.URI;
@@ -56,7 +55,7 @@ public class RecipeContentResource {
 
     private static final Logger LOG = Logger.getLogger(RecipeContentResource.class); 
     
-    private static final String TRIDOSHIC_DB_VALUE = "Tridoshic"; // Wert, wie er in der DB im Array steht (Groß-/Kleinschreibung beachten!)
+    private static final String TRIDOSHIC_DB_VALUE = "Tridoshic"; 
 
     @Inject
     JsonWebToken jwt;
@@ -177,7 +176,6 @@ public class RecipeContentResource {
                 if (entity.preparationSteps != null) {
                     dto.preparationSteps = entity.preparationSteps.stream().map(PreparationStepDto::fromEntity).collect(Collectors.toList());
                 }
-                // Benefits sind jetzt immer Teil der Haupt-DTO, wenn vorhanden, nicht nur bei includeDetails
             }
 
             // Prüfen, ob der aktuelle User geliked hat
@@ -308,17 +306,14 @@ public class RecipeContentResource {
         AppUser appUser = AppUser.findById(userId);
         if (appUser == null || appUser.getDoshaType() == null || appUser.getDoshaType().trim().isEmpty()) {
             LOG.warnf("User %s has no Dosha type set. Returning empty list for personalized recipes.", userId);
-            // Alternativ: Alle Rezepte zurückgeben oder einen Fehler/Hinweis.
-            // Hier geben wir eine leere Liste zurück oder man könnte einen 404 werfen.
              return Response.ok(Collections.emptyList()).build();
-            // return Response.status(Response.Status.NOT_FOUND).entity("User dosha type not set. Please complete your profile or Dosha test.").build();
         }
 
         String userDosha = appUser.getDoshaType();
         LOG.infof("Fetching personalized recipes for user %s with Dosha type %s", userId, userDosha);
 
         // Query, um Rezepte zu finden, die entweder den spezifischen Dosha-Typ des Users enthalten
-        // ODER als 'Tridoshic' markiert sind (was für alle Doshas passt).
+        // ODER als 'Tridoshic' markiert sind 
         // Das `dosha_types` Feld ist ein Array.
         String query = "SELECT rc FROM RecipeContent rc WHERE (:userDosha = ANY(rc.doshaTypes) OR 'Tridoshic' = ANY(rc.doshaTypes)) ORDER BY rc.title";
         List<RecipeContent> recipes = RecipeContent.find(query, Parameters.with("userDosha", userDosha)).list();
@@ -356,7 +351,6 @@ public class RecipeContentResource {
         RecipeContent recipe = recipeDto.toEntity();
         // recipe.contentType wird automatisch durch @DiscriminatorValue("RECIPE") gesetzt
         recipe.persist();
-        // Beim Erstellen hat der aktuelle Admin-User es nicht automatisch geliked
         RecipeContentDto responseDto = RecipeContentDto.fromEntity(recipe, true, getCurrentUserIdOptional());
         return Response.created(URI.create("/api/recipes/" + recipe.id)).entity(responseDto).build();
     }
@@ -463,7 +457,7 @@ public class RecipeContentResource {
 
     @POST 
     @Path("/{id}/like")
-    @Authenticated // Jeder authentifizierte User kann liken
+    @Authenticated 
     @Transactional
     @Operation(summary = "Like a recipe", description = "Allows an authenticated user to like a recipe. Idempotent.")
     @APIResponse(responseCode = "200", description = "Recipe liked successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = LikeResponseDto.class)))
@@ -500,9 +494,9 @@ public class RecipeContentResource {
         return Response.ok(response).build();
     }
 
-    @POST // Oder DELETE, je nach Präferenz für "unlike" 
+    @POST 
     @Path("/{id}/unlike")
-    @Authenticated // Jeder authentifizierte User kann entliken
+    @Authenticated 
     @Transactional
     @Operation(summary = "Unlike a recipe", description = "Allows an authenticated user to remove their like from a recipe.")
     @APIResponse(responseCode = "200", description = "Recipe unliked successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = LikeResponseDto.class)))

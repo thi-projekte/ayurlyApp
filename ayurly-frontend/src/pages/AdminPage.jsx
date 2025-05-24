@@ -11,7 +11,6 @@ const AdminPage = () => {
   // Hilfsfunktion für exakte Pfadübereinstimmung
   const isExactActive = (path) => location.pathname === `/admin/${path}`;
 
-  // Wenn der Benutzer auf /admin/lookups ist, aber keine Unterroute gewählt hat,
   useEffect(() => {
     // Wenn /admin aufgerufen wird, direkt zu recipes weiterleiten
     if (location.pathname === '/admin' || location.pathname === '/admin/') {
@@ -40,7 +39,7 @@ const AdminPage = () => {
             Übersicht
           </NavLink>
           <NavLink
-            to="content/recipes" // Direktlink zu Recipes
+            to="content/recipes" 
             className={() => `${styles.navLink} ${isActive('content') ? styles.activeLink : ''}`}
           >
             Rezept Management
@@ -54,7 +53,6 @@ const AdminPage = () => {
         </nav>
       </header>
 
-      {/* Optional: Sub-Navigation für Lookup-Tabellen, wenn man auf /admin/lookups ist */}
       {isActive('lookups') && (
         <nav className={styles.adminSubNav}> 
           <NavLink to="lookups/dosha-types" className={({isActive}) => isActive ? styles.activeSubLink : styles.subLink}>Dosha-Typen</NavLink>
@@ -63,11 +61,10 @@ const AdminPage = () => {
         </nav>
       )}
 
-      {/* Sub-Navigation für Content Management (optional, falls später mehr Content-Typen kommen) */}
-       {isActive('content') && !isActive('lookups') && ( // Nur anzeigen, wenn wir in Content sind, aber nicht in Lookups
+      {isActive('content') && !isActive('lookups') && ( // Nur anzeigen, wenn wir in Content sind, aber nicht in Lookups
         <nav className={styles.adminSubNav}>
           <NavLink to="content/recipes" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Rezepte</NavLink>
-          {/* <NavLink to="content/articles" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Artikel</NavLink> */}
+          {/* <NavLink to="content/produtcs" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Produkte</NavLink> */}
           {/* <NavLink to="content/yoga" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Yoga-Übungen</NavLink> */}
         </nav>
       )}

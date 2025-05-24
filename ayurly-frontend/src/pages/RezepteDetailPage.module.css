@@ -1,16 +1,15 @@
-/* src/pages/RezepteDetailPage.module.css */
 .pageContainer {
-  padding: 20px 15px; /* Globales Padding für die Seite */
-  background-color: #f8f9fa; /* Heller Hintergrund für die gesamte Detailseite */
+  padding: 20px 15px;
+  background-color: #f8f9fa; 
 }
 
 .recipeDetailWrapper {
-  max-width: 1200px; /* Maximale Breite des Inhaltsbereichs */
-  margin: 0 auto;   /* Zentrierung */
+  max-width: 1200px; 
+  margin: 0 auto;  
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-  overflow: hidden; /* Für abgerundete Ecken beim Bild */
+  overflow: hidden; 
 }
 
 .loading,
@@ -21,17 +20,16 @@
   padding: 50px 20px;
 }
 
-/* Hero Section */
 .heroSection {
   display: flex;
   flex-direction: row;
-  background-color: #fff; /* Weißer Hintergrund für den oberen Teil */
+  background-color: #fff; 
 }
 
 .heroImageContainer {
-  flex: 0 0 45%; /* Bild nimmt 45% der Breite ein, wächst/schrumpft nicht */
-  max-width: 550px; /* Maximale Breite für das Bild */
-  min-height: 400px; /* Mindesthöhe für das Bild */
+  flex: 0 0 45%; 
+  max-width: 550px; 
+  min-height: 400px;
   overflow: hidden;
 }
 
@@ -43,7 +41,7 @@
 }
 
 .heroInfo {
-  flex: 1 1 auto; /* Nimmt den restlichen Platz ein */
+  flex: 1 1 auto; 
   padding: 30px 35px;
   display: flex;
   flex-direction: column;
@@ -71,7 +69,7 @@
   align-items: center;
   gap: 6px;
 }
-.metaItem i { /* Flaticon-Styling (Annahme) */
+.metaItem i { 
   color: #e26a2c;
   font-size: 1.2em;
 }
@@ -101,16 +99,16 @@
   color: #4a4a4a;
   line-height: 1.7;
   margin-bottom: 25px;
-  flex-grow: 1; /* Lässt Beschreibung wachsen, um Benefits nach unten zu schieben */
+  flex-grow: 1; 
 }
 
 .benefitsSection {
-  margin-top: auto; /* Drückt diesen Bereich nach unten, wenn recipeDescription wächst */
-  background-color: #f7f9fc; /* Leicht anderer Hintergrund für die Benefits-Box */
+  margin-top: auto; 
+  background-color: #f7f9fc;
   padding: 20px;
   border-radius: 8px;
 }
-.subSectionTitle { /* Für "Vorteile" und andere Titel in Sektionen */
+.subSectionTitle { 
   font-size: 1.1rem;
   color: #333;
   font-weight: 600;
@@ -129,13 +127,12 @@
   gap: 10px;
 }
 .benefitIcon {
-  color: #e26a2c; /* Orange Akzent für Icons */
+  color: #e26a2c; 
   font-size: 1.1em;
-  min-width: 20px; /* Platz für Icon */
+  min-width: 20px; 
   text-align: center;
 }
 
-/* Like Button Styling */
 .likeButton {
   display: flex;
   align-items: center;
@@ -154,48 +151,46 @@
   border-color: #ccc;
 }
 .likeButton.liked {
-  background-color: #ffe0e0; /* Heller Rotton für geliked */
+  background-color: #ffe0e0; 
   border-color: #ffb3b3;
-  color: #c0392b; /* Dunkelrot */
+  color: #c0392b; 
 }
 .likeButton.liked i {
-  color: #c0392b; /* Herz wird rot */
+  color: #c0392b; 
 }
 .likeButton i {
   font-size: 1.2em;
-  color: #aaa; /* Standard-Herzfarbe */
+  color: #aaa;
   transition: color 0.2s ease;
 }
 .likeButton.liked:hover i,
 .likeButton:hover i {
-  /* color: #e26a2c; */ /* Optional: Hover-Farbe fürs Herz */
 }
 .likeCount {
   font-weight: 500;
 }
 
 
-/* Content Section (Zutaten & Zubereitung) */
 .contentSection {
   display: flex;
   flex-direction: row;
   padding: 30px 35px 40px;
-  gap: 40px; /* Abstand zwischen Zutaten und Zubereitung */
-  background-color: #f8f9fa; /* Hintergrund für den unteren Teil */
+  gap: 40px; 
+  background-color: #f8f9fa; 
 }
 
 .ingredientsContainer,
 .preparationContainer {
-  flex: 1; /* Beide nehmen gleich viel Platz ein */
-  min-width: 0; /* Wichtig für Flex-Items, um Schrumpfen zu erlauben */
+  flex: 1;
+  min-width: 0; 
 }
 
-.sectionTitle { /* Für "Zutaten" und "Zubereitung" */
+.sectionTitle { 
   font-size: clamp(1.4rem, 3vw, 1.8rem);
   color: #e26a2c;
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #f0e0d6; /* Heller Orange-Ton für die Linie */
+  border-bottom: 2px solid #f0e0d6; 
   font-weight: 600;
 }
 
@@ -225,14 +220,14 @@
 .ingredientNotes {
   font-size: 0.85rem;
   color: #777;
-  margin-left: auto; /* Schiebt Notizen nach rechts */
+  margin-left: auto;
   font-style: italic;
 }
 
 .preparationList {
   list-style: none;
   padding-left: 0;
-  counter-reset: instruction-step; /* Zähler für Schritte initialisieren */
+  counter-reset: instruction-step; 
 }
 .preparationStep {
   background-color: #fff;
@@ -241,7 +236,7 @@
   margin-bottom: 15px;
   border: 1px solid #e8e8e8;
   box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-  position: relative; /* Für die Nummerierung */
+  position: relative; 
 }
 .stepNumber {
   font-weight: 700;
@@ -253,14 +248,13 @@
   font-size: 1rem;
   line-height: 1.7;
   color: #444;
-  display: inline; /* Damit es neben der Nummer bleibt */
+  display: inline; 
 }
 
-/* Back Link */
 .backLinkContainer {
   padding: 20px 35px 30px;
   text-align: center;
-  background-color: #f8f9fa; /* Passend zur Content Section */
+  background-color: #f8f9fa; 
   border-top: 1px solid #e9ecef;
 }
 .backLink {
@@ -277,16 +271,15 @@
   background-color: #5a6268;
 }
 
-/* Responsive Anpassungen */
 @media (max-width: 992px) {
   .heroSection, .contentSection {
     flex-direction: column;
   }
   .heroImageContainer {
-    flex: 0 0 auto; /* Höhe automatisch anpassen */
+    flex: 0 0 auto;
     width: 100%;
     max-width: none;
-    height: 300px; /* Feste Höhe für kleinere Screens */
+    height: 300px; 
   }
   .heroInfo, .contentSection {
     padding: 25px;

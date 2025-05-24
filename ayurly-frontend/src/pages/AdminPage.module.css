@@ -42,12 +42,12 @@
 }
 
 .activeLink {
-  background-color: #003329; /* Dein dunkles Grün */
+  background-color: #003329; 
   color: white;
 }
 
 .activeLink:hover {
-  background-color: #004d3f; /* Etwas helleres Grün für Hover auf aktivem Link */
+  background-color: #004d3f;
   color: white;
 }
 
@@ -55,7 +55,6 @@
   padding-top: 20px;
 }
 
-/* Globale Admin-Table Styles (Beispiel) */
 .adminTable {
   width: 100%;
   border-collapse: collapse;
@@ -83,20 +82,20 @@
 }
 
 .actionsCell button,
-.actionsCell .actionLink { /* Für Links, die wie Buttons aussehen sollen */
+.actionsCell .actionLink { 
   margin-right: 8px;
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9em;
-  text-decoration: none; /* Für Links */
-  display: inline-block; /* Für Links */
+  text-decoration: none; 
+  display: inline-block;
 }
 
 .editButton,
 .actionLink.editLink {
-  background-color: #ffc107; /* Gelb */
+  background-color: #ffc107; 
   color: black;
 }
 .editButton:hover,
@@ -105,7 +104,7 @@
 }
 
 .deleteButton {
-  background-color: #dc3545; /* Rot */
+  background-color: #dc3545; 
   color: white;
 }
 .deleteButton:hover {
@@ -113,7 +112,7 @@
 }
 
 .createButton {
-    background-color: #28a745; /* Grün */
+    background-color: #28a745; 
     color: white;
     padding: 10px 15px;
     border: none;
@@ -121,13 +120,12 @@
     cursor: pointer;
     font-size: 1em;
     margin-bottom: 20px;
-    display: inline-block; /* Damit Margin Bottom greift */
+    display: inline-block; 
 }
 .createButton:hover {
     background-color: #218838;
 }
 
-/* Admin Form Styles (Beispiel) */
 .adminForm {
     background-color: #fff;
     padding: 20px;
@@ -177,14 +175,14 @@
     margin-left: 10px;
 }
 .saveButton {
-    background-color: #007bff; /* Blau */
+    background-color: #007bff; 
     color: white;
 }
 .saveButton:hover {
     background-color: #0069d9;
 }
 .cancelButton {
-    background-color: #6c757d; /* Grau */
+    background-color: #6c757d; 
     color: white;
 }
 .cancelButton:hover {
@@ -192,7 +190,7 @@
 }
 
 .errorMessage {
-  color: #dc3545; /* Rot */
+  color: #dc3545; 
   margin-bottom: 15px;
   padding: 10px;
   background-color: #f8d7da;
@@ -200,7 +198,7 @@
   border-radius: 4px;
 }
 .successMessage {
-  color: #155724; /* Dunkelgrün */
+  color: #155724; 
   margin-bottom: 15px;
   padding: 10px;
   background-color: #d4edda;
@@ -208,13 +206,13 @@
   border-radius: 4px;
 }
 
-.adminForm .checkboxLabel { /* Bereits vorhanden, ggf. anpassen */
+.adminForm .checkboxLabel { 
     display: inline-block;
     margin-right: 15px;
     font-weight: normal;
-    vertical-align: middle; /* Bessere Ausrichtung zur Checkbox */
+    vertical-align: middle; 
 }
-.adminForm input[type="checkbox"] { /* Bereits vorhanden, ggf. anpassen */
+.adminForm input[type="checkbox"] { 
     margin-right: 5px;
     vertical-align: middle;
 }
@@ -242,7 +240,7 @@
 .formGroupRepeat textarea,
 .formGroupRepeat select {
   flex-grow: 1;
-  margin-bottom: 0; /* Überschreibt ggf. .adminForm div input Margin */
+  margin-bottom: 0; 
 }
 .formGroupRepeat textarea {
   min-height: 60px;
@@ -258,25 +256,24 @@
 }
 
 .addButton {
-  background-color: #28a745; /* Grün */
+  background-color: #28a745; 
   color: white;
   margin-top: 5px;
-  margin-bottom: 15px; /* Abstand zur nächsten Sektion */
+  margin-bottom: 15px; 
 }
 .addButton:hover {
   background-color: #218838;
 }
 
 .removeButton {
-  background-color: #dc3545; /* Rot */
+  background-color: #dc3545; 
   color: white;
-  flex-shrink: 0; /* Verhindert Schrumpfen */
+  flex-shrink: 0;
 }
 .removeButton:hover {
   background-color: #c82333;
 }
 
-/* Zusätzliche Sub-Navigation für AdminPage, falls verwendet */
 .adminSubNav {
   display: flex;
   justify-content: center;
@@ -301,7 +298,7 @@
 }
 
 .activeSubLink {
-  background-color: #004d3f; /* Dunkleres Grün für Sub-Nav */
+  background-color: #004d3f; 
   color: white;
 }
 .activeSubLink:hover {

@@ -11,7 +11,7 @@ CREATE TABLE lookup_dosha_types (
 -- Lookup-Tabelle für Content-Typen
 CREATE TABLE lookup_content_types (
     id SERIAL PRIMARY KEY,
-    value VARCHAR(50) UNIQUE NOT NULL, -- z.B. 'RECIPE', 'YOGA_EXERCISE', 'ARTICLE'
+    value VARCHAR(50) UNIQUE NOT NULL, -- z.B. 'RECIPE', 'YOGA_EXERCISE', 'PRODUCT'
     label VARCHAR(100),
     description TEXT,
     is_active BOOLEAN DEFAULT TRUE,
@@ -27,7 +27,7 @@ CREATE TABLE lookup_units (
     sort_order INT DEFAULT 0
 );
 
--- Beispielhafte Startdaten für die Lookup-Tabellen (können später über Admin-UI verwaltet werden)
+-- Startdaten für die Lookup-Tabellen (können später über Admin-UI verwaltet werden)
 INSERT INTO lookup_dosha_types (value, label, sort_order) VALUES
 ('Vata', '🌀 Vata', 10),
 ('Pitta', '🔥 Pitta', 20),

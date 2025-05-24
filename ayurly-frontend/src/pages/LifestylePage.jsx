@@ -1,6 +1,6 @@
 // src/pages/LifestylePage.jsx
 import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom'; // Importiere Link für interne Navigation
+import { Link } from 'react-router-dom';
 import styles from './LifestylePage.module.css';
 
 const LifestylePage = () => {
@@ -39,18 +39,18 @@ const LifestylePage = () => {
   }, []);
 
   return (
-    <div className={styles.pageContainer}> {/* Optional: Übergeordneter Container für Seiten-Padding */}
+    <div className={styles.pageContainer}> 
       <section className={styles.leadIn}>
         <div className={styles.top}>
           <p>Ayurveda ist mehr als nur Ernährung.</p>
-          <p id={styles.statement} className={styles.statement}> {/* ID als Klasse für Styling */}
+          <p id={styles.statement} className={styles.statement}> 
             Es ist ein <span >Lebensgefühl.</span>
           </p>
         </div>
         <div className={styles.zoomOut}>
           <img
             ref={imageRef}
-            src="/img/lifestyle/bodyMindSoul.jpg" // Pfad im public Ordner
+            src="/img/lifestyle/bodyMindSoul.jpg" 
             alt="Body, Mind and Soul Steine am Strand bei Sonnenuntergang"
             className={styles.zoomOutimage}
           />
@@ -58,17 +58,17 @@ const LifestylePage = () => {
         <div className={styles.descriptionAndBubbles}>
           <div className={styles.bubbles}>
             <div className={styles.perimeter}>
-              <div className={`${styles.bubble} ${styles.body}`} > {/* ID als Klasse */}
+              <div className={`${styles.bubble} ${styles.body}`} > 
                 <span className={styles.emoji}>🧘</span>
               </div>
             </div>
-            <div className={`${styles.perimeter} ${styles.bubbleMiddle}`} > {/* ID als Klasse */}
-              <div className={`${styles.bubble} ${styles.mind}`} > {/* ID als Klasse */}
+            <div className={`${styles.perimeter} ${styles.bubbleMiddle}`} > 
+              <div className={`${styles.bubble} ${styles.mind}`} > 
                 <span className={styles.emoji}>🧠</span>
               </div>
             </div>
-            <div className={`${styles.perimeter} ${styles.bubbleBottom}`} > {/* ID als Klasse */}
-              <div className={`${styles.bubble} ${styles.soul}`} > {/* ID als Klasse */}
+            <div className={`${styles.perimeter} ${styles.bubbleBottom}`} > 
+              <div className={`${styles.bubble} ${styles.soul}`} > 
                 <span className={styles.emoji}>✨</span>
               </div>
             </div>
@@ -92,7 +92,6 @@ const LifestylePage = () => {
       </section>
       <section className={styles.grid}>
         <div className={styles.row}>
-          {/* Link-Ziele anpassen, falls interne Routen gewünscht sind */}
           <a href="#" className={styles.item}> {/* Temporär auf # gesetzt */}
             <img src="/img/lifestyle/Friends.webp" alt="Gruppe von Freunden" />
             <p>Freunde</p>
@@ -103,7 +102,7 @@ const LifestylePage = () => {
           </a>
         </div>
         <div className={styles.row}>
-          {/* Beispiel für einen internen Link, falls /beratung eine Route wäre */}
+          {/* Beispiel für einen internen Link, falls /beratung bereits implementiert wäre */}
           {/* <Link to="/beratung" className={styles.item}> */}
           <a href="#" className={styles.item}> {/* Temporär auf # gesetzt, da "beratung.html" kein React-Route ist */}
             <img src="/img/lifestyle/coaching.jpg" alt="Coaching Gespräch" />

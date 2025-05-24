@@ -1,54 +1,41 @@
-/* src/components/UI/Modal.module.css */
 .modalBackdrop {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7); /* Dunkler Hintergrund, wie im Screenshot */
+  background: rgba(0, 0, 0, 0.7); 
   z-index: 1000;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Beginnt oben, damit man scrollen kann */
-  overflow-y: auto; /* Ermöglicht Scrollen, wenn Inhalt größer als Bildschirm */
-  padding: 20px; /* Ein kleiner Abstand zum Rand des Viewports */
-                  /* Du hattest im alten modal-content margin: 100px 50px;
-                     Das können wir hier als padding auf dem Backdrop umsetzen,
-                     damit der Inhalt nicht ganz am Rand klebt.
-                     Alternativ: padding: 5vh 5vw; für responsive Abstände */
+  align-items: flex-start; 
+  overflow-y: auto; 
+  padding: 20px; 
 }
 
 .modalContent {
   background: white;
-  /* margin: 0 20px; Entfernen, da padding auf Backdrop jetzt den Abstand regelt */
-  padding: 30px;    /* Innerer Abstand im Modal-Fenster */
+  padding: 30px;
   border-radius: 20px;
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-
-  /* Größenanpassung für "fast die ganze Seite" */
-  width: 90%;       /* Nimmt 90% der Breite des Viewports ein */
-  max-width: 1500px; /* Eine obere Grenze, damit es auf sehr großen Bildschirmen nicht zu breit wird */
-                     /* Passe diesen Wert nach Bedarf an. Dein Screenshot wirkt sehr breit. */
-  min-height: 70vh; /* Mindesthöhe, damit es substanziell aussieht, auch mit wenig Inhalt */
-                     /* Der Inhalt wird die Höhe dann bei Bedarf weiter ausdehnen */
-  /* margin-top: 5vh; */ /* Kann helfen, es etwas vom oberen Rand abzusetzen, falls padding auf Backdrop nicht reicht */
+  width: 90%;       
+  max-width: 1500px; 
+  min-height: 70vh; 
 }
 
 .closeButton {
   position: absolute;
   top: 0px;
   right: 10px;
-  font-size: 2rem; /* Etwas größer gemacht */
+  font-size: 2rem; 
   cursor: pointer;
-  color: #888; /* Etwas helleres Grau */
+  color: #888;
   background: none;
   border: none;
-  line-height: 1; /* Verhindert zusätzlichen vertikalen Platz */
-  padding: 5px; /* Macht den Klickbereich etwas größer */
+  line-height: 1; 
+  padding: 5px; 
 }
 .closeButton:hover {
-  color: #333; /* Dunkler bei Hover */
+  color: #333; 
 }
-
-/* Verhindert Scrollen des Body, wenn Modal offen ist (wird über JS in HomePage.jsx gesteuert) */

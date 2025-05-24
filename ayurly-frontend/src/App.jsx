@@ -22,7 +22,6 @@ function App() {
   return (
     <Router>
       <UserProvider> {/* UserContext umschließt alles */}
-      {/* <div className="App">  Optionaler Wrapper, falls du ihn für globale Styles brauchst */}
         <Navbar /> {/* Navbar immer anzeigen */}
         <main> {/* main content wird dynamisch über die simulierten Routen geladen */}
           <Routes>
@@ -33,8 +32,6 @@ function App() {
             <Route path="/lifestyle" element={<LifestylePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/account" element={<AccountPage />} />
-            {/* Ggf. Protected Routes für Seiten wie /account */}
-            {/* Ggf. eine Route für Routinen/Challenges, falls noch relevant */}
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminRoute />}>
               <Route path="" element={<AdminPage />}> {/* Layout-Route */}
@@ -44,8 +41,8 @@ function App() {
                 {/* Content Management - Hauptseite und Unterrouten */}
                 <Route path="content" element={<Outlet/>}> {/* Wrapper für Content-Unterrouten */}
                    <Route index element={<Navigate to="recipes" replace />} /> {/* Standard für /admin/content */}
-                   <Route path="recipes" element={<ManageRecipes />} /> {/* NEU */}
-                   {/* Hier könnten später weitere Content-Typen hinzukommen, z.B. Artikel, Yoga-Übungen */}
+                   <Route path="recipes" element={<ManageRecipes />} /> 
+                   {/* Hier kommen später weitere Content-Typen wie z.B. Produkte, Yoga-Übungen */}
                 </Route>
 
                 {/* Lookup Tabellen Management - Hauptseite und Unterrouten */}

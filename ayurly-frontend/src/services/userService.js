@@ -20,10 +20,8 @@ const fetchUserProfile = async (token) => {
     });
 
     if (!response.ok) {
-      const errorText = await response.text(); // Versuche, Text zu bekommen für mehr Details
+      const errorText = await response.text(); 
       console.error(`Error fetching user profile: ${response.status} ${response.statusText}`, errorText);
-      // Wenn /me einen User anlegt, sollte 404 nicht mehr passieren, außer der User ist wirklich unbekannt
-      // oder der Token ist ungültig (was Keycloak abfangen sollte).
       throw new Error(`Failed to fetch user profile. Status: ${response.status}. Body: ${errorText}`);
     }
     return await response.json();
@@ -59,7 +57,7 @@ const updateUserDosha = async (doshaType, token) => {
       console.error(`Error updating dosha type: ${response.status} ${response.statusText}`, errorText);
       throw new Error(`Failed to update Dosha type. Status: ${response.status}. Body: ${errorText}`);
     }
-    return await response.json(); // Erwarte die UserAccountResponse DTO zurück
+    return await response.json(); 
   } catch (error) {
     console.error("Error in updateUserDosha:", error);
     throw error;

@@ -1,5 +1,5 @@
 import apiRequest from './apiService';
-import keycloakService from './keycloakService'; // Um Token zu bekommen für Aktionen
+import keycloakService from './keycloakService'; 
 
 const API_BASE_URL = '/api/recipes';
 
@@ -10,7 +10,7 @@ const API_BASE_URL = '/api/recipes';
  * @returns {Promise<Array<object>>} Eine Liste von Rezept-Datenobjekten.
  */
 const getAllRecipes = async (doshaType = null) => {
-  const token = keycloakService.getToken(); // Token für eventuelle Authentifizierung oder personalisierte Daten
+  const token = keycloakService.getToken(); 
   let url = API_BASE_URL;
   if (doshaType && doshaType !== 'all') {
     url += `?doshaType=${encodeURIComponent(doshaType)}`;
@@ -24,8 +24,6 @@ const getAllRecipes = async (doshaType = null) => {
  * @returns {Promise<object>} Das Rezept-Datenobjekt.
  */
 const getRecipeById = async (recipeId) => {
-  // Für den GET /api/recipes/{id} wird aktuell kein Token benötigt (@PermitAll),
-  // aber wir senden es mit, falls sich das ändert oder für die likedByCurrentUser-Logik im Backend.
   const token = keycloakService.getToken();
   return apiRequest(`${API_BASE_URL}/${recipeId}`, 'GET', null, token);
 };
@@ -39,8 +37,6 @@ const likeRecipe = async (recipeId) => {
     const token = keycloakService.getToken();
     if (!token && !keycloakService.isInitialized()) {
       // Wenn Keycloak noch nicht initialisiert ist, warte kurz
-      // Dies ist ein Workaround, falls der Token nicht sofort verfügbar ist.
-      // Besser wäre es, die UI so zu gestalten, dass Aktionen erst nach KC-Init möglich sind.
       await new Promise(resolve => setTimeout(resolve, 500));
       if (!keycloakService.getToken()) {
         console.error("User not authenticated after delay. Cannot like recipe.");
@@ -70,7 +66,7 @@ const unlikeRecipe = async (recipeId) => {
         console.error("User not authenticated. Cannot unlike recipe.");
         throw new Error("User not authenticated. Please log in to unlike recipes.");
     }
-    return apiRequest(`${API_BASE_URL}/${recipeId}/unlike`, 'POST', null, keycloakService.getToken()); // Oder DELETE, je nach API-Design
+    return apiRequest(`${API_BASE_URL}/${recipeId}/unlike`, 'POST', null, keycloakService.getToken());
 };
 
 

@@ -7,21 +7,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "app_user") // Name der Tabelle in der Datenbank
+@Table(name = "app_user") 
 public class AppUser extends PanacheEntityBase {
 
     @Id
     @Column(name = "keycloak_id", unique = true, nullable = false) // Eindeutige ID von Keycloak (sub Claim)
     public String id;
 
-    // Fachliche Daten, die spezifisch für deine Anwendung sind
+    // Fachliche Daten
     @Column(name = "dosha_type")
     public String doshaType;
-
-    // OPTIONALE Felder: Nur speichern, wenn für Backend-Queries unbedingt nötig.
-    // Ansonsten aus dem Token im Frontend oder bei Bedarf im Backend holen.
-    // @Column(unique = true) // Email könnte für Benachrichtigungen nützlich sein
-    // public String email;
 
     // Standardkonstruktor (wird von JPA benötigt)
     public AppUser() {
@@ -47,6 +42,4 @@ public class AppUser extends PanacheEntityBase {
     public void setDoshaType(String doshaType) {
         this.doshaType = doshaType;
     }
-
-    // Ggf. email Getter/Setter
 }

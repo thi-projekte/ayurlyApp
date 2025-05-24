@@ -1,21 +1,21 @@
 -- Tabelle für allgemeine Content-Metadaten
 CREATE TABLE content_items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('RECIPE', 'YOGA_EXERCISE', 'ARTICLE')), -- Erweiterbar
+    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('RECIPE', 'YOGA_EXERCISE', 'PRODUCT')), -- TODO: mit FK ersetzen
     title VARCHAR(255) NOT NULL,
-    image_url VARCHAR(255), -- URL zum Bild
+    image_url VARCHAR(255),
     preview_description TEXT,
-    like_count INT DEFAULT 0, -- NEU: Zähler für Likes
-    -- Hier könnten weitere gemeinsame Felder hinzukommen:
-    -- author_id UUID, -- Falls es Autoren gibt, die Content erstellen
+    like_count INT DEFAULT 0, 
+    -- Ideen für später
+    -- author_id UUID, 
     -- status VARCHAR(20) DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'PUBLISHED', 'ARCHIVED')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_content_items_content_type ON content_items(content_type);
-CREATE INDEX idx_content_items_title ON content_items(title); -- Für Suche nach Titel
-CREATE INDEX idx_content_items_like_count ON content_items(like_count DESC); -- NEU: Für beliebteste Inhalte
+CREATE INDEX idx_content_items_title ON content_items(title); 
+CREATE INDEX idx_content_items_like_count ON content_items(like_count DESC); 
 
 -- Tabelle für rezeptspezifische Details
 CREATE TABLE recipe_details (
@@ -33,7 +33,7 @@ CREATE TABLE recipe_benefits (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     recipe_content_id UUID NOT NULL REFERENCES recipe_details(content_id) ON DELETE CASCADE,
     benefit_text TEXT NOT NULL,
-    sort_order INT DEFAULT 0 -- Für die Reihenfolge der Vorteile
+    sort_order INT DEFAULT 0 
 );
 
 CREATE INDEX idx_recipe_benefits_recipe_content_id ON recipe_benefits(recipe_content_id);
@@ -45,7 +45,7 @@ CREATE TABLE recipe_ingredients (
     name VARCHAR(255) NOT NULL,
     quantity VARCHAR(100), -- z.B. "100", "1", "nach Bedarf"
     unit VARCHAR(50), -- z.B. "g", "ml", "Stück", "TL"
-    notes TEXT -- Optionale Anmerkungen zur Zutat
+    notes TEXT
 );
 
 CREATE INDEX idx_recipe_ingredients_recipe_content_id ON recipe_ingredients(recipe_content_id);
@@ -61,7 +61,7 @@ CREATE TABLE recipe_preparation_steps (
 
 CREATE INDEX idx_recipe_preparation_steps_recipe_content_id ON recipe_preparation_steps(recipe_content_id);
 
--- NEUE Tabelle für Likes
+-- Tabelle für Likes
 CREATE TABLE content_likes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     content_item_id UUID NOT NULL REFERENCES content_items(id) ON DELETE CASCADE,
@@ -89,7 +89,7 @@ BEFORE UPDATE ON content_items
 FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
--- Kommentare (optional, aber empfohlen)
+-- Kommentare 
 COMMENT ON TABLE content_items IS 'Basis-Tabelle für alle Arten von Content (Rezepte, Yoga, Artikel etc.). Enthält gemeinsame Metadaten.';
 COMMENT ON COLUMN content_items.id IS 'Eindeutige UUID für jeden Content-Eintrag, dient als übergreifende ID.';
 COMMENT ON COLUMN content_items.content_type IS 'Typ des Contents, z.B. RECIPE, YOGA_EXERCISE.';
