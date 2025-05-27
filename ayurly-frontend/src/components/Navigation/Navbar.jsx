@@ -56,6 +56,7 @@ const Navbar = () => {
           ayurly
         </NavLink>
 
+        {/* Burger Menue war alte mobile nav... ist jetzt über display:none entfernt worden, aber noch hier, falls man doch nochmal damit arbeiten möchte */}
         <div className={styles.mobileMenuIcon} onClick={toggleMenu}>
           {menuOpen ? '✕' : '☰'}
         </div>
