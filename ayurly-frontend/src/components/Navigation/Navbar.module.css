@@ -78,9 +78,65 @@
 
 .mobileMenuIcon {
     display: none; 
-    font-size: 30px;
+    font-size: 28px; 
     cursor: pointer;
     color: #333;
+    z-index: 1002; 
+}
+
+.mobileMenuPopup {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    position: absolute;
+    top: 80px; 
+    left: 0;
+    right: 0;
+    background-color: #f8f8f8;
+    padding: 10px 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1001; 
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.mobileMenuPopup .link { 
+    width: 90%;
+    justify-content: center;
+    background-color: transparent; 
+    padding: 15px 0;
+    border-radius: 8px; 
+    color: #333; 
+    height: auto; 
+    margin-bottom: 5px;
+}
+
+.mobileMenuPopup .link:hover {
+    background-color: #eee;
+    color: #e26a2c; 
+}
+
+.mobileMenuPopup .link.active {
+    background-color: #e26a2c !important;
+    color: #fff !important;
+}
+
+.mobileMenuLoginButton {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    background-color: #003329;
+    color: white;
+    margin-top: 10px;
+    width: 80%;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+.mobileMenuLoginButton:hover {
+    background-color: #00221c;
 }
 
 .links.open {
@@ -164,7 +220,7 @@
     }
 
     .mobileMenuIcon {
-        display: none; 
+        display: block; 
     }
 
     .links {
