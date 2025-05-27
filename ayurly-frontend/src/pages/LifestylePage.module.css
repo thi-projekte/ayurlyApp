@@ -45,9 +45,9 @@
 .descriptionAndBubbles {
   display: flex;
   gap: 50px;
-  margin-left: 100px;
+  margin-left: auto;
   width: 90%;
-  margin-right: 100px;
+  margin-right: auto;
   align-items: center;
   background-color: white;
   padding: 30px;
@@ -163,7 +163,7 @@
 .grid {
   display: flex;
   flex-direction: column;
-  margin: 50px 100px;
+  margin: 50px auto;
   gap: 30px;
   width: 90%;
 }
@@ -215,8 +215,6 @@
 
 @media (max-width: 1024px) {
   .descriptionAndBubbles {
-    margin-left: 50px;
-    margin-right: 50px;
     flex-direction: column; 
     gap: 30px;
   }
@@ -233,7 +231,7 @@
     font-size: 24pt;
   }
   .grid {
-    margin: 40px 50px;
+    margin: 40px auto;
   }
 }
 
@@ -249,8 +247,6 @@
     padding: 0 10px;
   }
   .descriptionAndBubbles {
-    margin-left: 20px;
-    margin-right: 20px;
     padding: 20px;
   }
   .bubble {
@@ -272,7 +268,7 @@
     font-size: 20pt;
   }
   .grid {
-    margin: 30px 20px;
+    margin: 30px auto;
     gap: 20px;
   }
   .row {
