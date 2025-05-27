@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { useUser } from '../../contexts/UserContext';
+import { FaHome, FaClipboardList, FaUtensils, FaSpa, FaSignInAlt, FaUserCircle } from 'react-icons/fa';
 
 const Navbar = () => {
   const { keycloakInstance, loadingKeycloak, login, logout } = useUser();
@@ -48,48 +49,82 @@ const Navbar = () => {
   }
 
   return (
-    <nav className={styles.navContainer} ref={navRef}>
-      <NavLink to="/" className={styles.logo} onClick={closeMenu}>
-        ayurly
-      </NavLink>
+    <>
+      {/* Desktop Navigation */}
+      <nav className={styles.navContainer} ref={navRef}>
+        <NavLink to="/" className={styles.logo} onClick={closeMenu}>
+          ayurly
+        </NavLink>
 
-      <div className={styles.mobileMenuIcon} onClick={toggleMenu}>
-        {menuOpen ? '✕' : '☰'}
-      </div>
+        <div className={styles.mobileMenuIcon} onClick={toggleMenu}>
+          {menuOpen ? '✕' : '☰'}
+        </div>
 
-      <div className={`${styles.links} ${menuOpen ? styles.open : ''}`}>
-        <NavLink to="/" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Home</NavLink>
-        <NavLink to="/dosha-test" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Dosha Test</NavLink>
-        <NavLink to="/rezepte" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Rezepte</NavLink>
-        <NavLink to="/lifestyle" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Lifestyle</NavLink> 
-        
-        {isAuthenticated && (
-          <NavLink to="/account" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>myAyurly</NavLink>
-        )}
+        <div className={`${styles.links} ${menuOpen ? styles.open : ''}`}>
+          <NavLink to="/" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Home</NavLink>
+          <NavLink to="/dosha-test" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Dosha Test</NavLink>
+          <NavLink to="/rezepte" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Rezepte</NavLink>
+          <NavLink to="/lifestyle" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Lifestyle</NavLink>
 
-        {isAdmin && (
-          <NavLink to="/admin" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Admin</NavLink>
-        )}
+          {isAuthenticated && (
+            <NavLink to="/account" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>myAyurly</NavLink>
+          )}
 
-        {menuOpen && (
-          <div className={`${styles.login} ${styles.visibleOnMobile}`}>
-            {!isAuthenticated ? (
-              <button onClick={handleLoginClick} className={styles.loginButton}>Login</button>
-            ) : (
-              <button onClick={handleLogoutClick} className={styles.loginButton}>Logout</button>
-            )}
-          </div>
-        )}
-      </div>
-      
-      <div className={`${styles.login} ${menuOpen ? styles.hiddenOnMobileMenuOpen : ''}`}>
+          {isAdmin && (
+            <NavLink to="/admin" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Admin</NavLink>
+          )}
+
+          {menuOpen && (
+            <div className={`${styles.login} ${styles.visibleOnMobile}`}>
+              {!isAuthenticated ? (
+                <button onClick={handleLoginClick} className={styles.loginButton}>Login</button>
+              ) : (
+                <button onClick={handleLogoutClick} className={styles.loginButton}>Logout</button>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className={`${styles.login} ${menuOpen ? styles.hiddenOnMobileMenuOpen : ''}`}>
+          {!isAuthenticated ? (
+            <button onClick={handleLoginClick} className={styles.loginButton}>Login</button>
+          ) : (
+            <button onClick={handleLogoutClick} className={styles.loginButton}>Logout</button>
+          )}
+        </div>
+      </nav>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className={styles.mobileBottomNav}>
+        <NavLink to="/" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
+          <FaHome className={styles.mobileNavIcon} />
+          <span className={styles.mobileNavText}>Home</span>
+        </NavLink>
+        <NavLink to="/dosha-test" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
+          <FaClipboardList className={styles.mobileNavIcon} />
+          <span className={styles.mobileNavText}>Dosha Test</span>
+        </NavLink>
+        <NavLink to="/rezepte" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
+          <FaUtensils className={styles.mobileNavIcon} />
+          <span className={styles.mobileNavText}>Rezepte</span>
+        </NavLink>
+        <NavLink to="/lifestyle" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
+          <FaSpa className={styles.mobileNavIcon} />
+          <span className={styles.mobileNavText}>Lifestyle</span>
+        </NavLink>
         {!isAuthenticated ? (
-          <button onClick={handleLoginClick} className={styles.loginButton}>Login</button>
+          <NavLink to="/login" onClick={handleLoginClick} className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
+            <FaSignInAlt className={styles.mobileNavIcon} />
+            <span className={styles.mobileNavText}>Login</span>
+          </NavLink>
         ) : (
-          <button onClick={handleLogoutClick} className={styles.loginButton}>Logout</button>
+          <NavLink to="/account" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
+            <FaUserCircle className={styles.mobileNavIcon} />
+            <span className={styles.mobileNavText}>myAyurly</span>
+          </NavLink>
         )}
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 };
 
