@@ -4,7 +4,7 @@
     <groupId>de.ayurly</groupId>
     <artifactId>ayurly-bpmn-service</artifactId>
     <version>1.0.0</version>
-    <name>ayurly-bpmn-service</name>
+    <name>ayurly-bpmn-service2</name>
     <properties>
         <compiler-plugin.version>3.14.0</compiler-plugin.version>
         <maven.compiler.release>21</maven.compiler.release>
@@ -76,6 +76,10 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-h2</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
