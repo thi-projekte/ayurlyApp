@@ -29,6 +29,7 @@ const initKeycloak = (onAuthenticated, onAuthError) => {
     onLoad: 'check-sso', // Prüft, ob der Benutzer bereits eine SSO-Sitzung hat
     silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
     pkceMethod: 'S256', // Empfohlen für Public Clients
+    checkLoginIframe: true,
   })
     .then((authenticated) => {
       if (authenticated) {
