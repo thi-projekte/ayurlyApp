@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -8,18 +8,5 @@
     <script>
         parent.postMessage(location.href, location.origin);
     </script>
-</body>
-</html> -->
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-</head>
-<body>
-  <script>
-    if (window.location.href.indexOf('?') !== -1 && window.parent && window.parent.postMessage) {
-      window.parent.postMessage(window.location.href, window.location.origin);
-    }
-  </script>
 </body>
 </html>
