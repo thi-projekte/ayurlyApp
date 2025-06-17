@@ -2,7 +2,7 @@ import Keycloak from 'keycloak-js';
 
 // KC_HOSTNAME aus docker-compose.yml ist hier wichtig für die URL
 const keycloakConfig = {
-  url: '/auth',                                    
+  url: 'https://keycloak.winfprojekt.de',                                    
   realm: 'Aryuveda', 
   clientId: 'ayurly-frontend', // Frontend-Client-ID in Keycloak
 };
