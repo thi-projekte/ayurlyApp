@@ -78,9 +78,65 @@
 
 .mobileMenuIcon {
     display: none; 
-    font-size: 30px;
+    font-size: 28px; 
     cursor: pointer;
     color: #333;
+    z-index: 1002; 
+}
+
+.mobileMenuPopup {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    position: absolute;
+    top: 80px; 
+    left: 0;
+    right: 0;
+    background-color: #f8f8f8;
+    padding: 10px 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1001; 
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.mobileMenuPopup .link { 
+    width: 90%;
+    justify-content: center;
+    background-color: transparent; 
+    padding: 15px 0;
+    border-radius: 8px; 
+    color: #333; 
+    height: auto; 
+    margin-bottom: 5px;
+}
+
+.mobileMenuPopup .link:hover {
+    background-color: #eee;
+    color: #e26a2c; 
+}
+
+.mobileMenuPopup .link.active {
+    background-color: #e26a2c !important;
+    color: #fff !important;
+}
+
+.mobileMenuLoginButton {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    background-color: #003329;
+    color: white;
+    margin-top: 10px;
+    width: 80%;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+.mobileMenuLoginButton:hover {
+    background-color: #00221c;
 }
 
 .links.open {
@@ -91,8 +147,68 @@
     display: none;
 }
 
+/* --- NEUE STYLES FÜR MOBILE BOTTOM NAVIGATION --- */
+.mobileBottomNav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    min-height: 65px; 
+    background-color: #ffffff;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000; 
+
+    padding-top: 5px; 
+    padding-bottom: calc(5px + env(safe-area-inset-bottom)); /* Fügt den unteren sicheren Bereich zum Padding hinzu, damit es auf mobile nicht abgeschnitten wird */
+    
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+.mobileNavLink {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    text-decoration: none;
+    color: #757575; 
+    font-size: 0.75rem; 
+    padding: 5px 0;
+    transition: color 0.3s ease;
+    height: 100%;
+}
+
+.mobileNavIcon {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+}
+
+.mobileNavText {
+    font-size: 0.7rem;
+    line-height: 1;
+}
+
+.mobileNavLink.activeMobile,
+.mobileNavLink:hover {
+    color: #e26a2c;
+}
 
 @media (max-width: 768px) {
+    .links,
+    .navContainer > .login { 
+        display: none;
+    }
+    
+    .mobileBottomNav {
+        display: flex;
+    }
+    
+    
     .navContainer {
         padding: 0 20px;
         height: 80px;
