@@ -42,7 +42,7 @@ const AdminPage = () => {
             to="content/recipes" 
             className={() => `${styles.navLink} ${isActive('content') ? styles.activeLink : ''}`}
           >
-            Rezept Management
+            Content Management
           </NavLink>
           <NavLink
             to="lookups/dosha-types"
@@ -64,7 +64,7 @@ const AdminPage = () => {
       {isActive('content') && !isActive('lookups') && ( // Nur anzeigen, wenn wir in Content sind, aber nicht in Lookups
         <nav className={styles.adminSubNav}>
           <NavLink to="content/recipes" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Rezepte</NavLink>
-          {/* <NavLink to="content/produtcs" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Produkte</NavLink> */}
+          <NavLink to="content/products" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Produkte</NavLink>
           {/* <NavLink to="content/yoga" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Yoga-Übungen</NavLink> */}
         </nav>
       )}

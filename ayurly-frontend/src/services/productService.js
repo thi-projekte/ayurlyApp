@@ -29,9 +29,31 @@ const unlikeProduct = async (productId) => {
     return apiRequest(`${API_BASE_URL}/${productId}/unlike`, 'POST', null, token);
 };
 
+const createProduct = async (productData) => {
+    const token = keycloakService.getToken();
+    if (!token) throw new Error("User not authenticated or admin role missing.");
+    return apiRequest(API_BASE_URL, 'POST', productData, token);
+};
+
+const updateProduct = async (productId, productData) => {
+    const token = keycloakService.getToken();
+    if (!token) throw new Error("User not authenticated or admin role missing.");
+    return apiRequest(`${API_BASE_URL}/${productId}`, 'PUT', productData, token);
+};
+
+const deleteProduct = async (productId) => {
+    const token = keycloakService.getToken();
+    if (!token) throw new Error("User not authenticated or admin role missing.");
+    return apiRequest(`${API_BASE_URL}/${productId}`, 'DELETE', null, token);
+};
+
+
 export default {
     getAllProducts,
     getProductById,
     likeProduct,
-    unlikeProduct
+    unlikeProduct,
+    createProduct,
+    updateProduct,
+    deleteProduct
 };
