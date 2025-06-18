@@ -97,7 +97,9 @@ const ProdukteDetailPage = () => {
                             <div className={styles.priceContainer}>
                                 <p className={styles.price}>{formatPrice(product.price)} €</p>
                                 <p className={styles.pricePerUnit}>{product.weight} {product.unit} {calculatePricePerKg()}</p>
+                                <br></br>
                                 <p className={styles.pricePerUnit}> Preise inkl. MwSt. ggf. zzgl. Versand</p>
+                                <p className={styles.pricePerUnit}> Preis wird regelmäßig aktualisiert, kann jedoch ggf. vom aktuellen Angebot des externen Anbieters abweichen.</p>
                             </div>
                         )}
                         
