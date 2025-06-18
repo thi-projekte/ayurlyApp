@@ -64,6 +64,7 @@ CREATE INDEX idx_recipe_preparation_steps_recipe_content_id ON recipe_preparatio
 -- Tabelle für produktspezifische Details
 CREATE TABLE product_details (
     content_id UUID PRIMARY KEY REFERENCES content_items(id) ON DELETE CASCADE,
+    description TEXT,
     price_info TEXT, -- Flexibel für Preisangaben wie "EUR 4,29 (1 kg = 190,67 Euro)"
     external_link VARCHAR(255), -- Link zum "Entdecken"-Button
     dosha_types VARCHAR(50)[] -- Array für Vata, Pitta, Kapha
