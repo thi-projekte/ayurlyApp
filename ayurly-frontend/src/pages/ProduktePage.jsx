@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from './RezeptePage.module.css'; // gleiches CSS für Konsistenz
 import productService from '../services/productService';
 import { useUser } from '../contexts/UserContext';
-import { FaRegThumbsUp, FaThumbsUp } from 'react-icons/fa';
+import { FaRegThumbsUp, FaThumbsUp, FaEuroSign, FaWeightHanging } from 'react-icons/fa';
 
 const TRIDOSHIC_VALUE = "tridoshic";
 
@@ -124,7 +124,12 @@ const ProduktePage = () => {
                                 </div>
                             </Link>
                             <div className={styles.cardMetaActions}>
-                                <span>{/* Platzhalter für Preis o.ä. wenn gewünscht */}</span>
+                                <div className={styles.cardMetaItem}>
+                                  {product.price && <><FaEuroSign /> {product.price.toFixed(2).replace('.', ',')}</>}
+                                </div>
+                                <div className={styles.cardMetaItem}>
+                                  {product.weight > 0 && <><FaWeightHanging /> {product.weight} {product.unit}</>}
+                                </div>
                                 <button
                                     onClick={() => handleLikeToggle(product.id)}
                                     className={`${styles.likeButtonCard} ${product.likedByCurrentUser ? styles.liked : ''}`}

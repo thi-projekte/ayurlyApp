@@ -21,18 +21,28 @@
 
 .mainSection {
     display: flex;
-    gap: 30px;
+    gap: 40px;
     padding: 30px;
 }
 
 .imageContainer {
     flex: 1 1 40%;
+    min-width: 300px
 }
 
 .imageContainer img {
     width: 100%;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    flex-grow: 1;
+}
+
+.priceContainer {
+    background-color: #f7f9fc;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #eef2f7;
 }
 
 .infoContainer {
@@ -69,11 +79,16 @@
 }
 
 .price {
-    font-size: 1.2em;
+    font-size: 1.4em;
     font-weight: 600;
     color: #333;
     white-space: pre-wrap;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
+}
+
+.pricePerUnit {
+    font-size: 0.9em;
+    color: #666;
 }
 
 .discoverButton {
@@ -99,9 +114,13 @@
 }
 .benefitsSection h2 {
     margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #333;
 }
 .benefitsSection ul {
     list-style-position: inside;
+    padding-left: 0;
+    list-style-type: '✓ ';
 }
 
 .detailsGrid {

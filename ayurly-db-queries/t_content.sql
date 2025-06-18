@@ -65,7 +65,9 @@ CREATE INDEX idx_recipe_preparation_steps_recipe_content_id ON recipe_preparatio
 CREATE TABLE product_details (
     content_id UUID PRIMARY KEY REFERENCES content_items(id) ON DELETE CASCADE,
     description TEXT,
-    price_info TEXT, -- Flexibel für Preisangaben wie "EUR 4,29 (1 kg = 190,67 Euro)"
+    price NUMERIC(10, 2), 
+    weight NUMERIC(10, 3),
+    unit VARCHAR(10) CHECK (unit IN ('g', 'kg', 'ml', 'l', 'Stück')),
     external_link VARCHAR(255), -- Link zum "Entdecken"-Button
     dosha_types VARCHAR(50)[] -- Array für Vata, Pitta, Kapha
 );
@@ -155,7 +157,9 @@ COMMENT ON TABLE recipe_preparation_steps IS 'Speichert die Zubereitungsschritte
 
 COMMENT ON TABLE product_details IS 'Speichert die spezifischen Details für Content-Einträge vom Typ PRODUCT.';
 COMMENT ON COLUMN product_details.content_id IS 'Fremdschlüssel zur content_items Tabelle, identifiziert das zugehörige Produkt.';
-COMMENT ON COLUMN product_details.price_info IS 'Textuelle Information zum Preis.';
+COMMENT ON COLUMN product_details.price IS 'Der reine Produktpreis in Euro.';
+COMMENT ON COLUMN product_details.weight IS 'Das Gewicht oder die Inhaltsmenge des Produkts.';
+COMMENT ON COLUMN product_details.unit IS 'Die Einheit für das Gewicht/den Inhalt (g, kg, ml, l, Stück).';
 COMMENT ON COLUMN product_details.external_link IS 'URL zum Kaufen oder für weitere Informationen.';
 COMMENT ON COLUMN product_details.dosha_types IS 'Array der Dosha-Typen, für die das Produkt geeignet ist.';
 

@@ -1,5 +1,6 @@
 package de.ayurly.app.dataservice.resource;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -120,7 +121,9 @@ public class ProductContentResource {
         public String previewDescription;
         public String description;
         public String[] doshaTypes;
-        public String priceInfo;
+        public BigDecimal price;
+        public BigDecimal weight;
+        public String unit;
         public String externalLink;
         public List<String> benefits;
         public List<String> activeIngredients;
@@ -141,7 +144,9 @@ public class ProductContentResource {
 
             dto.description = entity.description;
             dto.doshaTypes = entity.doshaTypes;
-            dto.priceInfo = entity.priceInfo;
+            dto.price = entity.price;
+            dto.weight = entity.weight;
+            dto.unit = entity.unit;
             dto.externalLink = entity.externalLink;
 
             if (entity.benefits != null) {
@@ -175,7 +180,9 @@ public class ProductContentResource {
         public String previewDescription;
         public String description;
         public String[] doshaTypes;
-        public String priceInfo;
+        public BigDecimal price;
+        public BigDecimal weight;
+        public String unit;
         public String externalLink;
         public List<String> benefits;
         public List<String> activeIngredients;
@@ -189,7 +196,9 @@ public class ProductContentResource {
 
             product.description = this.description;
             product.doshaTypes = this.doshaTypes;
-            product.priceInfo = this.priceInfo;
+            product.price = this.price;
+            product.weight = this.weight;
+            product.unit = this.unit;
             product.externalLink = this.externalLink;
 
             if (this.benefits != null) {
@@ -283,7 +292,9 @@ public class ProductContentResource {
         existingProduct.previewDescription = productDto.previewDescription;
         existingProduct.description = productDto.description;
         existingProduct.doshaTypes = productDto.doshaTypes;
-        existingProduct.priceInfo = productDto.priceInfo;
+        existingProduct.price = productDto.price;
+        existingProduct.weight = productDto.weight;
+        existingProduct.unit = productDto.unit;
         existingProduct.externalLink = productDto.externalLink;
 
         // 2. Update Benefits

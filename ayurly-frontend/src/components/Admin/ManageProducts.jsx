@@ -13,7 +13,9 @@ const initialProductFormState = {
     previewDescription: '',
     description: '',
     doshaTypes: [],
-    priceInfo: '',
+    price: 0,
+    weight: 0,
+    unit: 'g',
     externalLink: '',
     benefits: [{ text: '' }],
     activeIngredients: [{ text: '' }],
@@ -99,7 +101,9 @@ const ManageProducts = () => {
                     previewDescription: productToEdit.previewDescription || '',
                     description: productToEdit.description || '',
                     doshaTypes: productToEdit.doshaTypes || [],
-                    priceInfo: productToEdit.priceInfo || '',
+                    price: product.price || 0,
+                    weight: product.weight || 0,
+                    unit: product.unit || 'g',
                     externalLink: productToEdit.externalLink || '',
                     benefits: productToEdit.benefits && productToEdit.benefits.length > 0 ? productToEdit.benefits.map(b => ({ text: b })) : [{ text: '' }],
                     activeIngredients: productToEdit.activeIngredients && productToEdit.activeIngredients.length > 0 ? productToEdit.activeIngredients.map(i => ({ text: i })) : [{ text: '' }],
@@ -156,7 +160,7 @@ const ManageProducts = () => {
                 : formData.doshaTypes.filter(dt => dt !== value);
             setFormData(prev => ({ ...prev, doshaTypes: newDoshaTypes }));
         } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
+            setFormData(prev => ({ ...prev, [name]: type === 'number' ? parseFloat(value) : value }));
         }
     };
 
@@ -270,9 +274,11 @@ const ManageProducts = () => {
                     <label>Bild hochladen: <input type="file" name="imageUpload" onChange={handleFileChange} accept="image/*" ref={fileInputRef} /></label>
                     {imagePreview && <img src={imagePreview} alt="Vorschau" style={{ maxWidth: '200px', margin: '10px 0' }}/>}
                     <label>Vorschau-Beschreibung: <textarea name="previewDescription" value={formData.previewDescription} onChange={handleFormChange}></textarea></label>
-                    <label>Beschreibung: <textarea name="description" value={formData.description} onChange={handleFormChange} rows="6"></textarea></label>
-                    <label>Preis-Info: <textarea name="priceInfo" value={formData.priceInfo} onChange={handleFormChange} rows="3"></textarea></label>
-                    <label>Externer Link: <input type="text" name="externalLink" value={formData.externalLink} onChange={handleFormChange} /></label>
+                    <label>Beschreibung: <textarea name="description" value={formData.description} onChange={handleFormChange} rows="4"></textarea></label>
+                    <label>Preis (€): <input type="number" name="price" value={formData.price} onChange={handleFormChange} step="0.01" /></label>
+                    <label>Gewicht/Inhalt: <input type="number" name="weight" value={formData.weight} onChange={handleFormChange} step="any" /></label>
+                    <label>Einheit: <select name="unit" value={formData.unit} onChange={handleFormChange}><option value="g">g</option><option value="kg">kg</option></select></label>
+                    <label>Externer Link: <input type="text" name="externalLink" value={formData.externalLink} onChange={handleFormChange} placeholder="https://..." /></label>
 
                     {/* --- Dosha-Typen --- */}
                     <h4>Dosha-Typen</h4>

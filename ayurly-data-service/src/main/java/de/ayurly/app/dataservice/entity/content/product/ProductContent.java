@@ -1,5 +1,6 @@
 package de.ayurly.app.dataservice.entity.content.product;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,14 @@ public class ProductContent extends ContentItem {
     @Column(name = "dosha_types", columnDefinition = "varchar(50)[]")
     public String[] doshaTypes;
     
-    @Column(name = "price_info", columnDefinition = "TEXT")
-    public String priceInfo;
+    @Column(name = "price", precision = 10, scale = 2)
+    public BigDecimal price;
+
+    @Column(name = "weight", precision = 10, scale = 3)
+    public BigDecimal weight;
+
+    @Column(name = "unit")
+    public String unit;
 
     @Column(name = "external_link")
     public String externalLink;

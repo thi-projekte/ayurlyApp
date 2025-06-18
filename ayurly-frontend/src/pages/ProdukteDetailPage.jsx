@@ -61,6 +61,22 @@ const ProdukteDetailPage = () => {
         }
     };
 
+    const formatPrice = (value) => {
+        return value.toFixed(2).replace('.', ',');
+    };
+
+    const calculatePricePerKg = () => {
+        if (!product.price || !product.weight || product.weight <= 0) return null;
+
+        let pricePerKg;
+        if (product.unit === 'g' ) {
+            pricePerKg = (product.price / product.weight) * 1000;
+        } else { 
+            pricePerKg = product.price / product.weight;
+        }
+        return `( ${formatPrice(pricePerKg)} € / kg )`;
+    };
+
     return (
         <div className={styles.pageContainer}>
             <article className={styles.productDetailWrapper}>
@@ -77,22 +93,27 @@ const ProdukteDetailPage = () => {
                         <h1 className={styles.title}>{product.title}</h1>
                         <p className={styles.description}>{product.description}</p>
                         
-                        {product.priceInfo && <p className={styles.price}>{product.priceInfo}</p>}
+                        {product.price && (
+                            <div className={styles.priceContainer}>
+                                <p className={styles.price}>{formatPrice(product.price)} €</p>
+                                <p className={styles.pricePerUnit}>{product.weight} {product.unit} {calculatePricePerKg()}</p>
+                            </div>
+                        )}
                         
                         {product.externalLink && (
                             <a href={product.externalLink} target="_blank" rel="noopener noreferrer" className={styles.discoverButton}>
                                 Entdecken
                             </a>
                         )}
+
+                        {product.benefits?.length > 0 && (
+                            <div className={styles.benefitsSection}>
+                                <h2>Vorteile</h2>
+                                <ul>{product.benefits.map((b, i) => <li key={i}>{b}</li>)}</ul>
+                            </div>
+                        )}
                     </div>
                 </section>
-                
-                {product.benefits?.length > 0 && (
-                    <section className={styles.benefitsSection}>
-                        <h2>Vorteile</h2>
-                        <ul>{product.benefits.map((b, i) => <li key={i}>{b}</li>)}</ul>
-                    </section>
-                )}
 
                 <section className={styles.detailsGrid}>
                     {product.activeIngredients?.length > 0 && (
