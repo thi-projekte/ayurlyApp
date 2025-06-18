@@ -1,6 +1,7 @@
 package de.ayurly.app.dataservice.resource;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
@@ -244,6 +250,9 @@ public class ProductContentResource {
     @POST
     @RolesAllowed("admin")
     @Transactional
+    @Operation(summary = "Create a new product", description = "Creates a new product (as ProductContent). Requires 'admin' role.")
+    @APIResponse(responseCode = "201", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ProductContentDto.class)))
+    @SecurityRequirement(name = "jwtAuth")
     public Response createProduct(@Valid ProductContentCreateUpdateDto productDto) {
         ProductContent product = productDto.toEntity();
         product.persist();
@@ -255,14 +264,20 @@ public class ProductContentResource {
     @Path("/{id}")
     @RolesAllowed("admin")
     @Transactional
+    @Operation(summary = "Update an existing product", description = "Updates an existing product (as ProductContent). Requires 'admin' role.")
+    @APIResponse(responseCode = "200", description = "Product updated successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ProductContentDto.class)))
+    @APIResponse(responseCode = "404", description = "Product not found")
+    @APIResponse(responseCode = "400", description = "Invalid product data provided")
+    @SecurityRequirement(name = "jwtAuth")
     public Response updateProduct(@PathParam("id") UUID id, @Valid ProductContentCreateUpdateDto productDto) {
         Optional<ProductContent> existingProductOpt = ProductContent.findByIdOptional(id);
         if (existingProductOpt.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Product not found.").build();
         }
+
         ProductContent existingProduct = existingProductOpt.get();
         
-        // Basis-Felder
+        // 1. Update primitive fields
         existingProduct.title = productDto.title;
         existingProduct.imageUrl = productDto.imageUrl;
         existingProduct.previewDescription = productDto.previewDescription;
@@ -271,24 +286,43 @@ public class ProductContentResource {
         existingProduct.priceInfo = productDto.priceInfo;
         existingProduct.externalLink = productDto.externalLink;
 
-        // Listen leeren und neu befüllen
-        existingProduct.benefits.clear();
+        // 2. Update Benefits
+        for (ProductBenefit benefit : new ArrayList<>(existingProduct.benefits)) {
+            existingProduct.removeBenefit(benefit);
+        }
+        entityManager.flush();
         if(productDto.benefits != null) {
              for (int i = 0; i < productDto.benefits.size(); i++) {
-                existingProduct.addBenefit(new ProductBenefit(productDto.benefits.get(i), i * 10));
+                String benefitText = productDto.benefits.get(i);
+                if (benefitText != null && !benefitText.trim().isEmpty()) {
+                    existingProduct.addBenefit(new ProductBenefit(benefitText.trim(), i * 10));
+                }
             }
         }
         
-        existingProduct.activeIngredients.clear();
+        // 3. Update Active Ingredients
+        for (ProductActiveIngredient ingredient : new ArrayList<>(existingProduct.activeIngredients)) {
+            existingProduct.removeActiveIngredient(ingredient);
+        }
+        entityManager.flush();
         if(productDto.activeIngredients != null) {
              for (int i = 0; i < productDto.activeIngredients.size(); i++) {
-                existingProduct.addActiveIngredient(new ProductActiveIngredient(productDto.activeIngredients.get(i), i * 10));
+                String ingredientText = productDto.activeIngredients.get(i);
+                 if (ingredientText != null && !ingredientText.trim().isEmpty()) {
+                    existingProduct.addActiveIngredient(new ProductActiveIngredient(ingredientText.trim(), i * 10));
+                }
             }
         }
         
-        existingProduct.applicationSteps.clear();
+        // 4. Update Application Steps
+        for (ProductApplicationStep step : new ArrayList<>(existingProduct.applicationSteps)) {
+            existingProduct.removeApplicationStep(step);
+        }
+        entityManager.flush();
         if(productDto.applicationSteps != null) {
-            productDto.applicationSteps.forEach(dto -> existingProduct.addApplicationStep(dto.toEntity()));
+            productDto.applicationSteps.stream()
+                 .map(ApplicationStepDto::toEntity)
+                 .forEach(existingProduct::addApplicationStep);
         }
 
         entityManager.flush();
