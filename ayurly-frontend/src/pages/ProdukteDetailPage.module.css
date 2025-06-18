@@ -171,6 +171,51 @@
   background-color: #5a6268;
 }
 
+.actionsBar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.likeButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #555;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  margin-top: 20px;
+}
+.likeButton:hover {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+}
+.likeButton.liked {
+  background-color: #ffe0e0; 
+  border-color: #ffb3b3;
+  color: #c0392b; 
+}
+.likeButton.liked i {
+  color: #c0392b; 
+}
+.likeButton i {
+  font-size: 1.2em;
+  color: #aaa;
+  transition: color 0.2s ease;
+}
+.likeButton.liked:hover i,
+.likeButton:hover i {
+}
+.likeCount {
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
     .mainSection {
         flex-direction: column;

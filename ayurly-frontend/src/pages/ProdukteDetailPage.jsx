@@ -30,6 +30,7 @@ const ProdukteDetailPage = () => {
 
     const handleLikeToggle = async () => {
         if (!isLoggedIn) {
+            alert("Bitte melde dich an, um Produkte zu liken.");
             login();
             return;
         }
@@ -37,10 +38,10 @@ const ProdukteDetailPage = () => {
 
         setLoading(true);
         try {
-            const updated = product.likedByCurrentUser
+            const updatedProductData = product.likedByCurrentUser
                 ? await productService.unlikeProduct(product.id)
                 : await productService.likeProduct(product.id);
-            setProduct(p => ({ ...p, likeCount: updated.likeCount, likedByCurrentUser: updated.likedByCurrentUser }));
+            setProduct(p => ({ ...p, likeCount: updatedProductData.likeCount, likedByCurrentUser: updatedProductData.likedByCurrentUser }));
         } catch (err) {
             setError(err.message || "Fehler bei der Like-Aktion.");
         } finally {
@@ -51,7 +52,7 @@ const ProdukteDetailPage = () => {
     if (loading || loadingKeycloak) return <div className={styles.loading}>Produkt wird geladen...</div>;
     if (error) return <div className={styles.error}>Fehler: {error}</div>;
     if (!product) return <div className={styles.error}>Produkt nicht gefunden.</div>;
-    
+
     const getDoshaTagClass = (dosha) => {
         switch (dosha?.toLowerCase()) {
             case 'vata': return styles.doshaTagVata;
@@ -69,9 +70,9 @@ const ProdukteDetailPage = () => {
         if (!product.price || !product.weight || product.weight <= 0) return null;
 
         let pricePerKg;
-        if (product.unit === 'g' ) {
+        if (product.unit === 'g') {
             pricePerKg = (product.price / product.weight) * 1000;
-        } else { 
+        } else {
             pricePerKg = product.price / product.weight;
         }
         return `( ${formatPrice(pricePerKg)} € / kg )`;
@@ -86,13 +87,15 @@ const ProdukteDetailPage = () => {
                     </div>
                     <div className={styles.infoContainer}>
                         <h1 className={styles.title}>{product.title}</h1>
+                        
+
                         {product.doshaTypes?.length > 0 && (
                             <div className={styles.doshaTags}>
                                 {product.doshaTypes.map(d => <span key={d} className={`${styles.doshaTag} ${getDoshaTagClass(d)}`}>{d}</span>)}
                             </div>
                         )}
                         <p className={styles.description}>{product.description}</p>
-                        
+
                         {product.price && (
                             <div className={styles.priceContainer}>
                                 <p className={styles.price}>{formatPrice(product.price)} €</p>
@@ -102,7 +105,7 @@ const ProdukteDetailPage = () => {
                                 <p className={styles.pricePerUnit}> Preis wird regelmäßig aktualisiert, kann jedoch ggf. vom aktuellen Angebot des externen Anbieters abweichen.</p>
                             </div>
                         )}
-                        
+
                         {product.benefits?.length > 0 && (
                             <div className={styles.benefitsSection}>
                                 <h2>Vorteile</h2>
@@ -110,11 +113,25 @@ const ProdukteDetailPage = () => {
                             </div>
                         )}
 
-                        {product.externalLink && (
-                            <a href={product.externalLink} target="_blank" rel="noopener noreferrer" className={styles.discoverButton}>
-                                Entdecken
-                            </a>
-                        )}
+                        <div className={styles.actionsBar}>
+                            {product.externalLink && (
+                                <a href={product.externalLink} target="_blank" rel="noopener noreferrer" className={styles.discoverButton}>
+                                    Entdecken
+                                </a>
+                            )}
+
+                            <button
+                                onClick={handleLikeToggle}
+                                className={`${styles.likeButton} ${product.likedByCurrentUser ? styles.liked : ''}`}
+                                aria-label={product.likedByCurrentUser ? "Unlike this product" : "Like this product"}
+                                disabled={loading}
+                            >
+                                {product.likedByCurrentUser ? <FaThumbsUp /> : <FaRegThumbsUp />}
+                                <span className={styles.likeCount}>{product.likeCount}</span>
+                            </button>
+                        </div>
+
+
                     </div>
                 </section>
 
