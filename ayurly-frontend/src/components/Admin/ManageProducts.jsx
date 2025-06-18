@@ -270,8 +270,8 @@ const ManageProducts = () => {
                     <label>Bild hochladen: <input type="file" name="imageUpload" onChange={handleFileChange} accept="image/*" ref={fileInputRef} /></label>
                     {imagePreview && <img src={imagePreview} alt="Vorschau" style={{ maxWidth: '200px', margin: '10px 0' }}/>}
                     <label>Vorschau-Beschreibung: <textarea name="previewDescription" value={formData.previewDescription} onChange={handleFormChange}></textarea></label>
-                    <label>Beschreibung: <textarea name="description" value={formData.description} onChange={handleFormChange} style={{minHeight: '100px'}}></textarea></label>
-                    <label>Preis-Info: <input type="text" name="priceInfo" value={formData.priceInfo} onChange={handleFormChange} /></label>
+                    <label>Beschreibung: <textarea name="description" value={formData.description} onChange={handleFormChange} rows="6"></textarea></label>
++                   <label>Preis-Info: <textarea name="priceInfo" value={formData.priceInfo} onChange={handleFormChange} rows="3"></textarea></label>
                     <label>Externer Link: <input type="text" name="externalLink" value={formData.externalLink} onChange={handleFormChange} /></label>
 
                     {/* --- Dosha-Typen --- */}
