@@ -108,7 +108,7 @@ const LifestylePage = () => {
             <img src="/img/lifestyle/coaching.jpg" alt="Coaching Gespräch" />
             <p>Beratung</p>
           </a>
-          <a href="#" className={styles.item}> {/* Temporär auf # gesetzt */}
+          <a href="./produkte" className={styles.item}> 
             <img src="/img/lifestyle/products.jpg" alt="Ayurvedische Produkte" />
             <p>Produkte</p>
           </a>

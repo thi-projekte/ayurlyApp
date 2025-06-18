@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-
 import Navbar from './components/Navigation/Navbar'; // .jsx ist optional beim Import
 import Footer from './components/Footer/Footer';
 import HomePage from './pages/HomePage';
+import ProduktePage from './pages/ProduktePage';
+import ProdukteDetailPage from './pages/ProdukteDetailPage';
 import DoshaTestPage from './pages/DoshaTestPage';
 import RezeptePage from './pages/RezeptePage';
 import RezepteDetailPage from './pages/RezepteDetailPage';
@@ -29,6 +31,8 @@ function App() {
             <Route path="/dosha-test" element={<DoshaTestPage />} />
             <Route path="/rezepte" element={<RezeptePage />} />
             <Route path="/rezepte/:rezeptId" element={<RezepteDetailPage />} />
+            <Route path="/produkte" element={<ProduktePage />} />
+            <Route path="/produkte/:produktId" element={<ProdukteDetailPage />} />
             <Route path="/lifestyle" element={<LifestylePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/account" element={<AccountPage />} />
