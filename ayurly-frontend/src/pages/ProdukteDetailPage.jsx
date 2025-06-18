@@ -85,32 +85,33 @@ const ProdukteDetailPage = () => {
                         <img src={product.imageUrl || '/img/recipes/default_recipe_image.png'} alt={product.title} />
                     </div>
                     <div className={styles.infoContainer}>
+                        <h1 className={styles.title}>{product.title}</h1>
                         {product.doshaTypes?.length > 0 && (
                             <div className={styles.doshaTags}>
                                 {product.doshaTypes.map(d => <span key={d} className={`${styles.doshaTag} ${getDoshaTagClass(d)}`}>{d}</span>)}
                             </div>
                         )}
-                        <h1 className={styles.title}>{product.title}</h1>
                         <p className={styles.description}>{product.description}</p>
                         
                         {product.price && (
                             <div className={styles.priceContainer}>
                                 <p className={styles.price}>{formatPrice(product.price)} €</p>
                                 <p className={styles.pricePerUnit}>{product.weight} {product.unit} {calculatePricePerKg()}</p>
+                                <p className={styles.pricePerUnit}> Preise inkl. MwSt. ggf. zzgl. Versand</p>
                             </div>
                         )}
                         
-                        {product.externalLink && (
-                            <a href={product.externalLink} target="_blank" rel="noopener noreferrer" className={styles.discoverButton}>
-                                Entdecken
-                            </a>
-                        )}
-
                         {product.benefits?.length > 0 && (
                             <div className={styles.benefitsSection}>
                                 <h2>Vorteile</h2>
                                 <ul>{product.benefits.map((b, i) => <li key={i}>{b}</li>)}</ul>
                             </div>
+                        )}
+
+                        {product.externalLink && (
+                            <a href={product.externalLink} target="_blank" rel="noopener noreferrer" className={styles.discoverButton}>
+                                Entdecken
+                            </a>
                         )}
                     </div>
                 </section>
