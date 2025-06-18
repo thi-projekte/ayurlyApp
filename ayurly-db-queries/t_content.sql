@@ -61,6 +61,48 @@ CREATE TABLE recipe_preparation_steps (
 
 CREATE INDEX idx_recipe_preparation_steps_recipe_content_id ON recipe_preparation_steps(recipe_content_id);
 
+-- Tabelle für produktspezifische Details
+CREATE TABLE product_details (
+    content_id UUID PRIMARY KEY REFERENCES content_items(id) ON DELETE CASCADE,
+    price_info TEXT, -- Flexibel für Preisangaben wie "EUR 4,29 (1 kg = 190,67 Euro)"
+    external_link VARCHAR(255), -- Link zum "Entdecken"-Button
+    dosha_types VARCHAR(50)[] -- Array für Vata, Pitta, Kapha
+);
+
+CREATE INDEX idx_product_details_dosha_types ON product_details USING GIN (dosha_types);
+
+-- Tabelle für Produkt-Vorteile (analog zu Rezept-Vorteilen)
+CREATE TABLE product_benefits (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    product_content_id UUID NOT NULL REFERENCES product_details(content_id) ON DELETE CASCADE,
+    benefit_text TEXT NOT NULL,
+    sort_order INT DEFAULT 0
+);
+
+CREATE INDEX idx_product_benefits_product_content_id ON product_benefits(product_content_id);
+
+-- Tabelle für Produkt-Wirkstoffe
+CREATE TABLE product_active_ingredients (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    product_content_id UUID NOT NULL REFERENCES product_details(content_id) ON DELETE CASCADE,
+    ingredient_text TEXT NOT NULL, -- z.B. "150 mg Kurkuma-Extrakt (stark entzündungshemmend)"
+    sort_order INT DEFAULT 0
+);
+
+CREATE INDEX idx_product_active_ingredients_product_content_id ON product_active_ingredients(product_content_id);
+
+-- Tabelle für Produkt-Anwendungsschritte
+CREATE TABLE product_application_steps (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    product_content_id UUID NOT NULL REFERENCES product_details(content_id) ON DELETE CASCADE,
+    step_number INT NOT NULL,
+    description TEXT NOT NULL,
+    CONSTRAINT unique_step_per_product_content UNIQUE (product_content_id, step_number)
+);
+
+CREATE INDEX idx_product_application_steps_product_content_id ON product_application_steps(product_content_id);
+
+
 -- Tabelle für Likes
 CREATE TABLE content_likes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -109,6 +151,13 @@ COMMENT ON COLUMN recipe_benefits.sort_order IS 'Definiert die Anzeigereihenfolg
 
 COMMENT ON TABLE recipe_ingredients IS 'Speichert die Zutaten für Rezepte. Verweist auf recipe_details.';
 COMMENT ON TABLE recipe_preparation_steps IS 'Speichert die Zubereitungsschritte für Rezepte. Verweist auf recipe_details.';
+
+COMMENT ON TABLE product_details IS 'Speichert die spezifischen Details für Content-Einträge vom Typ PRODUCT.';
+COMMENT ON COLUMN product_details.content_id IS 'Fremdschlüssel zur content_items Tabelle, identifiziert das zugehörige Produkt.';
+COMMENT ON COLUMN product_details.price_info IS 'Textuelle Information zum Preis.';
+COMMENT ON COLUMN product_details.external_link IS 'URL zum Kaufen oder für weitere Informationen.';
+COMMENT ON COLUMN product_details.dosha_types IS 'Array der Dosha-Typen, für die das Produkt geeignet ist.';
+
 
 COMMENT ON TABLE content_likes IS 'Speichert, welcher Benutzer welchen Content-Eintrag geliked hat.';
 COMMENT ON COLUMN content_likes.content_item_id IS 'Fremdschlüssel zum gelikten Content-Eintrag.';

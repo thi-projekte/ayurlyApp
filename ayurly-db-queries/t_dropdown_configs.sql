@@ -36,7 +36,8 @@ INSERT INTO lookup_dosha_types (value, label, sort_order) VALUES
 
 INSERT INTO lookup_content_types (value, label, sort_order) VALUES
 ('RECIPE', 'Rezept', 10),
-('YOGA_EXERCISE', 'Yoga-Übung', 20);
+('YOGA_EXERCISE', 'Yoga-Übung', 20),
+('PRODUCT', 'Produkt', 30);
 
 INSERT INTO lookup_units (value, label, sort_order) VALUES
 ('g', 'Gramm (g)', 10),
