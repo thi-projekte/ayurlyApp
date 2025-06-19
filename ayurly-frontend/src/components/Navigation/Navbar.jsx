@@ -5,13 +5,14 @@ import { useUser } from '../../contexts/UserContext';
 import { FaHome, FaClipboardList, FaUtensils, FaSpa, FaSignInAlt, FaUserCircle, FaBars, FaTimes, FaShoppingBag, FaHeartbeat  } from 'react-icons/fa';
 
 const Navbar = () => {
-  const { keycloakInstance, loadingKeycloak, login, logout } = useUser();
+  const { keycloakInstance, loadingKeycloak, login, logout, doshaType } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const navRef = useRef();
 
   const isAuthenticated = !loadingKeycloak && keycloakInstance && keycloakInstance.authenticated;
   const isAdmin = isAuthenticated && keycloakInstance.hasRealmRole('admin');
+  const showDoshaTestLink = !isAuthenticated || !doshaType;
 
   // Prüfen, ob die App im Standalone-Modus läuft
   useEffect(() => {
@@ -66,7 +67,9 @@ const Navbar = () => {
 const commonNavLinks = (isMobileContext = false) => ( // isMobileContext für unterschiedliche Klick-Handler oder Styles falls nötig
     <>
       <NavLink to="/" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Home</NavLink>
-      <NavLink to="/dosha-test" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Dosha Test</NavLink>
+      {showDoshaTestLink && (
+        <NavLink to="/dosha-test" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Dosha Test</NavLink>
+      )}
       <NavLink to="/rezepte" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Rezepte</NavLink>
       <NavLink to="/produkte" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Produkte</NavLink>
       <NavLink to="/yoga" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Yoga</NavLink>
@@ -133,10 +136,12 @@ const commonNavLinks = (isMobileContext = false) => ( // isMobileContext für un
             <FaHome className={styles.mobileNavIcon} />
             <span className={styles.mobileNavText}>Home</span>
           </NavLink>
-          <NavLink to="/dosha-test" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
-            <FaClipboardList className={styles.mobileNavIcon} />
-            <span className={styles.mobileNavText}>Dosha Test</span>
-          </NavLink>
+          {showDoshaTestLink && (
+            <NavLink to="/dosha-test" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
+              <FaClipboardList className={styles.mobileNavIcon} />
+              <span className={styles.mobileNavText}>Dosha Test</span>
+            </NavLink>
+          )}
           <NavLink to="/rezepte" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
             <FaUtensils className={styles.mobileNavIcon} />
             <span className={styles.mobileNavText}>Rezepte</span>
