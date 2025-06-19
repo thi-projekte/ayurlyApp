@@ -87,13 +87,23 @@ const ProdukteDetailPage = () => {
                     </div>
                     <div className={styles.infoContainer}>
                         <h1 className={styles.title}>{product.title}</h1>
-                        
 
-                        {product.doshaTypes?.length > 0 && (
-                            <div className={styles.doshaTags}>
-                                {product.doshaTypes.map(d => <span key={d} className={`${styles.doshaTag} ${getDoshaTagClass(d)}`}>{d}</span>)}
-                            </div>
-                        )}
+                        <div className={styles.metaInfoBar}>
+                            {product.doshaTypes?.length > 0 && (
+                                <div className={styles.doshaTags}>
+                                    {product.doshaTypes.map(d => <span key={d} className={`${styles.doshaTag} ${getDoshaTagClass(d)}`}>{d}</span>)}
+                                </div>
+                            )}
+                            <button
+                                onClick={handleLikeToggle}
+                                className={`${styles.likeButton} ${product.likedByCurrentUser ? styles.liked : ''}`}
+                                aria-label={product.likedByCurrentUser ? "Unlike this product" : "Like this product"}
+                                disabled={loading}
+                            >
+                                {product.likedByCurrentUser ? <FaThumbsUp /> : <FaRegThumbsUp />}
+                                <span className={styles.likeCount}>{product.likeCount}</span>
+                            </button>
+                        </div>
                         <p className={styles.description}>{product.description}</p>
 
                         {product.price && (
@@ -119,16 +129,6 @@ const ProdukteDetailPage = () => {
                                     Entdecken
                                 </a>
                             )}
-
-                            <button
-                                onClick={handleLikeToggle}
-                                className={`${styles.likeButton} ${product.likedByCurrentUser ? styles.liked : ''}`}
-                                aria-label={product.likedByCurrentUser ? "Unlike this product" : "Like this product"}
-                                disabled={loading}
-                            >
-                                {product.likedByCurrentUser ? <FaThumbsUp /> : <FaRegThumbsUp />}
-                                <span className={styles.likeCount}>{product.likeCount}</span>
-                            </button>
                         </div>
 
 

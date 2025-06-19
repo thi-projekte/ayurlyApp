@@ -77,11 +77,10 @@
 .doshaTags {
   display: flex;
   gap: 8px;
-  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 .doshaTag {
-  padding: 6px 12px;
+  padding: 8px 12px;
   border-radius: 16px;
   font-size: 0.85rem;
   font-weight: 500;
@@ -259,11 +258,12 @@
 }
 .backLink {
   display: inline-block;
-  padding: 10px 25px;
+  padding: 8px 12px;
   background-color: #6c757d;
   color: white;
   text-decoration: none;
   border-radius: 25px;
+  font-size: 11pt;
   font-weight: 500;
   transition: background-color 0.2s ease;
 }

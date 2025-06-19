@@ -97,6 +97,8 @@ const YogaDetailPage = () => {
                                 <span className={styles.likeCount}>{exercise.likeCount}</span>
                             </button>
 
+                            {/* <Link to="/yoga" className={styles.backLink}>Zurück</Link> */}
+
                         </div>
 
                         <p className={styles.recipeDescription}>{exercise.description}</p>

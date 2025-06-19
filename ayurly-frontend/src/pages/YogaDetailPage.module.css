@@ -85,7 +85,7 @@
   font-weight: 500;
 }
 .doshaTags { display: flex; gap: 8px; }
-.doshaTag { padding: 6px 12px; border-radius: 16px; font-size: 0.85rem; font-weight: 500; }
+.doshaTag { padding: 8px 12px; border-radius: 16px; font-size: 0.85rem; font-weight: 500; }
 .doshaTagVata { background-color: #e6e0ff; color: #534292;}
 .doshaTagPitta { background-color: #ffe0e0; color: #c0392b;}
 .doshaTagKapha { background-color: #d4efdf; color: #287c37;}
@@ -146,7 +146,7 @@
     padding-left: 25px;
 }
 .backLinkContainer { text-align: center; padding: 30px; }
-.backLink { text-decoration: none; padding: 10px 25px; background-color: #6c757d; color: white; border-radius: 25px; }
+.backLink { text-decoration: none; padding: 8px 12px; background-color: #6c757d; color: white; border-radius: 25px; font-size: 11pt; }
 
 @media (max-width: 992px) {
   .heroSection, .contentSection { flex-direction: column; grid-template-columns: 1fr; }

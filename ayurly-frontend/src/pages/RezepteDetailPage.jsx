@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RezepteDetailPage.module.css';
-import recipeService from '../services/recipeService'; 
-import { useUser } from '../contexts/UserContext'; 
+import recipeService from '../services/recipeService';
+import { useUser } from '../contexts/UserContext';
 // Importiere Icons von react-icons (Font Awesome)
-import { FaRegThumbsUp, FaThumbsUp, FaRegClock, FaUsers } from 'react-icons/fa'; 
+import { FaRegThumbsUp, FaThumbsUp, FaRegClock, FaUsers } from 'react-icons/fa';
 
 const RezepteDetailPage = () => {
   const { rezeptId } = useParams();
-  const { isLoggedIn, login, loadingKeycloak, keycloakInstance } = useUser(); 
+  const { isLoggedIn, login, loadingKeycloak, keycloakInstance } = useUser();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -84,18 +84,18 @@ const RezepteDetailPage = () => {
 
   const getDoshaTagClass = (dosha) => {
     switch (dosha.toLowerCase()) {
-        case 'vata': return styles.doshaTagVata;
-        case 'pitta': return styles.doshaTagPitta;
-        case 'kapha': return styles.doshaTagKapha;
-        case 'tridoshic': return styles.doshaTagTridoshic;
-        default: return '';
+      case 'vata': return styles.doshaTagVata;
+      case 'pitta': return styles.doshaTagPitta;
+      case 'kapha': return styles.doshaTagKapha;
+      case 'tridoshic': return styles.doshaTagTridoshic;
+      default: return '';
     }
   };
 
   const benefitsList = Array.isArray(recipe.benefits) ? recipe.benefits.map(b => b.trim()).filter(b => b) : [];
 
 
-   return (
+  return (
     <div className={styles.pageContainer}>
       <article className={styles.recipeDetailWrapper}>
         <section className={styles.heroSection}>
@@ -117,17 +117,10 @@ const RezepteDetailPage = () => {
                   {recipe.numberOfPortions} Portionen
                 </span>
               )}
-              <button
-                onClick={handleLikeToggle}
-                className={`${styles.likeButton} ${recipe.likedByCurrentUser ? styles.liked : ''}`}
-                aria-label={recipe.likedByCurrentUser ? "Unlike this recipe" : "Like this recipe"}
-                disabled={loading} // Deaktiviere Button während Like-Aktion
-              >
-                {recipe.likedByCurrentUser ? <FaThumbsUp /> : <FaRegThumbsUp />} {/* react-icons */}
-                <span className={styles.likeCount}>{recipe.likeCount}</span>
-              </button>
+              
             </div>
-             {recipe.doshaTypes && recipe.doshaTypes.length > 0 && (
+            <div className={styles.metaInfoBar}>
+            {recipe.doshaTypes && recipe.doshaTypes.length > 0 && (
               <div className={styles.doshaTags}>
                 {recipe.doshaTypes.map(d => (
                   <span key={d} className={`${styles.doshaTag} ${getDoshaTagClass(d)}`}>
@@ -136,6 +129,21 @@ const RezepteDetailPage = () => {
                 ))}
               </div>
             )}
+
+            <button
+                onClick={handleLikeToggle}
+                className={`${styles.likeButton} ${recipe.likedByCurrentUser ? styles.liked : ''}`}
+                aria-label={recipe.likedByCurrentUser ? "Unlike this recipe" : "Like this recipe"}
+                disabled={loading} // Deaktiviere Button während Like-Aktion
+              >
+                {recipe.likedByCurrentUser ? <FaThumbsUp /> : <FaRegThumbsUp />} {/* react-icons */}
+                <span className={styles.likeCount}>{recipe.likeCount}</span>
+              </button>
+
+              {/* <Link to="/rezepte" className={styles.backLink}>
+                Zurück
+              </Link> */}
+            </div>
             <p className={styles.recipeDescription}>{recipe.description}</p>
             {benefitsList.length > 0 && (
               <div className={styles.benefitsSection}>
@@ -184,9 +192,9 @@ const RezepteDetailPage = () => {
         </section>
 
         <div className={styles.backLinkContainer}>
-            <Link to="/rezepte" className={styles.backLink}>
-                Zurück zur Rezeptübersicht
-            </Link>
+          <Link to="/rezepte" className={styles.backLink}>
+            Zurück zur Rezeptübersicht
+          </Link>
         </div>
       </article>
     </div>
