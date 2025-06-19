@@ -57,6 +57,27 @@ const YogaDetailPage = () => {
         }
     };
 
+    const generateEffectTitle = (doshas) => {
+        if (!doshas || doshas.length === 0) {
+            return "Wirkung"; // Fallback
+        }
+
+        // Wenn Tridoshic, dann nur "Wirkung"
+        if (doshas.map(d => d.toLowerCase()).includes('tridoshic')) {
+            return "Wirkung";
+        }
+
+        // Formatiere die Dosha-Namen (erster Buchstabe groß)
+        const formattedDoshas = doshas.map(d => d.charAt(0).toUpperCase() + d.slice(1));
+
+        if (formattedDoshas.length === 1) {
+            return `Wirkung für ${formattedDoshas[0]}`;
+        } else {
+            const last = formattedDoshas.pop();
+            return `Wirkung für ${formattedDoshas.join(', ')} und ${last}`;
+        }
+    };
+
     if (loadingKeycloak || loading) return <div className={styles.loading}>Lade Übung...</div>;
     if (error) return <div className={styles.error}>{error}</div>;
     if (!exercise) return <div className={styles.error}>Übung nicht gefunden.</div>;
@@ -104,7 +125,7 @@ const YogaDetailPage = () => {
                         <p className={styles.recipeDescription}>{exercise.description}</p>
                         {exercise.effects?.length > 0 && (
                             <div className={styles.benefitsSection}>
-                                <h3 className={styles.subSectionTitle}>Wirkung</h3>
+                                <h3 className={styles.subSectionTitle}>{generateEffectTitle(exercise.doshaTypes)}</h3>
                                 <ul className={styles.benefitsList}>
                                     {exercise.effects.map((effect, index) => <li key={index}>{effect}</li>)}
                                 </ul>
