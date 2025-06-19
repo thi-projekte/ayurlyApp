@@ -49,20 +49,41 @@
     margin-bottom: 20px;
 }
 .likeButton {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #555;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+.likeButton:hover {
+  background-color: #f5f5f5;
+  border-color: #ccc;
 }
 .likeButton.liked {
-    background-color: #ffe0e0; 
-    border-color: #ffb3b3;
-    color: #c0392b; 
+  background-color: #ffe0e0; 
+  border-color: #ffb3b3;
+  color: #c0392b; 
 }
-.likeCount { font-weight: 500; }
+.likeButton.liked i {
+  color: #c0392b; 
+}
+.likeButton i {
+  font-size: 1.2em;
+  color: #aaa;
+  transition: color 0.2s ease;
+}
+.likeButton.liked:hover i,
+.likeButton:hover i {
+}
+.likeCount {
+  font-weight: 500;
+}
 .doshaTags { display: flex; gap: 8px; }
 .doshaTag { padding: 6px 12px; border-radius: 16px; font-size: 0.85rem; font-weight: 500; }
 .doshaTagVata { background-color: #e6e0ff; color: #534292;}
