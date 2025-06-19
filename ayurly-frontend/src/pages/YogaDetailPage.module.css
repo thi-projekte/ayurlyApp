@@ -129,5 +129,5 @@
 
 @media (max-width: 992px) {
   .heroSection, .contentSection { flex-direction: column; grid-template-columns: 1fr; }
-  .videoContainer { flex: 0 0 auto; width: 100%; padding-bottom: 56.25%; }
+  .videoContainer { flex: 0 0 auto; width: 100%;}
 }
