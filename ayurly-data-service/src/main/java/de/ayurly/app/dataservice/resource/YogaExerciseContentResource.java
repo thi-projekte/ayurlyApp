@@ -1,8 +1,22 @@
 package de.ayurly.app.dataservice.resource;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+
 import de.ayurly.app.dataservice.entity.content.ContentItem;
 import de.ayurly.app.dataservice.entity.content.ContentLike;
-import de.ayurly.app.dataservice.entity.content.yoga.*;
+import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseContent;
+import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseEffect;
+import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseStep;
+import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseSubStep;
+import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseTip;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
@@ -12,18 +26,16 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Path("/api/yoga-exercises")
 @ApplicationScoped
@@ -206,7 +218,6 @@ public class YogaExerciseContentResource {
         }
         YogaExerciseContent entity = optionalEntity.get();
 
-        // Update fields
         entity.title = dto.title;
         entity.imageUrl = dto.imageUrl;
         entity.previewDescription = dto.previewDescription;
@@ -214,7 +225,6 @@ public class YogaExerciseContentResource {
         entity.description = dto.description;
         entity.doshaTypes = dto.doshaTypes;
 
-        // Update collections using the remove-flush-add pattern
         for(YogaExerciseEffect e : new ArrayList<>(entity.effects)) { entity.removeEffect(e); }
         entityManager.flush();
         if(dto.effects != null) { for(int i=0; i<dto.effects.size(); i++) { YogaExerciseEffect e = new YogaExerciseEffect(); e.effectText = dto.effects.get(i); e.sortOrder = i; entity.addEffect(e); } }
