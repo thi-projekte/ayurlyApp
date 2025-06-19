@@ -17,6 +17,7 @@ import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseEffect;
 import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseStep;
 import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseSubStep;
 import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseTip;
+import de.ayurly.app.dataservice.service.FileService;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
@@ -48,6 +49,8 @@ public class YogaExerciseContentResource {
     JsonWebToken jwt;
     @Inject
     EntityManager entityManager;
+    @Inject
+    FileService fileService;
 
     // --- DTOs ---
 
@@ -218,6 +221,10 @@ public class YogaExerciseContentResource {
         }
         YogaExerciseContent entity = optionalEntity.get();
 
+        // Pfade der alten Dateien für späteres Löschen sichern
+        String oldImageUrl = entity.imageUrl;
+        String oldVideoUrl = entity.videoUrl;
+
         entity.title = dto.title;
         entity.imageUrl = dto.imageUrl;
         entity.previewDescription = dto.previewDescription;
@@ -236,6 +243,14 @@ public class YogaExerciseContentResource {
         for(YogaExerciseStep s : new ArrayList<>(entity.steps)) { entity.removeStep(s); }
         entityManager.flush();
         if(dto.steps != null) { dto.steps.forEach(stepDto -> entity.addStep(stepDto.toEntity())); }
+
+        // Nachdem die DB-Transaktion erfolgreich war, die alten Dateien löschen
+        if (oldImageUrl != null && !oldImageUrl.equals(dto.imageUrl)) {
+            fileService.deleteFile(oldImageUrl);
+        }
+        if (oldVideoUrl != null && !oldVideoUrl.equals(dto.videoUrl)) {
+            fileService.deleteFile(oldVideoUrl);
+        }
         
         return Response.ok(YogaExerciseContentDto.fromEntity(entity, getCurrentUserIdOptional())).build();
     }
@@ -245,8 +260,20 @@ public class YogaExerciseContentResource {
     @RolesAllowed("admin")
     @Transactional
     public Response delete(@PathParam("id") UUID id) {
-        return ContentItem.deleteById(id) ? Response.noContent().build() : Response.status(Response.Status.NOT_FOUND).build();
+        Optional<YogaExerciseContent> optionalEntity = YogaExerciseContent.findByIdOptional(id);
+        if (optionalEntity.isPresent()) {
+            YogaExerciseContent entity = optionalEntity.get();
+            String imageUrl = entity.imageUrl;
+            String videoUrl = entity.videoUrl;
+
+            entity.delete(); // Löscht den DB-Eintrag
+            fileService.deleteFile(imageUrl); // Löscht die zugehörigen Dateien
+            fileService.deleteFile(videoUrl);
+            return Response.noContent().build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
+    
 
     @POST
     @Path("/{id}/like")

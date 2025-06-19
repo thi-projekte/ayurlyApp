@@ -24,6 +24,7 @@ import de.ayurly.app.dataservice.entity.content.recipe.RecipeBenefit;
 import de.ayurly.app.dataservice.entity.content.recipe.RecipeContent;
 import de.ayurly.app.dataservice.entity.content.recipe.RecipeIngredient;
 import de.ayurly.app.dataservice.entity.content.recipe.RecipePreparationStep;
+import de.ayurly.app.dataservice.service.FileService;
 import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
@@ -62,6 +63,9 @@ public class RecipeContentResource {
 
     @Inject
     EntityManager entityManager;
+
+    @Inject
+    FileService fileService;
 
     // --- DTOs (Data Transfer Object)---
     public static class IngredientDto {
@@ -370,6 +374,7 @@ public class RecipeContentResource {
         }
 
         RecipeContent existingRecipe = existingRecipeOpt.get();
+        String oldImageUrl = existingRecipe.imageUrl;
         // Update ContentItem fields
         existingRecipe.title = recipeDto.title;
         existingRecipe.imageUrl = recipeDto.imageUrl;
@@ -430,6 +435,11 @@ public class RecipeContentResource {
         // Panache managed die Persistierung der Änderungen am Ende der Transaktion
         // Ein explizites persist() auf existingRecipe ist nicht nötig, da es eine managed entity ist.
 
+        // Altes Bild löschen, wenn es geändert wurde
+        if (oldImageUrl != null && !oldImageUrl.equals(existingRecipe.imageUrl)) {
+            fileService.deleteFile(oldImageUrl);
+        }
+
         RecipeContentDto responseDto = RecipeContentDto.fromEntity(existingRecipe, true, getCurrentUserIdOptional());
         return Response.ok(responseDto).build();
     }
@@ -443,10 +453,14 @@ public class RecipeContentResource {
     @APIResponse(responseCode = "404", description = "Recipe not found")
     @SecurityRequirement(name = "jwtAuth")
     public Response deleteRecipe(@PathParam("id") UUID id) {
-        // Löscht das ContentItem und dank CascadeType.ALL und ON DELETE CASCADE in der DB
-        // auch die zugehörigen recipe_details, recipe_ingredients und recipe_preparation_steps.
-        boolean deleted = ContentItem.deleteById(id); // Löschen über die Basisklasse
-        if (deleted) {
+        Optional<RecipeContent> recipeOpt = RecipeContent.findByIdOptional(id);
+        if (recipeOpt.isPresent()) {
+            RecipeContent recipe = recipeOpt.get();
+            String imageUrl = recipe.imageUrl; // Pfad merken
+            
+            recipe.delete(); // DB-Eintrag löschen
+            
+            fileService.deleteFile(imageUrl); // Datei löschen
             return Response.noContent().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();

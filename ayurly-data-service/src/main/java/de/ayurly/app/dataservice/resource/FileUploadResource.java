@@ -1,12 +1,7 @@
 package de.ayurly.app.dataservice.resource;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Encoding;
@@ -18,23 +13,25 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
-import jakarta.annotation.security.RolesAllowed; 
+import de.ayurly.app.dataservice.service.FileService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@jakarta.ws.rs.Path("/api/admin/uploads") // Vollqualifizierter Name für die Annotation -> um Kollision zu vermeiden, weil 2x Path import
+@jakarta.ws.rs.Path("/api/admin/uploads") 
 @ApplicationScoped
 @Tag(name = "File Upload (Admin)", description = "Handles file uploads for content images.")
 public class FileUploadResource {
 
     private static final Logger LOG = Logger.getLogger(FileUploadResource.class);
 
-    @ConfigProperty(name = "app.upload.directory")
-    String uploadDirectory; // Aus application.properties
+    @Inject
+    FileService fileService;
 
     public static class FileUploadRequest {
         @org.jboss.resteasy.reactive.RestForm("file") // Name des Formularfelds
@@ -55,8 +52,8 @@ public class FileUploadResource {
     }
 
     @POST
-    @jakarta.ws.rs.Path("/image") // Vollqualifizierter Name für die Annotation -> um Kollision zu vermeiden, weil 2x Path import
-    @RolesAllowed("admin") // Nur Admins dürfen Bilder hochladen
+    @jakarta.ws.rs.Path("/image") 
+    @RolesAllowed("admin") 
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Upload an image file", description = "Uploads an image to a specified subfolder within the configured upload directory.")
@@ -83,47 +80,38 @@ public class FileUploadResource {
         }
 
         FileUpload uploadedFile = request.file;
-        String subfolder = (request.subfolder != null && !request.subfolder.trim().isEmpty()) ? request.subfolder.trim() : "general";
+        String subfolder = (request.subfolder != null && !request.subfolder.trim().isEmpty()) ? request.subfolder.trim() : "images";
 
-        // Erstelle einen eindeutigen Dateinamen, um Überschreibungen zu vermeiden
-        String originalFileName = uploadedFile.fileName();
-        String extension = "";
-        int i = originalFileName.lastIndexOf('.');
-        if (i > 0) {
-            extension = originalFileName.substring(i); // .jpg, .png etc.
-        }
-        String uniqueFileName = UUID.randomUUID().toString() + extension;
-
-        // Zielverzeichnis erstellen, falls es nicht existiert
-        java.nio.file.Path targetSubfolderPath = java.nio.file.Paths.get(uploadDirectory, subfolder); // Vollqualifizierter Name
         try {
-            Files.createDirectories(targetSubfolderPath); // Erstellt das Verzeichnis inkl. Parents, falls nicht vorhanden
+            String publicFilePath = fileService.saveFile(uploadedFile, subfolder);
+            return Response.ok(new FileUploadResponse(publicFilePath, uploadedFile.fileName())).build();
         } catch (IOException e) {
-            LOG.errorf(e, "Could not create target directory: %s", targetSubfolderPath.toString());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not create target directory.").build();
+            LOG.errorf(e, "Error saving uploaded image file.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error saving file.").build();
+        }
+    }
+
+    @POST
+    @jakarta.ws.rs.Path("/video")
+    @RolesAllowed("admin")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Upload a video file")
+    @SecurityRequirement(name = "jwtAuth")
+    public Response uploadVideo(FileUploadRequest request) {
+        if (request.file == null || request.file.fileName() == null || request.file.fileName().isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("No file uploaded.").build();
         }
 
-        java.nio.file.Path filePathInContainer = targetSubfolderPath.resolve(uniqueFileName); // Vollqualifizierter Name
+        FileUpload uploadedFile = request.file;
+        String subfolder = (request.subfolder != null && !request.subfolder.trim().isEmpty()) ? request.subfolder.trim() : "videos";
 
-        try (InputStream fileInputStream = uploadedFile.uploadedFile().toFile().toURI().toURL().openStream()) { // Holt den Stream von der temporären Datei
-            Files.copy(fileInputStream, filePathInContainer, StandardCopyOption.REPLACE_EXISTING);
-            LOG.infof("File %s uploaded successfully to %s", originalFileName, filePathInContainer.toString());
-
-            // Erstelle den relativen Pfad für die Datenbank und den Frontend-Zugriff
-            // Dieser Pfad muss dem entsprechen, was Nginx später ausliefert
-            String publicFilePath = "/uploads/" + subfolder + "/" + uniqueFileName;
-
-            return Response.ok(new FileUploadResponse(publicFilePath, originalFileName)).build();
+        try {
+            String publicFilePath = fileService.saveFile(uploadedFile, subfolder);
+            return Response.ok(new FileUploadResponse(publicFilePath, uploadedFile.fileName())).build();
         } catch (IOException e) {
-            LOG.errorf(e, "Error saving uploaded file %s to %s", originalFileName, filePathInContainer.toString());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error saving uploaded file.").build();
-        } finally {
-            // Temporäre Datei löschen, die von RESTEasy Reactive erstellt wurde
-            try {
-                Files.deleteIfExists(uploadedFile.uploadedFile());
-            } catch (IOException e) {
-                LOG.warnf(e, "Could not delete temporary uploaded file: %s", uploadedFile.uploadedFile().toString());
-            }
+            LOG.errorf(e, "Error saving uploaded video file.");
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error saving file.").build();
         }
     }
 }

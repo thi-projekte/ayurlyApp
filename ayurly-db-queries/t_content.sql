@@ -64,6 +64,7 @@ CREATE INDEX idx_recipe_preparation_steps_recipe_content_id ON recipe_preparatio
 -- Tabelle für Yoga-Übung-spezifische Details
 CREATE TABLE yoga_exercise_details (
     content_id UUID PRIMARY KEY REFERENCES content_items(id) ON DELETE CASCADE,
+    description TEXT,
     video_url VARCHAR(255),
     dosha_types VARCHAR(50)[] -- Array für Vata, Pitta, Kapha
 );

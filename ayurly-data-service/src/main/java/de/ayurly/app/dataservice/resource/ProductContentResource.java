@@ -25,6 +25,7 @@ import de.ayurly.app.dataservice.entity.content.product.ProductApplicationStep;
 import de.ayurly.app.dataservice.entity.content.product.ProductBenefit;
 import de.ayurly.app.dataservice.entity.content.product.ProductContent;
 import de.ayurly.app.dataservice.resource.RecipeContentResource.LikeResponseDto;
+import de.ayurly.app.dataservice.service.FileService;
 import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
@@ -62,6 +63,9 @@ public class ProductContentResource {
 
     @Inject
     EntityManager entityManager;
+
+    @Inject
+    FileService fileService;
 
     // --- DTOs (Data Transfer Objects) ---
     public static class ActiveIngredientDto {
@@ -285,7 +289,8 @@ public class ProductContentResource {
         }
 
         ProductContent existingProduct = existingProductOpt.get();
-        
+        String oldImageUrl = existingProduct.imageUrl;
+
         // 1. Update primitive fields
         existingProduct.title = productDto.title;
         existingProduct.imageUrl = productDto.imageUrl;
@@ -336,7 +341,9 @@ public class ProductContentResource {
                  .forEach(existingProduct::addApplicationStep);
         }
 
-        entityManager.flush();
+        if (oldImageUrl != null && !oldImageUrl.equals(existingProduct.imageUrl)) {
+            fileService.deleteFile(oldImageUrl);
+        }
 
         ProductContentDto responseDto = ProductContentDto.fromEntity(existingProduct, true, getCurrentUserIdOptional());
         return Response.ok(responseDto).build();
@@ -348,8 +355,14 @@ public class ProductContentResource {
     @RolesAllowed("admin")
     @Transactional
     public Response deleteProduct(@PathParam("id") UUID id) {
-        boolean deleted = ContentItem.deleteById(id);
-        if (deleted) {
+        Optional<ProductContent> productOpt = ProductContent.findByIdOptional(id);
+        if (productOpt.isPresent()) {
+            ProductContent product = productOpt.get();
+            String imageUrl = product.imageUrl; // Pfad merken
+
+            product.delete(); // DB-Eintrag löschen
+
+            fileService.deleteFile(imageUrl); // Datei löschen
             return Response.noContent().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
