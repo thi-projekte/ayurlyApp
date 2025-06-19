@@ -12,10 +12,11 @@ import YogaPage from './pages/YogaPage';
 import YogaDetailPage from './pages/YogaDetailPage';
 import LifestylePage from './pages/LifestylePage';
 import LoginPage from './pages/LoginPage';
-import AccountPage from './pages/AccountPage';
+import MyAyurlyPage from './pages/MyAyurlyPage';
 import { UserProvider } from './contexts/UserContext';
 // Admin-Page Imports
 import AdminRoute from './components/Navigation/AdminRoute';
+import ProtectedRoute from './components/Navigation/ProtectedRoute';
 import AdminPage from './pages/AdminPage'; 
 import ManageDoshaTypes from './components/Admin/ManageDoshaTypes'; 
 import ManageContentTypes from './components/Admin/ManageContentTypes'; 
@@ -41,7 +42,9 @@ function App() {
             <Route path="/produkte/:produktId" element={<ProdukteDetailPage />} />
             <Route path="/lifestyle" element={<LifestylePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/account" element={<AccountPage />} />
+            <Route path="/myAyurly" element={<ProtectedRoute />}>
+              <Route path="" element={<MyAyurlyPage />} />
+            </Route>
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminRoute />}>
               <Route path="" element={<AdminPage />}> {/* Layout-Route */}

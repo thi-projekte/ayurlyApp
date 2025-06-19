@@ -1,0 +1,217 @@
+.myAyurlyContainer {
+    width: 100%;
+    padding: 20px 120px;
+}
+
+.topSection {
+    margin: 30px 0;
+}
+
+.profileAndDosha {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    align-items: stretch; /* Wichtig, damit Karten gleiche Höhe haben */
+}
+
+/* Base card style */
+.doshaCard, .profileCard {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    padding: 30px;
+    display: flex;
+}
+.doshaCard:hover, .profileCard:hover {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transform: translateY(2px);
+}
+
+/* Dosha Card Specifics mit Animation */
+.doshaCard {
+    flex: 1;
+    min-width: 320px;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+.doshaIcon {
+  font-size: 90pt;
+  background: linear-gradient(360deg, #86837F, black);
+  height: 180px;
+  width: 180px;
+  border-radius: 85% 70% 78% 73%;
+  animation: rotate_bubbles 7s linear infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+@keyframes rotate_bubbles {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.doshaIcon span {
+    transform: rotate(-360deg); 
+  animation: counterRotate 7s linear infinite;
+  position: absolute;
+  pointer-events: none;
+}
+@keyframes counterRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+.doshaName {
+    font-size: 30pt;
+    background: linear-gradient(to right, rgb(255, 69, 0), rgb(255, 165, 0), rgb(255, 255, 102)) text;
+    color: transparent;
+}
+.doshaDescription {
+    line-height: 1.5rem;
+    text-align: center;
+    color: gray;
+    font-size: 13pt;
+}
+.redoTestLink {
+    padding: 10px 30px;
+    margin-top: auto; /* Pusht den Button nach unten */
+    color: white;
+    background: linear-gradient(to right, #86837F, black);
+    border-radius: 100px;
+    transition: background 0.3s;
+}
+.redoTestLink:hover {
+    background: black;
+}
+
+/* Profile Card Specifics */
+.profileCard {
+    flex: 2;
+    display: flex;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    gap: 50px;
+    padding: 30px;
+}
+.profileImage {
+    width: 35%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.profileWrapper {
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+.profileContent {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.name h2 {
+    font-size: 30pt;
+    color: #333;
+    line-height: 1.1;
+}
+.name h2:first-child {
+    font-size: 35pt;
+    color: #e26a2c;
+    font-weight: bold;
+}
+.mail {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 13pt;
+}
+.settings {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 13pt;
+    color: grey;
+    cursor: pointer;
+    align-self: flex-start;
+    height: fit-content;
+}
+.settings:hover {
+    color: #e26a2c;
+}
+
+.spacer {
+    margin: 50px 0 10px 0;
+    color: gray;
+    font-size: 1.5em;
+    text-align:center;
+}
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.row {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.routineCard {
+    flex: 1;
+    min-width: 300px;
+    background-color: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    padding: 25px 30px;
+    border-radius: 20px;
+    cursor: pointer;
+    min-height: 200px; /* Größer gemacht */
+    display: flex;
+    align-items: flex-start;
+}
+.routineCard:hover {
+    box-shadow: none;
+    transform: translateY(2px);
+}
+.cardTitle {
+    font-size: 20pt;
+}
+
+@media (min-width: 1600px) and (max-width: 1800px) {
+    .profileImage {
+    width: 45%;
+  }
+}
+
+@media (min-width: 1400px) and (max-width: 1600px) {
+    .profileImage {
+    width: 50%;
+  }
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 1400px) {
+    .profileAndDosha { flex-direction: column; }
+    .profileCard { min-width: unset; }
+}
+@media (max-width: 768px) {
+    .profileCard {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 20px;
+    }
+    .profileWrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    .settings { align-self: center; }
+    .row { flex-direction: column; }
+
+    .myAyurlyContainer {
+      width: 100%;
+      padding: 20px 20px;
+    }
+}

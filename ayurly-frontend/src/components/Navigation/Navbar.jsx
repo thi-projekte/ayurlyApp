@@ -75,7 +75,7 @@ const commonNavLinks = (isMobileContext = false) => ( // isMobileContext für un
       <NavLink to="/yoga" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Yoga</NavLink>
       <NavLink to="/lifestyle" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Lifestyle</NavLink>
       {isAuthenticated && (
-        <NavLink to="/account" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>myAyurly</NavLink>
+        <NavLink to="/myAyurly" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>myAyurly</NavLink>
       )}
       {isAdmin && ( // Admin-Link nur im Desktop-Menü oder Burger-Menü anzeigen, nicht Bottom-Nav
          !isStandalone && // Zusätzliche Bedingung, um Admin-Link nicht in der Logik für Bottom-Nav zu haben
@@ -164,7 +164,7 @@ const commonNavLinks = (isMobileContext = false) => ( // isMobileContext für un
               <span className={styles.mobileNavText}>Login</span>
             </NavLink>
           ) : (
-            <NavLink to="/account" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
+            <NavLink to="/myAyurly" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
               <FaUserCircle className={styles.mobileNavIcon} />
               <span className={styles.mobileNavText}>myAyurly</span>
             </NavLink>
