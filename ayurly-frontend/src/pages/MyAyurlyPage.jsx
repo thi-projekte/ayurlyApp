@@ -4,7 +4,7 @@ import { useUser } from '../contexts/UserContext';
 import styles from './MyAyurlyPage.module.css';
 import Calendar from '../components/MyAyurly/Calendar';
 import Modal from '../components/UI/Modal'; // Modal importieren
-import { FaEnvelope, FaCog } from 'react-icons/fa';
+import { FaEnvelope, FaCog, FaUser } from 'react-icons/fa';
 
 const MyAyurlyPage = () => {
     const { userProfile, doshaType, accountManagementUrl } = useUser();
@@ -65,7 +65,11 @@ const MyAyurlyPage = () => {
                                         <h2>{userProfile?.firstName || 'Dein'}</h2>
                                         <h2>{userProfile?.lastName || 'Name'}</h2>
                                     </div>
-                                    <div className={styles.mail}>
+                                    <div className={styles.userInfo}>
+                                    <FaUser />
+                                    <p>{userProfile?.username || 'dein_username'}</p>
+                                </div>
+                                    <div className={styles.userInfo}>
                                         <FaEnvelope />
                                         <p>{userProfile?.email || 'deine@email.com'}</p>
                                     </div>
