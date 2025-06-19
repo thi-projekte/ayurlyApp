@@ -38,7 +38,7 @@ const MyAyurlyPage = () => {
     const dashboardCards = [
         { id: 'MorningFlow', title: '🌞 MorningFlow', content: 'Inhalte für MorningFlow...' },
         { id: 'EveningFlow', title: '🌙 EveningFlow', content: 'Inhalte für EveningFlow...' },
-        { id: 'RestCycle', title: '💡 RestCycle', content: 'Inhalte für RestCycle...' },
+        { id: 'RestCycle', title: '💤 RestCycle', content: 'Inhalte für RestCycle...' },
         { id: 'ZenMove', title: '🧘‍♀️ ZenMove', content: 'Inhalte für ZenMove...' },
         { id: 'NourishCycle', title: '🍽️ NourishCycle', content: 'Inhalte für NourishCycle...' }
     ];
@@ -90,7 +90,7 @@ const MyAyurlyPage = () => {
                     <div className={styles.row}>
                         <div className={styles.routineCard} onClick={() => openModal('MorningFlow')}><h4 className={styles.cardTitle}>🌞 MorningFlow</h4></div>
                         <div className={styles.routineCard} onClick={() => openModal('EveningFlow')}><h4 className={styles.cardTitle}>🌙 EveningFlow</h4></div>
-                        <div className={styles.routineCard} onClick={() => openModal('RestCycle')}><h4 className={styles.cardTitle}>💡 RestCycle</h4></div>
+                        <div className={styles.routineCard} onClick={() => openModal('RestCycle')}><h4 className={styles.cardTitle}>💤 RestCycle</h4></div>
                     </div>
                     <div className={styles.row}>
                         <div className={styles.routineCard} onClick={() => openModal('ZenMove')}><h4 className={styles.cardTitle}>🧘‍♀️ ZenMove</h4></div>
