@@ -65,7 +65,7 @@ const AdminPage = () => {
         <nav className={styles.adminSubNav}>
           <NavLink to="content/recipes" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Rezepte</NavLink>
           <NavLink to="content/products" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Produkte</NavLink>
-          {/* <NavLink to="content/yoga" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Yoga-Übungen</NavLink> */}
+          <NavLink to="content/yoga" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Yoga</NavLink>
         </nav>
       )}
 

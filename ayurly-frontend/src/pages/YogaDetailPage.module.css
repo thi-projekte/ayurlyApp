@@ -1,0 +1,135 @@
+.pageContainer {
+    padding: 20px 15px;
+    background-color: #f8f9fa; 
+}
+.recipeDetailWrapper { /* Behalten wir bei für Konsistenz */
+    max-width: 1200px; 
+    margin: 0 auto;   
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    overflow: hidden; 
+}
+.loading, .error {
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 50px 20px;
+}
+.heroSection {
+    display: flex;
+}
+.videoContainer {
+    flex: 0 0 45%; 
+    position: relative;
+    padding-bottom: 25.3125%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    background-color: #000;
+}
+.videoContainer iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+.heroInfo {
+    flex: 1 1 auto; 
+    padding: 30px 35px;
+    display: flex;
+    flex-direction: column;
+}
+.recipeTitle {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    margin-bottom: 15px;
+}
+.metaInfoBar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.likeButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.likeButton.liked {
+    background-color: #ffe0e0; 
+    border-color: #ffb3b3;
+    color: #c0392b; 
+}
+.likeCount { font-weight: 500; }
+.doshaTags { display: flex; gap: 8px; margin-bottom: 20px; }
+.doshaTag { padding: 6px 12px; border-radius: 16px; font-size: 0.85rem; }
+.doshaTagVata { background-color: #e6e0ff; color: #534292;}
+.doshaTagPitta { background-color: #ffe0e0; color: #c0392b;}
+.doshaTagKapha { background-color: #d4efdf; color: #287c37;}
+.recipeDescription {
+    line-height: 1.7;
+    margin-bottom: 25px;
+}
+.benefitsSection { /* Nutzen wir für "Wirkung" */
+    margin-top: auto; 
+    background-color: #f7f9fc;
+    padding: 20px;
+    border-radius: 8px;
+}
+.subSectionTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+.benefitsList {
+    list-style: none;
+    padding-left: 0;
+}
+.benefitsList li {
+    margin-bottom: 8px;
+}
+.contentSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 30px 35px 40px;
+    gap: 40px; 
+    background-color: #f8f9fa; 
+}
+.sectionTitle { 
+    font-size: 1.8rem;
+    color: #e26a2c;
+    margin-bottom: 20px;
+}
+.tipsList, .preparationList {
+    list-style: none;
+    padding-left: 0;
+}
+.tipsList li, .subStepItem {
+    background-color: #fff;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+.preparationStep {
+    margin-bottom: 20px;
+}
+.stepTitle {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.subStepList {
+    list-style: decimal;
+    padding-left: 25px;
+}
+.backLinkContainer { text-align: center; padding: 30px; }
+.backLink { text-decoration: none; padding: 10px 25px; background-color: #6c757d; color: white; border-radius: 25px; }
+
+@media (max-width: 992px) {
+  .heroSection, .contentSection { flex-direction: column; grid-template-columns: 1fr; }
+  .videoContainer { flex: 0 0 auto; width: 100%; padding-bottom: 56.25%; }
+}

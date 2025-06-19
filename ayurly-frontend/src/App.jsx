@@ -8,6 +8,8 @@ import ProdukteDetailPage from './pages/ProdukteDetailPage';
 import DoshaTestPage from './pages/DoshaTestPage';
 import RezeptePage from './pages/RezeptePage';
 import RezepteDetailPage from './pages/RezepteDetailPage';
+import YogaPage from './pages/YogaPage';
+import YogaDetailPage from './pages/YogaDetailPage';
 import LifestylePage from './pages/LifestylePage';
 import LoginPage from './pages/LoginPage';
 import AccountPage from './pages/AccountPage';
@@ -20,6 +22,7 @@ import ManageContentTypes from './components/Admin/ManageContentTypes';
 import ManageUnits from './components/Admin/ManageUnits'; 
 import ManageRecipes from './components/Admin/ManageRecipes';
 import ManageProducts from './components/Admin/ManageProducts';
+import ManageYoga from './components/Admin/ManageYoga';
 
 function App() {
   return (
@@ -32,6 +35,8 @@ function App() {
             <Route path="/dosha-test" element={<DoshaTestPage />} />
             <Route path="/rezepte" element={<RezeptePage />} />
             <Route path="/rezepte/:rezeptId" element={<RezepteDetailPage />} />
+            <Route path="/yoga" element={<YogaPage />} />
+            <Route path="/yoga/:yogaId" element={<YogaDetailPage />} />
             <Route path="/produkte" element={<ProduktePage />} />
             <Route path="/produkte/:produktId" element={<ProdukteDetailPage />} />
             <Route path="/lifestyle" element={<LifestylePage />} />
@@ -47,8 +52,8 @@ function App() {
                 <Route path="content" element={<Outlet/>}> {/* Wrapper für Content-Unterrouten */}
                    <Route index element={<Navigate to="recipes" replace />} /> {/* Standard für /admin/content */}
                    <Route path="recipes" element={<ManageRecipes />} /> 
-                   <Route path="products" element={<ManageProducts />} /> 
-                   {/* Hier kommen später weitere Content-Typen wie z.B. Produkte, Yoga-Übungen */}
+                   <Route path="products" element={<ManageProducts />} />
+                   <Route path="yoga" element={<ManageYoga />} />
                 </Route>
 
                 {/* Lookup Tabellen Management - Hauptseite und Unterrouten */}

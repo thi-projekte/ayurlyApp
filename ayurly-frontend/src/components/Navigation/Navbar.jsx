@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { useUser } from '../../contexts/UserContext';
-import { FaHome, FaClipboardList, FaUtensils, FaSpa, FaSignInAlt, FaUserCircle, FaBars, FaTimes, FaShoppingBag  } from 'react-icons/fa';
+import { FaHome, FaClipboardList, FaUtensils, FaSpa, FaSignInAlt, FaUserCircle, FaBars, FaTimes, FaShoppingBag, FaHeartbeat  } from 'react-icons/fa';
 
 const Navbar = () => {
   const { keycloakInstance, loadingKeycloak, login, logout } = useUser();
@@ -69,6 +69,7 @@ const commonNavLinks = (isMobileContext = false) => ( // isMobileContext für un
       <NavLink to="/dosha-test" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Dosha Test</NavLink>
       <NavLink to="/rezepte" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Rezepte</NavLink>
       {/* <NavLink to="/produkte" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Produkte</NavLink> */}
+      {/* <NavLink to="/yoga" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Yoga</NavLink> */}
       <NavLink to="/lifestyle" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Lifestyle</NavLink>
       {isAuthenticated && (
         <NavLink to="/account" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>myAyurly</NavLink>
@@ -143,6 +144,10 @@ const commonNavLinks = (isMobileContext = false) => ( // isMobileContext für un
           {/* <NavLink to="/produkte" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
             <FaShoppingBag className={styles.mobileNavIcon} /> 
             <span className={styles.mobileNavText}>Produkte</span>
+          </NavLink> */}
+          {/* <NavLink to="/yoga" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
+            <FaHeartbeat className={styles.mobileNavIcon} />
+            <span className={styles.mobileNavText}>Yoga</span>
           </NavLink> */}
           <NavLink to="/lifestyle" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
             <FaSpa className={styles.mobileNavIcon} />

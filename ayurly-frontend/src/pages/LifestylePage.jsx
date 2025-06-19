@@ -92,19 +92,17 @@ const LifestylePage = () => {
       </section>
       <section className={styles.grid}>
         <div className={styles.row}>
-          <a href="#" className={styles.item}> {/* Temporär auf # gesetzt */}
+          <a href="#" className={styles.item}> 
             <img src="/img/lifestyle/Friends.webp" alt="Gruppe von Freunden" />
             <p>Freunde</p>
           </a>
-          <a href="#" className={styles.item}> {/* Temporär auf # gesetzt */}
+          <a href="./yoga" className={styles.item}> 
             <img src="/img/lifestyle/yoga.jpg" alt="Yoga am Strand" />
             <p>Yoga</p>
           </a>
         </div>
         <div className={styles.row}>
-          {/* Beispiel für einen internen Link, falls /beratung bereits implementiert wäre */}
-          {/* <Link to="/beratung" className={styles.item}> */}
-          <a href="#" className={styles.item}> {/* Temporär auf # gesetzt, da "beratung.html" kein React-Route ist */}
+          <a href="#" className={styles.item}> 
             <img src="/img/lifestyle/coaching.jpg" alt="Coaching Gespräch" />
             <p>Beratung</p>
           </a>
