@@ -61,6 +61,54 @@ CREATE TABLE recipe_preparation_steps (
 
 CREATE INDEX idx_recipe_preparation_steps_recipe_content_id ON recipe_preparation_steps(recipe_content_id);
 
+-- Tabelle für Yoga-Übung-spezifische Details
+CREATE TABLE yoga_exercise_details (
+    content_id UUID PRIMARY KEY REFERENCES content_items(id) ON DELETE CASCADE,
+    video_url VARCHAR(255),
+    dosha_types VARCHAR(50)[] -- Array für Vata, Pitta, Kapha
+);
+
+-- Tabelle für die Wirkungen der Yoga-Übung
+CREATE TABLE yoga_exercise_effects (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    yoga_exercise_content_id UUID NOT NULL REFERENCES yoga_exercise_details(content_id) ON DELETE CASCADE,
+    effect_text TEXT NOT NULL,
+    sort_order INT DEFAULT 0
+);
+CREATE INDEX idx_yoga_exercise_effects_yoga_id ON yoga_exercise_effects(yoga_exercise_content_id);
+
+-- Tabelle für zusätzliche Tipps
+CREATE TABLE yoga_exercise_tips (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    yoga_exercise_content_id UUID NOT NULL REFERENCES yoga_exercise_details(content_id) ON DELETE CASCADE,
+    tip_text TEXT NOT NULL,
+    sort_order INT DEFAULT 0
+);
+CREATE INDEX idx_yoga_exercise_tips_yoga_id ON yoga_exercise_tips(yoga_exercise_content_id);
+
+-- Tabelle für die Haupt-Schritte der Anleitung
+CREATE TABLE yoga_exercise_steps (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    yoga_exercise_content_id UUID NOT NULL REFERENCES yoga_exercise_details(content_id) ON DELETE CASCADE,
+    step_number INT NOT NULL,
+    title VARCHAR(255),
+    description TEXT,
+    CONSTRAINT unique_step_per_yoga_exercise UNIQUE (yoga_exercise_content_id, step_number)
+);
+CREATE INDEX idx_yoga_exercise_steps_yoga_id ON yoga_exercise_steps(yoga_exercise_content_id);
+
+
+-- Tabelle für die untergeordneten Schritte (Teilschritte)
+CREATE TABLE yoga_exercise_sub_steps (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    main_step_id UUID NOT NULL REFERENCES yoga_exercise_steps(id) ON DELETE CASCADE,
+    sub_step_number INT NOT NULL,
+    description TEXT NOT NULL,
+    CONSTRAINT unique_sub_step_per_main_step UNIQUE (main_step_id, sub_step_number)
+);
+CREATE INDEX idx_yoga_exercise_sub_steps_main_step_id ON yoga_exercise_sub_steps(main_step_id);
+
+
 -- Tabelle für produktspezifische Details
 CREATE TABLE product_details (
     content_id UUID PRIMARY KEY REFERENCES content_items(id) ON DELETE CASCADE,
@@ -154,6 +202,13 @@ COMMENT ON COLUMN recipe_benefits.sort_order IS 'Definiert die Anzeigereihenfolg
 
 COMMENT ON TABLE recipe_ingredients IS 'Speichert die Zutaten für Rezepte. Verweist auf recipe_details.';
 COMMENT ON TABLE recipe_preparation_steps IS 'Speichert die Zubereitungsschritte für Rezepte. Verweist auf recipe_details.';
+
+COMMENT ON TABLE yoga_exercise_details IS 'Speichert die spezifischen Details für Content-Einträge vom Typ YOGA_EXERCISE.';
+COMMENT ON COLUMN yoga_exercise_details.video_url IS 'URL zum Video der Übung (z.B. YouTube, Vimeo).';
+COMMENT ON TABLE yoga_exercise_effects IS 'Speichert die Wirkungen/Vorteile einer Yoga-Übung.';
+COMMENT ON TABLE yoga_exercise_tips IS 'Speichert zusätzliche Tipps zu einer Yoga-Übung.';
+COMMENT ON TABLE yoga_exercise_steps IS 'Speichert die Hauptschritte der Anleitung für eine Yoga-Übung.';
+COMMENT ON TABLE yoga_exercise_sub_steps IS 'Speichert die Teilschritte eines Hauptschritts der Anleitung.';
 
 COMMENT ON TABLE product_details IS 'Speichert die spezifischen Details für Content-Einträge vom Typ PRODUCT.';
 COMMENT ON COLUMN product_details.content_id IS 'Fremdschlüssel zur content_items Tabelle, identifiziert das zugehörige Produkt.';
