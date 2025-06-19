@@ -28,6 +28,16 @@ const YogaDetailPage = () => {
         loadExercise();
     }, [yogaId, loadingKeycloak, isLoggedIn]);
 
+    const getDoshaTagClass = (dosha) => {
+        switch (dosha?.toLowerCase()) {
+            case 'vata': return styles.doshaTagVata;
+            case 'pitta': return styles.doshaTagPitta;
+            case 'kapha': return styles.doshaTagKapha;
+            case 'tridoshic': return styles.doshaTagTridoshic;
+            default: return '';
+        }
+    };
+
     const handleLikeToggle = async () => {
         if (!isLoggedIn) {
             login();
@@ -46,56 +56,49 @@ const YogaDetailPage = () => {
             setLoading(false);
         }
     };
-    
-    // Helper function to get embed URL
-    const getEmbedUrl = (url) => {
-        if (!url) return null;
-        try {
-            const urlObj = new URL(url);
-            if (urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) {
-                const videoId = urlObj.searchParams.get('v') || urlObj.pathname.split('/').pop();
-                return `https://www.youtube.com/embed/${videoId}`;
-            }
-            // Add other providers like Vimeo if needed
-        } catch (e) {
-            return null; // Invalid URL
-        }
-        return null;
-    };
 
     if (loadingKeycloak || loading) return <div className={styles.loading}>Lade Übung...</div>;
     if (error) return <div className={styles.error}>{error}</div>;
     if (!exercise) return <div className={styles.error}>Übung nicht gefunden.</div>;
 
-    const embedUrl = getEmbedUrl(exercise.videoUrl);
-
     return (
         <div className={styles.pageContainer}>
             <article className={styles.recipeDetailWrapper}>
                 <section className={styles.heroSection}>
-                    {embedUrl && (
+                    {exercise.videoUrl && (
                         <div className={styles.videoContainer}>
-                            <iframe
-                                src={embedUrl}
-                                title={exercise.title}
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen>
-                            </iframe>
+                            <video
+                                key={exercise.videoUrl}
+                                controls
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                className={styles.heroVideo}
+                            >
+                                <source src={exercise.videoUrl} type="video/mp4" />
+                                Dein Browser unterstützt das Video-Tag nicht.
+                            </video>
                         </div>
                     )}
                     <div className={styles.heroInfo}>
                         <h1 className={styles.recipeTitle}>{exercise.title}</h1>
                         <div className={styles.metaInfoBar}>
+                            {exercise.doshaTypes?.length > 0 && (
+                                <div className={styles.doshaTags}>
+                                    {exercise.doshaTypes.map(d => (
+                                        <span key={d} className={`${styles.doshaTag} ${getDoshaTagClass(d)}`}>{d}</span>
+                                    ))}
+                                </div>
+                            )}
+
                             <button onClick={handleLikeToggle} className={`${styles.likeButton} ${exercise.likedByCurrentUser ? styles.liked : ''}`} disabled={loading}>
                                 {exercise.likedByCurrentUser ? <FaThumbsUp /> : <FaRegThumbsUp />}
                                 <span className={styles.likeCount}>{exercise.likeCount}</span>
                             </button>
+
                         </div>
-                        {exercise.doshaTypes?.length > 0 && (
-                            <div className={styles.doshaTags}>
-                                {exercise.doshaTypes.map(d => <span key={d} className={styles.doshaTag}>{d}</span>)}
-                            </div>
-                        )}
+
                         <p className={styles.recipeDescription}>{exercise.description}</p>
                         {exercise.effects?.length > 0 && (
                             <div className={styles.benefitsSection}>
@@ -110,7 +113,10 @@ const YogaDetailPage = () => {
 
                 <section className={styles.contentSection}>
                     <div className={styles.tipsContainer}>
-                        <h2 className={styles.sectionTitle}>Zusätzliche Tipps</h2>
+                        {/* Die Überschrift wird nur angezeigt, wenn Tipps vorhanden sind */}
+                        {exercise.tips && exercise.tips.length > 0 && (
+                            <h2 className={styles.sectionTitle}>Zusätzliche Tipps</h2>
+                        )}
                         <ul className={styles.tipsList}>
                             {exercise.tips?.map((tip, index) => <li key={index}>{tip}</li>)}
                         </ul>
@@ -132,7 +138,7 @@ const YogaDetailPage = () => {
                         </div>
                     </div>
                 </section>
-                
+
                 <div className={styles.backLinkContainer}>
                     <Link to="/yoga" className={styles.backLink}>Zurück zur Yoga-Übersicht</Link>
                 </div>

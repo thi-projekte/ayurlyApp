@@ -2,7 +2,7 @@
     padding: 20px 15px;
     background-color: #f8f9fa; 
 }
-.recipeDetailWrapper { /* Behalten wir bei für Konsistenz */
+.recipeDetailWrapper {
     max-width: 1200px; 
     margin: 0 auto;   
     background-color: #ffffff;
@@ -21,19 +21,17 @@
 .videoContainer {
     flex: 0 0 45%; 
     position: relative;
-    padding-bottom: 25.3125%; /* 16:9 Aspect Ratio */
-    height: 0;
-    overflow: hidden;
+    min-height: 400px;
     background-color: #000;
 }
-.videoContainer iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
+
+.heroVideo {
     width: 100%;
     height: 100%;
-    border: 0;
-}
+    object-fit: cover;
+    display: block;
+ }
+
 .heroInfo {
     flex: 1 1 auto; 
     padding: 30px 35px;
@@ -65,8 +63,8 @@
     color: #c0392b; 
 }
 .likeCount { font-weight: 500; }
-.doshaTags { display: flex; gap: 8px; margin-bottom: 20px; }
-.doshaTag { padding: 6px 12px; border-radius: 16px; font-size: 0.85rem; }
+.doshaTags { display: flex; gap: 8px; }
+.doshaTag { padding: 6px 12px; border-radius: 16px; font-size: 0.85rem; font-weight: 500; }
 .doshaTagVata { background-color: #e6e0ff; color: #534292;}
 .doshaTagPitta { background-color: #ffe0e0; color: #c0392b;}
 .doshaTagKapha { background-color: #d4efdf; color: #287c37;}
@@ -74,7 +72,7 @@
     line-height: 1.7;
     margin-bottom: 25px;
 }
-.benefitsSection { /* Nutzen wir für "Wirkung" */
+.benefitsSection { 
     margin-top: auto; 
     background-color: #f7f9fc;
     padding: 20px;
@@ -123,7 +121,7 @@
     margin-bottom: 10px;
 }
 .subStepList {
-    list-style: decimal;
+    list-style: none;
     padding-left: 25px;
 }
 .backLinkContainer { text-align: center; padding: 30px; }
