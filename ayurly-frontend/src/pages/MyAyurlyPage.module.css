@@ -141,6 +141,24 @@
     color: #e26a2c;
 }
 
+.logoutButton {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    background-color: white;
+    border: none;
+    color: black;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13pt;
+    transition: background-color 0.2s, color 0.2s;
+}
+.logoutButton:hover {
+    color: #e26a2c;;
+    border-color: #e53935;
+}
+
 .spacer {
     margin: 50px 0 10px 0;
     color: gray;
@@ -207,7 +225,7 @@
         align-items: center;
         gap: 20px;
     }
-    .settings { align-self: center; }
+    .settings { align-self: center; margin-top: 20px}
     .row { flex-direction: column; }
 
     .myAyurlyContainer {
