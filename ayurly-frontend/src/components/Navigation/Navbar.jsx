@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { useUser } from '../../contexts/UserContext';
-import { FaHome, FaClipboardList, FaUtensils, FaSpa, FaSignInAlt, FaUserCircle, FaBars, FaTimes, FaShoppingBag, FaHeartbeat  } from 'react-icons/fa';
+import { FaHome, FaClipboardList, FaUtensils, FaSpa, FaSignInAlt, FaUserCircle, FaBars, FaTimes, FaShoppingBag, FaHeartbeat, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const Navbar = () => {
   const { keycloakInstance, loadingKeycloak, login, logout, doshaType } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLifestyleDesktopOpen, setIsLifestyleDesktopOpen] = useState(false);
+  const [isLifestyleMobileOpen, setIsLifestyleMobileOpen] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const navRef = useRef();
+  const mobileMenuPopupRef = useRef();
+  const location = useLocation();
 
   const isAuthenticated = !loadingKeycloak && keycloakInstance && keycloakInstance.authenticated;
   const isAdmin = isAuthenticated && keycloakInstance.hasRealmRole('admin');
@@ -26,29 +30,34 @@ const Navbar = () => {
   }, []);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
-  const closeMenu = () => setMenuOpen(false);
+  const closeMenu = () => { setMenuOpen(false); setIsLifestyleMobileOpen(false); };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       // Prüfe, ob der Klick außerhalb des gesamten navRef (obere Leiste) UND außerhalb des Popup-Menüs selbst erfolgte.
       if (navRef.current && !navRef.current.contains(event.target) &&
-          mobileMenuPopupRef.current && !mobileMenuPopupRef.current.contains(event.target)) {
+        mobileMenuPopupRef.current && !mobileMenuPopupRef.current.contains(event.target)) {
         closeMenu();
-      } else if (navRef.current && !navRef.current.contains(event.target) && !mobileMenuPopupRef.current) {
-        closeMenu();
-      }
+      } // else if (navRef.current && !navRef.current.contains(event.target) && !mobileMenuPopupRef.current) {
+      //   closeMenu();
+      // }
     };
     if (menuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
+    } //else {
+    //document.removeEventListener('mousedown', handleClickOutside);
+    //}
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [menuOpen, navRef]); // mobileMenuPopupRef wird unten definiert
+  }, [menuOpen]);
+
+  // Schließt das mobile Submenü, wenn die Route sich ändert
+  useEffect(() => {
+    setIsLifestyleMobileOpen(false);
+  }, [location]);
 
   const handleLoginClick = () => {
     closeMenu(); // Schließe das Menü, bevor der Login-Prozess startet
-    login(); // Ruft keycloakInstance.login() auf
+    login();
   };
 
   const handleLogoutClick = () => {
@@ -60,30 +69,9 @@ const Navbar = () => {
     return (
       <nav className={styles.navContainer} ref={navRef}>
         <NavLink to="/" className={styles.logo} onClick={closeMenu}>ayurly</NavLink>
-        <div className={styles.links}>Lade...</div>
       </nav>
     );
   }
-const commonNavLinks = (isMobileContext = false) => ( // isMobileContext für unterschiedliche Klick-Handler oder Styles falls nötig
-    <>
-      <NavLink to="/" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Home</NavLink>
-      {showDoshaTestLink && (
-        <NavLink to="/dosha-test" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Dosha Test</NavLink>
-      )}
-      <NavLink to="/rezepte" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Rezepte</NavLink>
-      <NavLink to="/produkte" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Produkte</NavLink>
-      <NavLink to="/yoga" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Yoga</NavLink>
-      <NavLink to="/lifestyle" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Lifestyle</NavLink>
-      {isAuthenticated && (
-        <NavLink to="/myAyurly" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>myAyurly</NavLink>
-      )}
-      {isAdmin && ( // Admin-Link nur im Desktop-Menü oder Burger-Menü anzeigen, nicht Bottom-Nav
-         !isStandalone && // Zusätzliche Bedingung, um Admin-Link nicht in der Logik für Bottom-Nav zu haben
-        <NavLink to="/admin" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Admin</NavLink>
-      )}
-    </>
-  );
-
 
   return (
     <>
@@ -95,9 +83,29 @@ const commonNavLinks = (isMobileContext = false) => ( // isMobileContext für un
 
         {/* Desktop Links */}
         <div className={`${styles.links} ${styles.desktopOnly}`}>
-          {commonNavLinks()}
+          <NavLink to="/" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}>Home</NavLink>
+          {showDoshaTestLink && <NavLink to="/dosha-test" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}>Dosha Test</NavLink>}
+          <NavLink to="/rezepte" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}>Rezepte</NavLink>
+          {/* Desktop Dropdown für Lifestyle */}
+          <div className={styles.dropdownContainer}>
+            <NavLink to="/lifestyle" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}>Lifestyle</NavLink>
+            <div className={styles.dropdownMenu}>
+              <NavLink
+                to="/produkte"
+                className={({ isActive }) => `${styles.dropdownLink} ${isActive ? styles.activeDropdownLink : ''}`}
+              >Produkte
+              </NavLink>
+              <NavLink
+                to="/yoga"
+                className={({ isActive }) => `${styles.dropdownLink} ${isActive ? styles.activeDropdownLink : ''}`}
+              >Yoga
+              </NavLink>
+            </div>
+          </div>
+          {isAuthenticated && <NavLink to="/myAyurly" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}>myAyurly</NavLink>}
+          {isAdmin && <NavLink to="/admin" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}>Admin</NavLink>}
         </div>
-        
+
         {/* Desktop Login/Logout Button */}
         <div className={`${styles.login} ${styles.desktopOnly}`}>
           {!isAuthenticated ? (
@@ -117,8 +125,26 @@ const commonNavLinks = (isMobileContext = false) => ( // isMobileContext für un
 
       {/* Aufklappbares Burger-Menü (nur wenn NICHT Standalone PWA und Menü offen) */}
       {!isStandalone && menuOpen && (
-        <div className={`${styles.mobileMenuPopup} ${menuOpen ? styles.open : ''}`}>
-          {commonNavLinks(true)}
+        <div className={styles.mobileMenuPopup} ref={mobileMenuPopupRef}>
+          <NavLink to="/" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Home</NavLink>
+          {showDoshaTestLink && <NavLink to="/dosha-test" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Dosha Test</NavLink>}
+          <NavLink to="/rezepte" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Rezepte</NavLink>
+          <div className={styles.mobileDropdownContainer}>
+            <div className={styles.mobileDropdownToggle}>
+              <NavLink to="/lifestyle" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Lifestyle</NavLink>
+              <button onClick={() => setIsLifestyleMobileOpen(!isLifestyleMobileOpen)}>
+                {isLifestyleMobileOpen ? <FaChevronUp /> : <FaChevronDown />}
+              </button>
+            </div>
+            {isLifestyleMobileOpen && (
+              <div className={styles.mobileSubMenu}>
+                <NavLink to="/produkte" className={({ isActive }) => `${styles.mobileSubLink} ${isActive ? styles.activeMobileSubLink : ''}`} onClick={closeMenu}>Produkte</NavLink>
+                <NavLink to="/yoga" className={({ isActive }) => `${styles.mobileSubLink} ${isActive ? styles.activeMobileSubLink : ''}`} onClick={closeMenu}>Yoga</NavLink>
+              </div>
+            )}
+          </div>
+          {isAuthenticated && <NavLink to="/myAyurly" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>myAyurly</NavLink>}
+          {isAdmin && <NavLink to="/admin" className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`} onClick={closeMenu}>Admin</NavLink>}
           {/* Login/Logout im Burger-Menü */}
           {!isAuthenticated ? (
             <button onClick={handleLoginClick} className={styles.mobileMenuLoginButton}>Login</button>
@@ -131,45 +157,28 @@ const commonNavLinks = (isMobileContext = false) => ( // isMobileContext für un
 
       {/* Mobile Bottom Navigation (nur anzeigen, wenn Standalone PWA) */}
       {isStandalone && (
-        <nav className={styles.mobileBottomNav}>
-          <NavLink to="/" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
-            <FaHome className={styles.mobileNavIcon} />
-            <span className={styles.mobileNavText}>Home</span>
-          </NavLink>
-          {showDoshaTestLink && (
-            <NavLink to="/dosha-test" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
-              <FaClipboardList className={styles.mobileNavIcon} />
-              <span className={styles.mobileNavText}>Dosha Test</span>
-            </NavLink>
+        <>
+          {isLifestyleMobileOpen && (
+            <div className={styles.pwaSubMenu}>
+              <NavLink to="/produkte" className={({ isActive }) => `${styles.pwaSubMenuLink} ${isActive ? styles.activePwaSubMenuLink : ''}`} onClick={() => setIsLifestyleMobileOpen(false)}><FaShoppingBag /> Produkte</NavLink>
+              <NavLink to="/yoga" className={({ isActive }) => `${styles.pwaSubMenuLink} ${isActive ? styles.activePwaSubMenuLink : ''}`} onClick={() => setIsLifestyleMobileOpen(false)}><FaHeartbeat /> Yoga</NavLink>
+            </div>
           )}
-          <NavLink to="/rezepte" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
-            <FaUtensils className={styles.mobileNavIcon} />
-            <span className={styles.mobileNavText}>Rezepte</span>
-          </NavLink>
-          <NavLink to="/produkte" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
-            <FaShoppingBag className={styles.mobileNavIcon} /> 
-            <span className={styles.mobileNavText}>Produkte</span>
-          </NavLink>
-          <NavLink to="/yoga" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
-            <FaHeartbeat className={styles.mobileNavIcon} />
-            <span className={styles.mobileNavText}>Yoga</span>
-          </NavLink>
-          <NavLink to="/lifestyle" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
-            <FaSpa className={styles.mobileNavIcon} />
-            <span className={styles.mobileNavText}>Lifestyle</span>
-          </NavLink>
-          {!isAuthenticated ? (
-            <NavLink to="/login" onClick={(e) => { e.preventDefault(); handleLoginClick(); }} className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
-              <FaSignInAlt className={styles.mobileNavIcon} />
-              <span className={styles.mobileNavText}>Login</span>
-            </NavLink>
-          ) : (
-            <NavLink to="/myAyurly" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}>
-              <FaUserCircle className={styles.mobileNavIcon} />
-              <span className={styles.mobileNavText}>myAyurly</span>
-            </NavLink>
-          )}
-        </nav>
+          <nav className={styles.mobileBottomNav}>
+            <NavLink to="/" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}><FaHome className={styles.mobileNavIcon} /><span className={styles.mobileNavText}>Home</span></NavLink>
+            <NavLink to="/rezepte" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}><FaUtensils className={styles.mobileNavIcon} /><span className={styles.mobileNavText}>Rezepte</span></NavLink>
+            {/* PWA Aufklapp-Button */}
+            <div className={`${styles.mobileNavLink} ${styles.pwaDropdownButton}`} onClick={() => setIsLifestyleMobileOpen(!isLifestyleMobileOpen)}>
+              {isLifestyleMobileOpen ? <FaChevronUp className={styles.mobileNavIcon} style={{ color: '#e26a2c' }} /> : <FaSpa className={styles.mobileNavIcon} />}
+              <span className={styles.mobileNavText}>Lifestyle</span>
+            </div>
+            {isAuthenticated ?
+              <NavLink to="/myAyurly" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}><FaUserCircle className={styles.mobileNavIcon} /><span className={styles.mobileNavText}>myAyurly</span></NavLink>
+              :
+              <div onClick={handleLoginClick} className={styles.mobileNavLink}><FaSignInAlt className={styles.mobileNavIcon} /><span className={styles.mobileNavText}>Login</span></div>
+            }
+          </nav>
+        </>
       )}
     </>
   );
