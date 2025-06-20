@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.jboss.logging.Logger;
@@ -55,14 +56,23 @@ public class MyAyurlyService {
         LOG.infof("Generating %d %s for tile %s", count, contentType.getSimpleName(), tile.tileKey);
 
         String doshaType = user.doshaType;
-        String query = "FROM " + contentType.getSimpleName() + " e WHERE :dosha = ANY (e.doshaTypes) OR 'Tridoshic' = ANY (e.doshaTypes) ORDER BY RANDOM()";
-          
+        // native Query um random funktion zu nutzen und Übersetzer HQL-SQL nicht will...
+        String nativeQuery = "SELECT content_id FROM " + getTableNameForContentType(contentType) + " WHERE :dosha = ANY(dosha_types) OR 'Tridoshic' = ANY(dosha_types) ORDER BY RANDOM() LIMIT :limit";
+           
         
-        List<ContentItem> items = entityManager.createQuery(query, ContentItem.class)
+        List<UUID> contentIds = entityManager.createNativeQuery(nativeQuery, UUID.class)
                 .setParameter("dosha", doshaType)
-                .setMaxResults(count)
+                .setParameter("limit", count)
                 .getResultList();
         
+        if (contentIds.isEmpty()) {
+            LOG.warnf("No content of type %s found for dosha %s. Cannot generate content for tile %s.", contentType.getSimpleName(), doshaType, tile.tileKey);
+            return;
+        }
+        // HQL-Abfrage mit IDs
+        List<ContentItem> items = ContentItem.list("id IN ?1", contentIds);
+
+
         if (items.isEmpty()) {
             LOG.warnf("No content of type %s found for dosha %s. Cannot generate content for tile %s.", contentType.getSimpleName(), doshaType, tile.tileKey);
             return;
@@ -77,6 +87,20 @@ public class MyAyurlyService {
             newContent.persist();
         }
     }
+
+    // Hilfsmethode, um den korrekten Tabellennamen für die Native Query zu bekommen
+    private String getTableNameForContentType(Class<? extends ContentItem> contentType) {
+        if (contentType.equals(RecipeContent.class)) {
+            return "recipe_details";
+        }
+        if (contentType.equals(YogaExerciseContent.class)) {
+            return "yoga_exercise_details";
+        }
+        if (contentType.equals(MicrohabitContent.class)) {
+            return "microhabit_details";
+        }
+        throw new IllegalArgumentException("Unsupported content type for dashboard generation: " + contentType.getName());
+     }
 
     @Transactional
     public MyAyurlyContent toggleDoneStatus(AppUser user, Long myAyurlyContentId) {
