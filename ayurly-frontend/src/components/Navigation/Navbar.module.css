@@ -309,81 +309,70 @@
     color: white;
 }
 
-/* --- PWA Sub-Menu über der Bottom-Bar --- */
+/* --- PWA: Container für den Lifestyle Button & das Pop-up --- */
 .pwaDropdownContainer {
     position: relative;
-    flex-grow: 1; 
+    flex: 1; 
     display: flex; 
-    flex-direction: column; /* Stacks trigger over the nav link */
+    flex-direction: column; 
     align-items: center;
-    justify-content: flex-end; /* Aligns nav link to the bottom */
+    justify-content: flex-end; 
 }
+.pwaDropdownContainer > .mobileNavLink {
+    flex: 1; 
+}
+
 .pwaSubMenuTrigger {
     position: absolute;
-    top: -12px; /* Positioniert den Pfeil über der Navigationsleiste */
+    top: -20px; 
     background-color: white;
     color: #a0a0a0;
     border: 1px solid #e0e0e0;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
+    border-radius: 6px;
+    width: 32px;
+    height: 18px;
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 1001; /* Stellt sicher, dass er über der Leiste liegt */
+    z-index: 1001;
     box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
-    transition: all 0.2s ease-out;
 }
 .pwaSubMenuTrigger:hover {
     background-color: #f0f0f0;
-    transform: translateY(-2px);
 }
 
 .pwaSubMenu {
-    position: fixed;
-    bottom: 70px; 
+    position: absolute;
+    bottom: 100%; 
     left: 50%;
     transform: translateX(-50%);
-    display: flex; 
-    flex-direction: column;
-    gap: 5px;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(5px);
-    padding: 10px;
-    border-radius: 16px;
-    box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column-reverse; 
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 20px; 
     z-index: 999;
     animation: slideUp 0.3s ease-out;
+    background: transparent; 
 }
 
-.pwaSubMenu > .mobileNavLink {
-    background-color: #f8f8f8;
-    border-radius: 12px;
-    width: 120px;
-    height: 65px;
+.pwaSubMenu .mobileNavLink {
+    background-color: white;
+    backdrop-filter: blur(5px);
+    border: 1px solid #e0e0e0;
+    padding: 5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 15px; 
 }
 
-.pwaSubMenu .mobileNavLink:hover {
-     background-color: #f0f0f0;
-}
-
-.pwaSubMenu > .activeMobile {
-    background-color: #f0f0f0;
-}
-
-.pwaSubMenuLink svg {
-    font-size: 1.5rem; 
-}
-
-/* Animationen */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translate(-50%, -10px); }
+@keyframes slideUp {
+    from { opacity: 0; transform: translate(-50%, 10px); }
     to { opacity: 1; transform: translate(-50%, 0); }
 }
-@keyframes slideUp {
-    from { opacity: 0; transform: translate(-50%, 20px); }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -10px); }
     to { opacity: 1; transform: translate(-50%, 0); }
 }
 
