@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { useUser } from '../../contexts/UserContext';
-import { FaHome, FaClipboardList, FaUtensils, FaSpa, FaSignInAlt, FaUserCircle, FaBars, FaTimes, FaShoppingBag, FaHeartbeat, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaHome, FaClipboardList, FaUtensils, FaSpa, FaSignInAlt, FaUserCircle, FaBars, FaTimes, FaShoppingBag, FaHeartbeat, FaChevronDown, FaChevronUp, FaCaretUp } from 'react-icons/fa';
 
 const Navbar = () => {
   const { keycloakInstance, loadingKeycloak, login, logout, doshaType } = useUser();
@@ -166,11 +166,17 @@ const Navbar = () => {
           )}
           <nav className={styles.mobileBottomNav}>
             <NavLink to="/" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}><FaHome className={styles.mobileNavIcon} /><span className={styles.mobileNavText}>Home</span></NavLink>
+            {showDoshaTestLink && <NavLink to="/dosha-test" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}><FaClipboardList className={styles.mobileNavIcon} /><span className={styles.mobileNavText}>Dosha Test</span></NavLink>}
             <NavLink to="/rezepte" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}><FaUtensils className={styles.mobileNavIcon} /><span className={styles.mobileNavText}>Rezepte</span></NavLink>
-            {/* PWA Aufklapp-Button */}
-            <div className={`${styles.mobileNavLink} ${styles.pwaDropdownButton}`} onClick={() => setIsLifestyleMobileOpen(!isLifestyleMobileOpen)}>
-              {isLifestyleMobileOpen ? <FaChevronUp className={styles.mobileNavIcon} style={{ color: '#e26a2c' }} /> : <FaSpa className={styles.mobileNavIcon} />}
-              <span className={styles.mobileNavText}>Lifestyle</span>
+
+            <div className={styles.pwaDropdownContainer}>
+              <button className={styles.pwaSubMenuTrigger} onClick={() => setIsLifestyleMobileOpen(!isLifestyleMobileOpen)}>
+                <FaCaretUp />
+              </button>
+              <NavLink to="/lifestyle" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`} onClick={() => setIsLifestyleMobileOpen(false)}>
+                <FaSpa className={styles.mobileNavIcon} />
+                <span className={styles.mobileNavText}>Lifestyle</span>
+              </NavLink>
             </div>
             {isAuthenticated ?
               <NavLink to="/myAyurly" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}><FaUserCircle className={styles.mobileNavIcon} /><span className={styles.mobileNavText}>myAyurly</span></NavLink>
