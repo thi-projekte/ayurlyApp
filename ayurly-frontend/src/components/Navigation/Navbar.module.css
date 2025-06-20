@@ -318,10 +318,10 @@
 }
 .pwaSubMenuTrigger {
     position: absolute;
-    top: -12px; 
-    background-color: #e26a2c;
-    color: white;
-    border: 2px solid white;
+    top: -15px; /* Positioniert den Pfeil über der Navigationsleiste */
+    background-color: white;
+    color: #a0a0a0;
+    border: 1px solid #e0e0e0;
     border-radius: 50%;
     width: 28px;
     height: 28px;
@@ -330,49 +330,35 @@
     justify-content: center;
     cursor: pointer;
     z-index: 1001;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+}
+.pwaSubMenuTrigger:hover {
+    color: white;
 }
 
 .pwaSubMenu {
     position: fixed;
-    bottom: 65px; 
+    bottom: 70px; 
     left: 50%;
     transform: translateX(-50%);
     display: flex; 
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(5px);
-    padding: 15px 25px;
+    padding: 15px;
     border-radius: 16px;
     box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
-    z-index: 999;
+    z-index: 1000;
     animation: slideUp 0.3s ease-out;
 }
-.pwaSubMenuLink {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #333;
-    text-decoration: none;
-    font-size: 1.2rem;
-    padding: 8px 12px;
-    border-radius: 12px;
+
+.pwaSubMenu .mobileNavLink:hover {
+     background-color: #f0f0f0;
 }
 
 .pwaSubMenuLink svg {
     font-size: 1.5rem; 
-}
-
-.activePwaSubMenuLink {
-    background-color: #e26a2c !important;
-    color: #fff !important;
-}
-.pwaSubMenuLink:hover {
-    background-color: #f0f0f0;
-}
-.pwaDropdownButton {
-    cursor: pointer;
 }
 
 /* Animationen */

@@ -170,6 +170,18 @@ const Navbar = () => {
             <NavLink to="/rezepte" className={({ isActive }) => `${styles.mobileNavLink} ${isActive ? styles.activeMobile : ''}`}><FaUtensils className={styles.mobileNavIcon} /><span className={styles.mobileNavText}>Rezepte</span></NavLink>
 
             <div className={styles.pwaDropdownContainer}>
+              {isLifestyleMobileOpen && (
+                <div className={styles.pwaSubMenu}>
+                  <NavLink to="/produkte" className={styles.mobileNavLink} onClick={() => setIsLifestyleMobileOpen(false)}>
+                    <FaShoppingBag className={styles.mobileNavIcon} />
+                    <span className={styles.mobileNavText}>Produkte</span>
+                  </NavLink>
+                  <NavLink to="/yoga" className={styles.mobileNavLink} onClick={() => setIsLifestyleMobileOpen(false)}>
+                    <FaHeartbeat className={styles.mobileNavIcon} />
+                    <span className={styles.mobileNavText}>Yoga</span>
+                  </NavLink>
+                </div>
+              )}
               <button className={styles.pwaSubMenuTrigger} onClick={() => setIsLifestyleMobileOpen(!isLifestyleMobileOpen)}>
                 <FaCaretUp />
               </button>
