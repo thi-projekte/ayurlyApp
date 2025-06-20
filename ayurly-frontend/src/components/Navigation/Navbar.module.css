@@ -197,7 +197,6 @@
     color: #e26a2c;
 }
 
-/* --- Dropdown Styles für Desktop --- */
 .dropdownContainer {
     position: relative;
     display: flex;
@@ -253,7 +252,6 @@
     border-radius: 30px;
 }
 
-/* --- Mobile Burger Menu Accordion --- */
 .mobileDropdownContainer {
     width: 100%;
     display: flex;
@@ -309,7 +307,6 @@
     color: white;
 }
 
-/* --- PWA: Container für den Lifestyle Button & das Pop-up --- */
 .pwaDropdownContainer {
     position: relative;
     flex: 1; 

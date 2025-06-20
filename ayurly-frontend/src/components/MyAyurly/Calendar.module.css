@@ -69,7 +69,7 @@
 }
 
 .selectedDay {
-    background-color: #003329 !important; /* Wichtig, um hover-Effekt zu überschreiben */
+    background-color: #003329 !important; 
     color: white;
     font-weight: bold;
 }

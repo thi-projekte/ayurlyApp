@@ -3,7 +3,6 @@
   width: 100%;
 }
 
-/* Toggle-Gruppe für Dosha-Filter */
 .toggleGroup {
   display: flex;
   margin: 30px 100px;
@@ -80,7 +79,6 @@
   max-width: calc(25% - 23px);
 }
 
-/* Wrapper für Bild und Hauptinfo, um sie klickbar zu machen */
 .cardLinkWrapper {
   text-decoration: none;
   color: inherit;
@@ -126,7 +124,6 @@
   line-height: 1.5;
 }
 
-/* Container für Meta-Daten (Zeit) und Aktionen (Like-Button) */
 .cardMetaActions {
   display: flex;
   justify-content: space-between;
@@ -215,7 +212,6 @@
   background: linear-gradient(to right, #333, #1a1a1a);
 }
 
-/* Platzhalter, falls keine Rezepte gefunden wurden */
 .noRecipesMessage,
 .loadingMessage {
   text-align: center;
@@ -227,7 +223,6 @@
 
 @media (max-width: 1200px) {
 
-  /* ... */
   .toggleLabel {
     width: calc((100% - 2 * 30px) / 3);
   }
@@ -247,7 +242,6 @@
   }
 }
 
-/* Mobile Layout*/
 @media (max-width: 768px) {
 
   .toggleGroup,
@@ -271,7 +265,6 @@
     font-size: 1rem;
   }
 
-  /* Rezeptkarten: Einspaltiges, zentriertes Grid */
   .recipesGrid {
     display: grid;
     grid-template-columns: minmax(0, 1fr); 

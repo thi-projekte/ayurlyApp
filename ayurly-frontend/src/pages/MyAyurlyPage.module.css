@@ -13,10 +13,9 @@
     display: flex;
     gap: 30px;
     flex-wrap: wrap;
-    align-items: stretch; /* Wichtig, damit Karten gleiche Höhe haben */
+    align-items: stretch; 
 }
 
-/* Base card style */
 .doshaCard, .profileCard {
     background-color: white;
     border-radius: 20px;
@@ -30,7 +29,6 @@
     transform: translateY(2px);
 }
 
-/* Dosha Card Specifics mit Animation */
 .doshaCard {
     flex: 1;
     min-width: 320px;
@@ -77,7 +75,7 @@
 }
 .redoTestLink {
     padding: 10px 30px;
-    margin-top: auto; /* Pusht den Button nach unten */
+    margin-top: auto; 
     color: white;
     background: linear-gradient(to right, #86837F, black);
     border-radius: 100px;
@@ -87,7 +85,6 @@
     background: black;
 }
 
-/* Profile Card Specifics */
 .profileCard {
     flex: 2;
     display: flex;
@@ -186,7 +183,7 @@
     padding: 25px 30px;
     border-radius: 20px;
     cursor: pointer;
-    min-height: 200px; /* Größer gemacht */
+    min-height: 200px; 
     display: flex;
     align-items: flex-start;
 }
@@ -222,7 +219,6 @@
   }
 }
 
-/* Responsive Anpassungen */
 @media (max-width: 1400px) {
     .profileAndDosha { flex-direction: column; }
     .profileCard { min-width: unset; }
@@ -247,14 +243,6 @@
       padding: 20px 20px;
     }
 
-    /* .spacer { order: 1; } 
-    .myAyurlyContainer > :global(.calendarContainer) { order: 2; }  */
     .dashboard { order: 3; } 
     .topSection { order: 4; margin-top: 100px;} 
-}
-
-@media (max-width: 500px) {
-    .dateItem {
-        height:40px;
-    }
 }
