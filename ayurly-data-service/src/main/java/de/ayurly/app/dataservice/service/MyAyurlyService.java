@@ -54,13 +54,9 @@ public class MyAyurlyService {
     public void generateContentForTile(AppUser user, LocalDate date, LookupRoutineTile tile, Class<? extends ContentItem> contentType, int count) {
         LOG.infof("Generating %d %s for tile %s", count, contentType.getSimpleName(), tile.tileKey);
 
-        String doshaType = user.doshaType;
-        String query;
-        if (contentType.equals(MicrohabitContent.class)) {
-            query = "FROM MicrohabitContent WHERE :dosha MEMBER OF doshaTypes ORDER BY RANDOM()";
-        } else {
-            query = "FROM " + contentType.getSimpleName() + " WHERE :dosha = ANY(doshaTypes) ORDER BY RANDOM()";
-        }
+        String doshaType = user.doshaType;       
+        String query = "FROM " + contentType.getSimpleName() + " e WHERE :dosha MEMBER OF e.doshaTypes ORDER BY RANDOM()";
+         
         
         List<ContentItem> items = entityManager.createQuery(query, ContentItem.class)
                 .setParameter("dosha", doshaType)
