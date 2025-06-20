@@ -27,6 +27,14 @@ CREATE TABLE lookup_units (
     sort_order INT DEFAULT 0
 );
 
+CREATE TABLE lookup_routine_tiles (
+    id SERIAL PRIMARY KEY,
+    tile_key VARCHAR(50) UNIQUE NOT NULL, -- z.B. 'MORNING_FLOW', 'ZEN_MOVE'
+    title VARCHAR(100) NOT NULL,          -- z.B. '🌞 MorningFlow'
+    sort_order INT DEFAULT 0
+);
+
+
 -- Startdaten für die Lookup-Tabellen (können später über Admin-UI verwaltet werden)
 INSERT INTO lookup_dosha_types (value, label, sort_order) VALUES
 ('Vata', '🌀 Vata', 10),
@@ -52,3 +60,10 @@ INSERT INTO lookup_units (value, label, sort_order) VALUES
 ('Bund', 'Bund', 100),
 ('optional', 'optional', 900),
 ('nach Bedarf', 'nach Bedarf', 910);
+
+INSERT INTO lookup_routine_tiles (tile_key, title, sort_order) VALUES
+('MORNING_FLOW', '🌞 MorningFlow', 10),
+('EVENING_FLOW', '🌙 EveningFlow', 20),
+('ZEN_MOVE', '🧘‍♀️ ZenMove', 30),
+('NOURISH_CYCLE', '🍽️ NourishCycle', 40),
+('REST_CYCLE', '💤 RestCycle', 50);

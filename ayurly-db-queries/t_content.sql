@@ -1,7 +1,7 @@
 -- Tabelle für allgemeine Content-Metadaten
 CREATE TABLE content_items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('RECIPE', 'YOGA_EXERCISE', 'PRODUCT')), -- TODO: mit FK ersetzen
+    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('RECIPE', 'YOGA_EXERCISE', 'PRODUCT', 'MICROHABIT')),
     title VARCHAR(255) NOT NULL,
     image_url VARCHAR(255),
     preview_description TEXT,
@@ -16,6 +16,11 @@ CREATE TABLE content_items (
 CREATE INDEX idx_content_items_content_type ON content_items(content_type);
 CREATE INDEX idx_content_items_title ON content_items(title); 
 CREATE INDEX idx_content_items_like_count ON content_items(like_count DESC); 
+
+CREATE TABLE microhabit_details (
+    content_id UUID PRIMARY KEY REFERENCES content_items(id) ON DELETE CASCADE,
+    dosha_types VARCHAR(50)[]
+);
 
 -- Tabelle für rezeptspezifische Details
 CREATE TABLE recipe_details (
@@ -191,6 +196,8 @@ COMMENT ON COLUMN content_items.title IS 'Titel des Content-Eintrags.';
 COMMENT ON COLUMN content_items.image_url IS 'URL zu einem repräsentativen Bild.';
 COMMENT ON COLUMN content_items.preview_description IS 'Kurze Vorschau-Beschreibung.';
 COMMENT ON COLUMN content_items.like_count IS 'Anzahl der Likes für diesen Content-Eintrag.';
+
+COMMENT ON TABLE microhabit_details IS 'Speichert die spezifischen Details für Content-Einträge vom Typ MICROHABIT.';
 
 
 COMMENT ON TABLE recipe_details IS 'Speichert die spezifischen Details für Content-Einträge vom Typ RECIPE.';

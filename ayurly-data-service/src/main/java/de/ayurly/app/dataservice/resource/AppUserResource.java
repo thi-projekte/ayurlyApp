@@ -68,7 +68,12 @@ public class AppUserResource {
             jwt.getClaim("email"),
             jwt.getClaim("given_name"),
             jwt.getClaim("family_name"),
-            appUser.getDoshaType()
+            appUser.getDoshaType(),
+            appUser.showMorningFlow,
+            appUser.showEveningFlow,
+            appUser.showZenMove,
+            appUser.showNourishCycle,
+            appUser.showRestCycle
         );
 
         return Response.ok(responseDto).build();
@@ -106,7 +111,12 @@ public class AppUserResource {
                 jwt.getClaim("email"),
                 jwt.getClaim("given_name"),
                 jwt.getClaim("family_name"),
-                appUser.getDoshaType()
+                appUser.getDoshaType(),
+                appUser.showMorningFlow,
+                appUser.showEveningFlow,
+                appUser.showZenMove,
+                appUser.showNourishCycle,
+                appUser.showRestCycle
             );
             return Response.ok(responseDto).build();
         } catch (Exception e) {
@@ -115,6 +125,37 @@ public class AppUserResource {
                            .entity("Fehler beim Aktualisieren des Dosha-Typs.")
                            .build();
         }
+    }
+
+    @PUT
+    @Path("/me/preferences")
+    @Authenticated
+    @Transactional
+    public Response updateUserPreferences(UserPreferencesUpdateDto request) {
+        String keycloakUserId = jwt.getSubject();
+        AppUser appUser = AppUser.findById(keycloakUserId);
+
+        if (appUser == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("User profile not found.").build();
+        }
+
+        appUser.showMorningFlow = request.showMorningFlow;
+        appUser.showEveningFlow = request.showEveningFlow;
+        appUser.showZenMove = request.showZenMove;
+        appUser.showNourishCycle = request.showNourishCycle;
+        appUser.showRestCycle = request.showRestCycle;
+        appUser.persist();
+
+        LOG.infof("Display preferences updated for user %s", keycloakUserId);
+
+        UserAccountResponse responseDto = new UserAccountResponse(
+            keycloakUserId, jwt.getClaim("preferred_username"), jwt.getClaim("email"),
+            jwt.getClaim("given_name"), jwt.getClaim("family_name"), appUser.getDoshaType(),
+            appUser.showMorningFlow, appUser.showEveningFlow, appUser.showZenMove,
+            appUser.showNourishCycle, appUser.showRestCycle
+        );
+
+        return Response.ok(responseDto).build();
     }
 
     // DTO für die Anfrage zum Aktualisieren des Dosha-Typs
@@ -129,15 +170,33 @@ public class AppUserResource {
         public String email;
         public String firstName;
         public String lastName;
-        public String doshaType; // Aus der lokalen DB
+        public String doshaType;
+        public boolean showMorningFlow;
+        public boolean showEveningFlow;
+        public boolean showZenMove;
+        public boolean showNourishCycle;
+        public boolean showRestCycle;
 
-        public UserAccountResponse(String keycloakId, String username, String email, String firstName, String lastName, String doshaType) {
+        public UserAccountResponse(String keycloakId, String username, String email, String firstName, String lastName, String doshaType, boolean showMorningFlow, boolean showEveningFlow, boolean showZenMove, boolean showNourishCycle, boolean showRestCycle) {
             this.keycloakId = keycloakId;
             this.username = username;
             this.email = email;
             this.firstName = firstName;
             this.lastName = lastName;
             this.doshaType = doshaType;
+            this.showMorningFlow = showMorningFlow;
+            this.showEveningFlow = showEveningFlow;
+            this.showZenMove = showZenMove;
+            this.showNourishCycle = showNourishCycle;
+            this.showRestCycle = showRestCycle;
         }
+    }
+
+    public static class UserPreferencesUpdateDto {
+        public boolean showMorningFlow;
+        public boolean showEveningFlow;
+        public boolean showZenMove;
+        public boolean showNourishCycle;
+        public boolean showRestCycle;
     }
 }
