@@ -275,7 +275,18 @@ const ManageYoga = () => {
                     <label>Vorschau-Beschreibung: <textarea name="previewDescription" value={formData.previewDescription} onChange={handleFormChange} /></label>
                     <label>Ausführliche Beschreibung: <textarea name="description" value={formData.description} onChange={handleFormChange} rows="4"/></label>                    
                     <label>Video hochladen: <input type="file" onChange={handleVideoFileChange} accept="video/mp4,video/webm" /></label>
-                    {formData.videoUrl && !selectedVideoFile && <p>Aktuelles Video: {formData.videoUrl}</p>}
+                    {formData.videoUrl && !selectedVideoFile && <video
+                                                    key={formData.videoUrl}
+                                                    controls
+                                                    autoPlay
+                                                    muted
+                                                    loop
+                                                    playsInline
+                                                    style={{width: '150px', marginTop: '10px'}}
+                                                >
+                                                    <source src={formData.videoUrl} type="video/mp4" />
+                                                    Dein Browser unterstützt das Video-Tag nicht.
+                                                </video>}
                      <label>Vorschau-Bild: <input type="file" onChange={handleFileChange} ref={fileInputRef} accept="image/*"/></label>
                     {imagePreview && <img src={imagePreview} alt="Vorschau" style={{width: '150px', marginTop: '10px'}}/>}
 
