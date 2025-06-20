@@ -78,7 +78,7 @@ const MyAyurlyPage = () => {
                 <div className={styles.profileContent}>
                 <div className={styles.settings} onClick={handleOpenAccountManagement} title="Keycloak Account-Einstellungen">
                   <FaCog />
-                  <span>Ändern</span>
+                  <span>Profil bearbeiten</span>
                 </div>
                 <button className={styles.logoutButton} onClick={logout}>
                     <FaSignOutAlt /> Logout
