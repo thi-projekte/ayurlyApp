@@ -18,6 +18,21 @@ public class AppUser extends PanacheEntityBase {
     @Column(name = "dosha_type")
     public String doshaType;
 
+    @Column(name = "show_morning_flow")
+    public boolean showMorningFlow = true;
+
+    @Column(name = "show_evening_flow")
+    public boolean showEveningFlow = true;
+
+    @Column(name = "show_zen_move")
+    public boolean showZenMove = true;
+
+    @Column(name = "show_nourish_cycle")
+    public boolean showNourishCycle = true;
+
+    @Column(name = "show_rest_cycle")
+    public boolean showRestCycle = true;
+
     // Standardkonstruktor (wird von JPA benötigt)
     public AppUser() {
     }
@@ -42,4 +57,46 @@ public class AppUser extends PanacheEntityBase {
     public void setDoshaType(String doshaType) {
         this.doshaType = doshaType;
     }
+
+    public boolean isShowMorningFlow() {
+        return showMorningFlow;
+    }
+
+    public boolean isShowEveningFlow() {
+        return showEveningFlow;
+    }
+
+    public boolean isShowZenMove() {
+        return showZenMove;
+    }
+
+    public boolean isShowNourishCycle() {
+        return showNourishCycle;
+    }
+
+    public boolean isShowRestCycle() {
+        return showRestCycle;
+    }
+
+    public void setShowMorningFlow(boolean showMorningFlow) {
+        this.showMorningFlow = showMorningFlow;
+    }
+
+    public void setShowEveningFlow(boolean showEveningFlow) {
+        this.showEveningFlow = showEveningFlow;
+    }
+
+    public void setShowZenMove(boolean showZenMove) {
+        this.showZenMove = showZenMove;
+    }
+
+    public void setShowNourishCycle(boolean showNourishCycle) {
+        this.showNourishCycle = showNourishCycle;
+    }
+
+    public void setShowRestCycle(boolean showRestCycle) {
+        this.showRestCycle = showRestCycle;
+    }
+
+    
 }
