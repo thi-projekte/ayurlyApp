@@ -1,6 +1,8 @@
 .myAyurlyContainer {
     width: 100%;
     padding: 20px 120px;
+    display: flex;
+    flex-direction: column;
 }
 
 .topSection {
@@ -244,4 +246,9 @@
       width: 100%;
       padding: 20px 20px;
     }
+
+    /* .spacer { order: 1; } 
+    .myAyurlyContainer > :global(.calendarContainer) { order: 2; }  */
+    .dashboard { order: 3; } 
+    .topSection { order: 4; margin-top: 100px;} 
 }
