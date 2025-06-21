@@ -15,6 +15,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import de.ayurly.app.dataservice.entity.content.recipe.RecipeContent;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyContent;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyHistory;
+import de.ayurly.app.dataservice.resource.MyAyurlyResource.DashboardItemDto;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -60,20 +61,17 @@ public class MyAyurlyContentResource {
         String userId = jwt.getSubject();
         LocalDate eventDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
 
-        List<MyAyurlyContent> contentItems = MyAyurlyContent.find("user.id = ?1 and calendarDate = ?2", userId, eventDate).list();
-        
-         if (contentItems.isEmpty()) {
+        List<MyAyurlyContent> content = MyAyurlyContent.list("user = ?1 and calendarDate = ?2", userId, eventDate);
+
+        if (content.isEmpty()) {
             return Response.ok(Map.of("status", "NO_CONTENT_FOUND")).build();
         }
 
-        DashboardContentDTO dashboard = new DashboardContentDTO();
-        dashboard.morningFlow = filterAndMap(contentItems, "MorningFlow");
-        dashboard.eveningFlow = filterAndMap(contentItems, "EveningFlow");
-        dashboard.restCycle = filterAndMap(contentItems, "RestCycle");
-        dashboard.zenMove = filterAndMap(contentItems, "ZenMove");
-        dashboard.nourishCycle = filterAndMap(contentItems, "NourishCycle");
+        Map<String, List<DashboardItemDto>> groupedByTile = content.stream()
+                .collect(Collectors.groupingBy(c -> c.routineTile.title,
+                        Collectors.mapping(DashboardItemDto::fromEntity, Collectors.toList())));
         
-        return Response.ok(dashboard).build();
+        return Response.ok(groupedByTile).build();
     }
 
     @POST
