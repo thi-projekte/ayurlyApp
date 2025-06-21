@@ -1,11 +1,13 @@
 package de.ayurly.app.dataservice.worker;
 
+import java.util.Map;
+
+import org.camunda.bpm.client.ExternalTaskClient;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
-import org.camunda.bpm.client.ExternalTaskClient;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import java.util.Map;
 
 @ApplicationScoped
 public class TestWorker {
@@ -18,7 +20,7 @@ public class TestWorker {
                 .baseUrl(cibsevenApiUrl)
                 .build();
 
-        client.subscribe("dynamischen-inhalt-erzeugen")
+        client.subscribe("Minimaler-Test-Prozess")
                 .lockDuration(1000)
                 .handler((externalTask, externalTaskService) -> {
                     String inhalt = "Das ist ein dynamischer Test-Inhalt aus dem Prozess!";
