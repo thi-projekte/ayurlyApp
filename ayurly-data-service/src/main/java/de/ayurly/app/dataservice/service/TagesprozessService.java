@@ -109,6 +109,19 @@ public class TagesprozessService {
         return resultList;
     }
 
+    private String getCorrectDoshaType(String doshaType) {
+        if(doshaType == null)
+            return null;
+        else if(doshaType.equals("pitta") || doshaType.equals("Pitta"))
+            return "Pitta";
+        else if(doshaType.equals("kapha") || doshaType.equals("Kapha"))
+            return "Kapha";
+        else if (doshaType.equals("vata") || doshaType.equals("Vata"))
+            return "Vata";
+        else 
+            return "Tridoshic";
+    }
+
     private String getTableNameForContentType(Class<? extends ContentItem> contentType) {
         if (contentType.equals(RecipeContent.class)) {
             return "recipe_details";
@@ -126,17 +139,17 @@ public class TagesprozessService {
         AppUser user = AppUser.findById(userId);
         
         if (prozessVariablen.containsKey("yogaId")) {
-            saveContentAndHistory(user, selectedDate, "ZenMove", (UUID)prozessVariablen.get("yogaId"), 1);
+            saveContentAndHistory(user, selectedDate, "ZEN_MOVE", (UUID)prozessVariablen.get("yogaId"), 1);
         }
         if (prozessVariablen.containsKey("recipeId")) {
-            saveContentAndHistory(user, selectedDate, "NourishCycle", (UUID)prozessVariablen.get("recipeId"), 1);
+            saveContentAndHistory(user, selectedDate, "NOURISH_CYCLE", (UUID)prozessVariablen.get("recipeId"), 1);
         }
         if (prozessVariablen.containsKey("microHabitIds")) {
             List<UUID> ids = (List<UUID>) prozessVariablen.get("microHabitIds");
             int i = 0;
-            if ((boolean) prozessVariablen.getOrDefault("showMorningFlow", false)) i = saveMicroHabitsForTile(user, selectedDate, "MorningFlow", ids, i, 3);
-            if ((boolean) prozessVariablen.getOrDefault("showEveningFlow", false)) i = saveMicroHabitsForTile(user, selectedDate, "EveningFlow", ids, i, 3);
-            if ((boolean) prozessVariablen.getOrDefault("showRestCycle", false)) saveMicroHabitsForTile(user, selectedDate, "RestCycle", ids, i, 3);
+            if ((boolean) prozessVariablen.getOrDefault("showMorningFlow", false)) i = saveMicroHabitsForTile(user, selectedDate, "MORNING_FLOW", ids, i, 3);
+            if ((boolean) prozessVariablen.getOrDefault("showEveningFlow", false)) i = saveMicroHabitsForTile(user, selectedDate, "EVENING_FLOW", ids, i, 3);
+            if ((boolean) prozessVariablen.getOrDefault("showRestCycle", false)) saveMicroHabitsForTile(user, selectedDate, "REST_CYCLE", ids, i, 3);
         }
     }
 
