@@ -19,6 +19,7 @@ CREATE INDEX idx_content_items_like_count ON content_items(like_count DESC);
 
 CREATE TABLE microhabit_details (
     content_id UUID PRIMARY KEY REFERENCES content_items(id) ON DELETE CASCADE,
+    routine_tile_id INTEGER NOT NULL REFERENCES lookup_routine_tiles (id),
     dosha_types VARCHAR(50)[]
 );
 
