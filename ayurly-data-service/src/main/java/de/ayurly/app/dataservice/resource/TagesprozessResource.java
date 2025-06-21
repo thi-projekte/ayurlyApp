@@ -29,6 +29,17 @@ public class TagesprozessResource {
     @Inject
     JsonWebToken jwt;
 
+    
+    private static class CamundaVariable {
+        public String type;
+        public Object value;
+
+        public CamundaVariable(String type, Object value) {
+            this.type = type;
+            this.value = value;
+        }
+    }
+
     @POST
     @Path("/generieren")
     @RolesAllowed("user")
@@ -42,16 +53,15 @@ public class TagesprozessResource {
         
         String userId = jwt.getSubject();
         LocalDate selectedDate = LocalDate.parse(selectedDateStr, DateTimeFormatter.ISO_LOCAL_DATE);
-
-        // falls user schon einen Eintrag für den Tag hat sofort entsprechende Rückmeldung geben.
+        // falls kein Content vorliegt
         long count = MyAyurlyContent.count("user.id = ?1 and calendarDate = ?2", userId, selectedDate);
         if (count > 0) {
             return Response.ok(Map.of("status", "CONTENT_EXISTS")).build();
         }
         
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("userId", userId);
-        variables.put("selectedDate", selectedDateStr);
+        Map<String, CamundaVariable> variables = new HashMap<>();
+        variables.put("userId", new CamundaVariable("String", userId));
+        variables.put("selectedDate", new CamundaVariable("String", selectedDateStr));
         
         Map<String, Object> processPayload = Map.of("variables", variables);
 
@@ -59,8 +69,10 @@ public class TagesprozessResource {
             CibsevenProcessClient.ProcessInstance instance = processClient.startProcess("ayurly-tages-content-prozess", processPayload);
             return Response.accepted(Map.of("processInstanceId", instance.id, "status", "PROCESS_STARTED")).build();
         } catch (Exception e) {
+            System.err.println("Fehler beim Starten des Camunda-Prozesses: " + e.getMessage());
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(Map.of("error", "Prozess konnte nicht gestartet werden: " + e.getMessage()))
+                    .entity(Map.of("error", "Prozess konnte nicht gestartet werden. Details siehe Server-Log."))
                     .build();
         }
     }
