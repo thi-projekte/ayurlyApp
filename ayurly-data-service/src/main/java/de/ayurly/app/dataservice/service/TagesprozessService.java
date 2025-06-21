@@ -66,13 +66,13 @@ public class TagesprozessService {
         
         List<UUID> allMicroHabitIds = new ArrayList<>();
         if ((boolean) prozessVariablen.getOrDefault("showMorningFlow", true)) {
-            allMicroHabitIds.addAll(findRandomContentIds("MorningFlow", doshaType, 3));
+            allMicroHabitIds.addAll(findRandomContentIds("MORNING_FLOW", doshaType, 3));
         }
         if ((boolean) prozessVariablen.getOrDefault("showEveningFlow", true)) {
-            allMicroHabitIds.addAll(findRandomContentIds("EveningFlow", doshaType, 3));
+            allMicroHabitIds.addAll(findRandomContentIds("EVENING_FLOW", doshaType, 3));
         }
         if ((boolean) prozessVariablen.getOrDefault("showRestCycle", true)) {
-            allMicroHabitIds.addAll(findRandomContentIds("RestCycle", doshaType, 3));
+            allMicroHabitIds.addAll(findRandomContentIds("REST_CYCLE", doshaType, 3));
         }
 
         if (!allMicroHabitIds.isEmpty()) {
