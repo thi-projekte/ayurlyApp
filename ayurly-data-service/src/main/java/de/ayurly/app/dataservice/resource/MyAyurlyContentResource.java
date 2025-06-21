@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import de.ayurly.app.dataservice.entity.AppUser;
 import de.ayurly.app.dataservice.entity.content.recipe.RecipeContent;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyContent;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyHistory;
@@ -56,13 +57,13 @@ public class MyAyurlyContentResource {
     JsonWebToken jwt;
 
     @GET
-    @Path("/{date}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDashboardContentForDate(@QueryParam("date") String dateStr) {
         String userId = jwt.getSubject();
+        AppUser user = AppUser.findById(userId);
         LocalDate eventDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
 
-        List<MyAyurlyContent> content = MyAyurlyContent.list("user = ?1 and calendarDate = ?2", userId, eventDate);
+        List<MyAyurlyContent> content = MyAyurlyContent.list("user = ?1 and calendarDate = ?2", user, eventDate);
 
         if (content.isEmpty()) {
             return Response.ok(Map.of("status", "NO_CONTENT_FOUND")).build();
