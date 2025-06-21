@@ -17,6 +17,7 @@ import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseContent;
 import de.ayurly.app.dataservice.entity.lookup.LookupRoutineTile;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyContent;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyHistory;
+import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 
@@ -43,16 +44,17 @@ public class TagesprozessService {
         String doshaType = (String) prozessVariablen.get("doshaType");
         Map<String, Object> generierterContent = new HashMap<>();
 
-        String doshaQueryPattern = "'%\"" + doshaType + "\"%'";
-        String tridoshicQueryPattern = "'%\"tridoshic\"%'";
+        Parameters params = Parameters.with("doshaParam", "%" + doshaType + "%").and("tridoshicParam", "%tridoshic%");
 
         if ((boolean) prozessVariablen.getOrDefault("showZenMove", true)) {
-            YogaExerciseContent.find("FROM YogaExerciseContent y WHERE doshaTypes::text LIKE " + doshaQueryPattern + " OR doshaTypes::text LIKE " + tridoshicQueryPattern + " ORDER BY RANDOM()").page(0, 1).firstResultOptional()
+            YogaExerciseContent.find("FROM YogaExerciseContent y WHERE CAST(y.doshaTypes AS String) LIKE :doshaParam OR CAST(y.doshaTypes AS String) LIKE :tridoshicParam ORDER BY RANDOM()", params)
+                .page(0, 1).firstResultOptional()
                 .ifPresent(yoga -> generierterContent.put("yogaId",((YogaExerciseContent) yoga).id));
         }
 
         if ((boolean) prozessVariablen.getOrDefault("showNourishCycle", true)) {
-            RecipeContent.find("FROM RecipeContent r WHERE doshaTypes::text LIKE " + doshaQueryPattern + " OR doshaTypes::text LIKE " + tridoshicQueryPattern + " ORDER BY RANDOM()").page(0, 1).firstResultOptional()
+            RecipeContent.find("FROM RecipeContent r WHERE CAST(r.doshaTypes AS String) LIKE :doshaParam OR CAST(r.doshaTypes AS String) LIKE :tridoshicParam ORDER BY RANDOM()", params)
+                .page(0, 1).firstResultOptional()
                 .ifPresent(recipe -> generierterContent.put("recipeId", ((RecipeContent)recipe).id));
         }
         
@@ -97,12 +99,13 @@ public class TagesprozessService {
     }
     
     private List<UUID> findMicroHabitsForTile(String tileKey, String doshaType, int limit) {
-        String doshaQueryPattern = "'%\"" + doshaType + "\"%'";
-        String tridoshicQueryPattern = "'%\"tridoshic\"%'";
+        Parameters params = Parameters.with("doshaParam", "%" + doshaType + "%")
+                                      .and("tridoshicParam", "%tridoshic%")
+                                      .and("tileKey", tileKey);
 
         List<MicrohabitContent> results = MicrohabitContent.find(
-            "FROM MicrohabitContent m WHERE m.routineTile.tileKey = ?1 AND (m.doshaTypes::text LIKE " + doshaQueryPattern + " OR m.doshaTypes::text LIKE " + tridoshicQueryPattern + ") ORDER BY RANDOM()",
-            tileKey
+            "FROM MicrohabitContent m WHERE m.routineTile.tileKey = :tileKey AND (CAST(m.doshaTypes AS String) LIKE :doshaParam OR CAST(m.doshaTypes AS String) LIKE :tridoshicParam) ORDER BY RANDOM()",
+            params
         ).page(0, limit).list();
 
         List<UUID> idList = new ArrayList<>();
