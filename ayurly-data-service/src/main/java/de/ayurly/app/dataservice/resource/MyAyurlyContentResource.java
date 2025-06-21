@@ -28,7 +28,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/myayurly/content/")
+@Path("/api/myayurly/content")
 @RolesAllowed("user")
 public class MyAyurlyContentResource {
 
@@ -56,6 +56,7 @@ public class MyAyurlyContentResource {
     JsonWebToken jwt;
 
     @GET
+    @Path("/{date}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDashboardContentForDate(@QueryParam("date") String dateStr) {
         String userId = jwt.getSubject();
