@@ -86,22 +86,27 @@ public class TagesprozessService {
     private List<UUID> findRandomContentIds(Class<? extends ContentItem> contentType, String doshaType, int limit) {
         String tableName = getTableNameForContentType(contentType);
         String nativeQuery = "SELECT content_id FROM " + tableName + " WHERE :dosha = ANY(dosha_types) OR 'tridoshic' = ANY(dosha_types) ORDER BY RANDOM() LIMIT :limit";
-        return entityManager.createNativeQuery(nativeQuery, UUID.class)
+        LOG.infof("Führe Query aus: %s mit dosha=%s, limit=%d", nativeQuery, doshaType, limit);
+        List<UUID> resultList = entityManager.createNativeQuery(nativeQuery, UUID.class)
                 .setParameter("dosha", doshaType)
                 .setParameter("limit", limit)
                 .getResultList();
+        LOG.infof("Query für %s lieferte %d Ergebnisse.", tableName, resultList.size());
+        return resultList;
     }
 
     @SuppressWarnings("unchecked")
     private List<UUID> findRandomContentIds(String tileKey, String doshaType, int limit) {
         String nativeQuery = "SELECT md.content_id FROM microhabit_details md INNER JOIN lookup_routine_tiles lrt ON md.routine_tile_id = lrt.id WHERE lrt.tile_key = :tileKey " + 
                               "AND (:dosha = ANY(md.dosha_types) OR 'tridoshic' = ANY(md.dosha_types)) ORDER BY RANDOM() LIMIT :limit";
-
-        return entityManager.createNativeQuery(nativeQuery, UUID.class)
+        LOG.infof("Führe Query für Microhabits aus: %s mit tileKey=%s, dosha=%s, limit=%d", nativeQuery, tileKey, doshaType, limit);
+        List<UUID> resultList = entityManager.createNativeQuery(nativeQuery, UUID.class)
                 .setParameter("tileKey", tileKey)
                 .setParameter("dosha", doshaType)
                 .setParameter("limit", limit)
                 .getResultList();
+        LOG.infof("Query für Microhabits (tileKey=%s) lieferte %d Ergebnisse.", tileKey, resultList.size());
+        return resultList;
     }
 
     private String getTableNameForContentType(Class<? extends ContentItem> contentType) {
