@@ -14,6 +14,7 @@ import LifestylePage from './pages/LifestylePage';
 import LoginPage from './pages/LoginPage';
 import MyAyurlyPage from './pages/MyAyurlyPage';
 import { UserProvider } from './contexts/UserContext';
+import ProcessTestComponent from './components/ProcessTestComponent';
 // Admin-Page Imports
 import AdminRoute from './components/Navigation/AdminRoute';
 import ProtectedRoute from './components/Navigation/ProtectedRoute';
@@ -33,6 +34,7 @@ function App() {
         <main> {/* main content wird dynamisch über die simulierten Routen geladen */}
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="test-bpmn" element= {<ProcessTestComponent />} />
             <Route path="/dosha-test" element={<DoshaTestPage />} />
             <Route path="/rezepte" element={<RezeptePage />} />
             <Route path="/rezepte/:rezeptId" element={<RezepteDetailPage />} />
