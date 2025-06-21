@@ -86,7 +86,6 @@ public class TagesprozessService {
     private List<UUID> findRandomContentIds(Class<? extends ContentItem> contentType, String doshaType, int limit) {
         String tableName = getTableNameForContentType(contentType);
         String nativeQuery = "SELECT content_id FROM " + tableName + " WHERE :dosha = ANY(dosha_types) OR 'tridoshic' = ANY(dosha_types) ORDER BY RANDOM() LIMIT :limit";
-        
         return entityManager.createNativeQuery(nativeQuery, UUID.class)
                 .setParameter("dosha", doshaType)
                 .setParameter("limit", limit)
@@ -95,7 +94,7 @@ public class TagesprozessService {
 
     @SuppressWarnings("unchecked")
     private List<UUID> findRandomContentIds(String tileKey, String doshaType, int limit) {
-        String nativeQuery = "SELECT content_id FROM microhabit_details WHERE routine_tile_key = :tileKey AND (:dosha = ANY(dosha_types) OR 'tridoshic' = ANY(dosha_types)) ORDER BY RANDOM() LIMIT :limit";
+        String nativeQuery = "SELECT content_id FROM microhabit_details WHERE routine_tile_id = :tileKey AND (:dosha = ANY(dosha_types) OR 'tridoshic' = ANY(dosha_types)) ORDER BY RANDOM() LIMIT :limit";
 
         return entityManager.createNativeQuery(nativeQuery, UUID.class)
                 .setParameter("tileKey", tileKey)
