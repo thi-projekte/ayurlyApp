@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Die dedizierte PostgreSQL Datenbank für die Process-Engine
+  cibseven-db:
+    image: postgres:15
+    container_name: ayurly-cibseven-postgres-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-camunda}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-camunda}
+      POSTGRES_DB: cibseven-process-engine
+    volumes:
+      - ./cibseven-data/db:/var/lib/postgresql/data
+    # KEINE Ports nach außen. Die DB ist nur über das interne Netzwerk erreichbar.
+    networks:
+      - cibseven-internal 
+
+  # Process-Engine selbst
+  cibseven:
+    image: cibseven/cibseven:latest
+    container_name: ayurly-cibseven-engine
+    ports:
+      # mappen auf freien Host-Port 8088
+      - "8088:8080"
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: jdbc:postgresql://cibseven-db:5432/cibseven-process-engine
+      DB_USERNAME: ${POSTGRES_USER:-camunda}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-camunda}
+      CORS_ALLOWED_ORIGINS: '*'
+    depends_on:
+      - cibseven-db
+    networks:
+      - cibseven-internal   # internes Netz für DB-Zugriff
+      - nginx-proxy-manager # externes Netz für Proxy
+
+networks:
+  cibseven-internal:
+    driver: bridge
+
+  nginx-proxy-manager:
+    external: true
