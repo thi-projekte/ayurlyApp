@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.jboss.logging.Logger;
+
 import de.ayurly.app.dataservice.entity.AppUser;
 import de.ayurly.app.dataservice.entity.content.ContentItem;
-import de.ayurly.app.dataservice.entity.content.MicrohabitContent;
 import de.ayurly.app.dataservice.entity.content.recipe.RecipeContent;
 import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseContent;
 import de.ayurly.app.dataservice.entity.lookup.LookupRoutineTile;
@@ -19,10 +20,17 @@ import de.ayurly.app.dataservice.entity.user.MyAyurlyContent;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyHistory;
 import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class TagesprozessService {
+
+    private static final Logger LOG = Logger.getLogger(TagesprozessService.class);
+
+    @Inject
+    EntityManager entityManager;
 
     @Transactional
     public Map<String, Object> ladeUserPraeferenzen(String userId) {
@@ -47,26 +55,24 @@ public class TagesprozessService {
         Parameters params = Parameters.with("doshaParam", "%" + doshaType + "%").and("tridoshicParam", "%tridoshic%");
 
         if ((boolean) prozessVariablen.getOrDefault("showZenMove", true)) {
-            YogaExerciseContent.find("FROM YogaExerciseContent y WHERE CAST(y.doshaTypes AS String) LIKE :doshaParam OR CAST(y.doshaTypes AS String) LIKE :tridoshicParam ORDER BY RANDOM()", params)
-                .page(0, 1).firstResultOptional()
-                .ifPresent(yoga -> generierterContent.put("yogaId",((YogaExerciseContent) yoga).id));
+            findRandomContentIds(YogaExerciseContent.class, doshaType, 1).stream().findFirst()
+                .ifPresent(yogaId -> generierterContent.put("yogaId", yogaId));
         }
 
         if ((boolean) prozessVariablen.getOrDefault("showNourishCycle", true)) {
-            RecipeContent.find("FROM RecipeContent r WHERE CAST(r.doshaTypes AS String) LIKE :doshaParam OR CAST(r.doshaTypes AS String) LIKE :tridoshicParam ORDER BY RANDOM()", params)
-                .page(0, 1).firstResultOptional()
-                .ifPresent(recipe -> generierterContent.put("recipeId", ((RecipeContent)recipe).id));
+            findRandomContentIds(RecipeContent.class, doshaType, 1).stream().findFirst()
+                .ifPresent(recipeId -> generierterContent.put("recipeId", recipeId));
         }
         
         List<UUID> allMicroHabitIds = new ArrayList<>();
         if ((boolean) prozessVariablen.getOrDefault("showMorningFlow", true)) {
-            allMicroHabitIds.addAll(findMicroHabitsForTile("MorningFlow", doshaType, 3));
+            allMicroHabitIds.addAll(findRandomContentIds("MorningFlow", doshaType, 3));
         }
         if ((boolean) prozessVariablen.getOrDefault("showEveningFlow", true)) {
-            allMicroHabitIds.addAll(findMicroHabitsForTile("EveningFlow", doshaType, 3));
+            allMicroHabitIds.addAll(findRandomContentIds("EveningFlow", doshaType, 3));
         }
         if ((boolean) prozessVariablen.getOrDefault("showRestCycle", true)) {
-            allMicroHabitIds.addAll(findMicroHabitsForTile("RestCycle", doshaType, 3));
+            allMicroHabitIds.addAll(findRandomContentIds("RestCycle", doshaType, 3));
         }
 
         if (!allMicroHabitIds.isEmpty()) {
@@ -74,6 +80,37 @@ public class TagesprozessService {
         }
         
         return generierterContent;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<UUID> findRandomContentIds(Class<? extends ContentItem> contentType, String doshaType, int limit) {
+        String tableName = getTableNameForContentType(contentType);
+        String nativeQuery = "SELECT content_id FROM " + tableName + " WHERE :dosha = ANY(dosha_types) OR 'tridoshic' = ANY(dosha_types) ORDER BY RANDOM() LIMIT :limit";
+        
+        return entityManager.createNativeQuery(nativeQuery, UUID.class)
+                .setParameter("dosha", doshaType)
+                .setParameter("limit", limit)
+                .getResultList();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<UUID> findRandomContentIds(String tileKey, String doshaType, int limit) {
+        String nativeQuery = "SELECT content_id FROM microhabit_details WHERE routine_tile_key = :tileKey AND (:dosha = ANY(dosha_types) OR 'tridoshic' = ANY(dosha_types)) ORDER BY RANDOM() LIMIT :limit";
+
+        return entityManager.createNativeQuery(nativeQuery, UUID.class)
+                .setParameter("tileKey", tileKey)
+                .setParameter("dosha", doshaType)
+                .setParameter("limit", limit)
+                .getResultList();
+    }
+
+    private String getTableNameForContentType(Class<? extends ContentItem> contentType) {
+        if (contentType.equals(RecipeContent.class)) {
+            return "recipe_details";
+        } else if (contentType.equals(YogaExerciseContent.class)) {
+            return "yoga_exercise_details";
+        }
+        throw new IllegalArgumentException("Unsupported content type: " + contentType.getName());
     }
 
     @Transactional
@@ -96,23 +133,6 @@ public class TagesprozessService {
             if ((boolean) prozessVariablen.getOrDefault("showEveningFlow", false)) i = saveMicroHabitsForTile(user, selectedDate, "EveningFlow", ids, i, 3);
             if ((boolean) prozessVariablen.getOrDefault("showRestCycle", false)) saveMicroHabitsForTile(user, selectedDate, "RestCycle", ids, i, 3);
         }
-    }
-    
-    private List<UUID> findMicroHabitsForTile(String tileKey, String doshaType, int limit) {
-        Parameters params = Parameters.with("doshaParam", "%" + doshaType + "%")
-                                      .and("tridoshicParam", "%tridoshic%")
-                                      .and("tileKey", tileKey);
-
-        List<MicrohabitContent> results = MicrohabitContent.find(
-            "FROM MicrohabitContent m WHERE m.routineTile.tileKey = :tileKey AND (CAST(m.doshaTypes AS String) LIKE :doshaParam OR CAST(m.doshaTypes AS String) LIKE :tridoshicParam) ORDER BY RANDOM()",
-            params
-        ).page(0, limit).list();
-
-        List<UUID> idList = new ArrayList<>();
-        for (MicrohabitContent mh : results) {
-            idList.add(mh.id);
-        }
-        return idList;
     }
 
     private int saveMicroHabitsForTile(AppUser user, LocalDate date, String tileKey, List<UUID> allIds, int startIndex, int count) {
