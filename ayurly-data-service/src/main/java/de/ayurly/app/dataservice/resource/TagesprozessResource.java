@@ -11,7 +11,7 @@ import org.jboss.logging.Logger;
 
 import de.ayurly.app.dataservice.client.CibsevenProcessClient;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyContent;
-import jakarta.annotation.security.RolesAllowed; // NEUER IMPORT für Logging
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -23,7 +23,7 @@ import jakarta.ws.rs.core.Response;
 @Path("/api/tagesprozess")
 public class TagesprozessResource {
 
-    private static final Logger LOG = Logger.getLogger(TagesprozessResource.class); // NEU: Logger Instanz
+    private static final Logger LOG = Logger.getLogger(TagesprozessResource.class);
 
     @Inject
     @RestClient
@@ -32,7 +32,7 @@ public class TagesprozessResource {
     @Inject
     JsonWebToken jwt;
 
-    // Diese innere Klasse ist nur für die Typsicherheit beim Erstellen der Payload
+    
     private static class CamundaVariable {
         public String type;
         public Object value;
@@ -58,21 +58,24 @@ public class TagesprozessResource {
             return Response.ok(Map.of("status", "CONTENT_EXISTS")).build();
         }
         
-        // --- FINALE KORREKTUR: Prozess-Variablen exakt nach Camunda-Spezifikation bauen ---
+        LocalDate today = LocalDate.now();
+        boolean isDateValid = !selectedDate.isBefore(today); // true, wenn heute oder in der Zukunft
+
         Map<String, CamundaVariable> variables = new HashMap<>();
         variables.put("userId", new CamundaVariable("String", userId));
         variables.put("selectedDate", new CamundaVariable("String", selectedDateStr));
+        // Übergeben Sie das Ergebnis der Prüfung als sauberen Boolean-Wert
+        variables.put("isDateValid", new CamundaVariable("Boolean", isDateValid));
         
         Map<String, Object> processPayload = Map.of("variables", variables);
 
         try {
             LOG.infof("Starte Camunda-Prozess 'ayurly-tages-content-prozess' für User %s", userId);
-            // Das Logging des REST Clients (in application.properties) würde hier die genaue Payload zeigen.
             CibsevenProcessClient.ProcessInstance instance = processClient.startProcess("ayurly-tages-content-prozess", processPayload);
             LOG.infof("Prozess erfolgreich gestartet mit Instanz-ID: %s", instance.id);
             return Response.accepted(Map.of("processInstanceId", instance.id, "status", "PROCESS_STARTED")).build();
         } catch (Exception e) {
-            LOG.errorf(e, "Fehler beim Starten des Camunda-Prozesses für User %s", userId);
+            LOG.errorf(e, "FATALER FEHLER beim Starten des Camunda-Prozesses für User %s", userId);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(Map.of("error", "Prozess konnte nicht gestartet werden. Details siehe Server-Log."))
                     .build();
