@@ -18,6 +18,7 @@ public class TestWorker {
     void onStart(@Observes StartupEvent ev) {
         ExternalTaskClient client = ExternalTaskClient.create()
                 .baseUrl(cibsevenApiUrl)
+                .asyncResponseTimeout(200) // Timeout für die HTTP-Verbindung
                 .build();
 
         client.subscribe("Minimaler-Test-Prozess")
