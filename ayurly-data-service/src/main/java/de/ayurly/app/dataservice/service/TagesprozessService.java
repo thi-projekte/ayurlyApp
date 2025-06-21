@@ -94,7 +94,8 @@ public class TagesprozessService {
 
     @SuppressWarnings("unchecked")
     private List<UUID> findRandomContentIds(String tileKey, String doshaType, int limit) {
-        String nativeQuery = "SELECT content_id FROM microhabit_details WHERE routine_tile_id = :tileKey AND (:dosha = ANY(dosha_types) OR 'tridoshic' = ANY(dosha_types)) ORDER BY RANDOM() LIMIT :limit";
+        String nativeQuery = "SELECT md.content_id FROM microhabit_details md INNER JOIN lookup_routine_tiles lrt ON md.routine_tile_id = lrt.id WHERE lrt.tile_key = :tileKey " + 
+                              "AND (:dosha = ANY(md.dosha_types) OR 'tridoshic' = ANY(md.dosha_types)) ORDER BY RANDOM() LIMIT :limit";
 
         return entityManager.createNativeQuery(nativeQuery, UUID.class)
                 .setParameter("tileKey", tileKey)
