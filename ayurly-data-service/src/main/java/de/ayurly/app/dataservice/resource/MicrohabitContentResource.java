@@ -107,7 +107,7 @@ public class MicrohabitContentResource {
         public String title;
         public String previewDescription;
         public String[] doshaTypes;
-        public UUID routineTileId; 
+        public int routineTileId; 
     }
 
     public static class LikeResponseDto { 
