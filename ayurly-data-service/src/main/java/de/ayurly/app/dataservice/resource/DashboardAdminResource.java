@@ -75,10 +75,10 @@ public class DashboardAdminResource {
         public String contentType;
         public long count;
 
-        public TopContentDto(String title, String contentType, long count) {
+        public TopContentDto(String title, String contentType, Long count) {
             this.title = title;
             this.contentType = contentType;
-            this.count = count;
+            this.count = count != null ? count : 0L;
         }
     }
 
@@ -86,9 +86,9 @@ public class DashboardAdminResource {
         public String tileName;
         public long doneCount;
 
-        public TileUsageDto(String tileName, long doneCount) {
+        public TileUsageDto(String tileName, Long doneCount) {
             this.tileName = tileName;
-            this.doneCount = doneCount;
+            this.doneCount = doneCount != null ? doneCount : 0L;
         }
     }
 
