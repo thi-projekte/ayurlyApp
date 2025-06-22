@@ -42,14 +42,14 @@ import java.util.Map;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Admin Dashboard", description = "Operations for the admin dashboard")
-@RolesAllowed("admin") 
+@RolesAllowed("admin")
 @SecurityRequirement(name = "jwtAuth")
 public class DashboardAdminResource {
 
     @Inject
     EntityManager entityManager;
 
-     public static class DashboardMetricsDto {
+    public static class DashboardMetricsDto {
         public long totalUsers;
         public long activeUsersLast30Days;
         public long totalRecipes;
@@ -94,31 +94,22 @@ public class DashboardAdminResource {
 
     @GET
     @Path("/metrics")
-    @Transactional 
+    @Transactional
     @Operation(summary = "Get admin dashboard metrics", description = "Retrieves key metrics for the admin dashboard display.")
-    @APIResponse(
-        responseCode = "200", 
-        description = "Metrics successfully retrieved", 
-        content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = DashboardMetricsDto.class))
-    )
-    @APIResponse(responseCode = "401", description = "User not authenticated")
-    @APIResponse(responseCode = "403", description = "User not authorized (requires admin role)")
+    @APIResponse(responseCode = "200", description = "Metrics successfully retrieved", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = DashboardMetricsDto.class)))
     public Response getDashboardMetrics() {
         DashboardMetricsDto dto = new DashboardMetricsDto();
 
         dto.totalUsers = AppUser.count();
-        
+
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
-        dto.activeUsersLast30Days = MyAyurlyContent.count(
-            "SELECT DISTINCT user.id FROM MyAyurlyContent WHERE calendarDate >= :date",
-            Parameters.with("date", thirtyDaysAgo)
-        );
+        dto.activeUsersLast30Days = MyAyurlyContent.count("SELECT DISTINCT user.id FROM MyAyurlyContent WHERE calendarDate >= :date", Parameters.with("date", thirtyDaysAgo));
 
         dto.totalRecipes = RecipeContent.count();
         dto.totalMicrohabits = MicrohabitContent.count();
         dto.totalProducts = ProductContent.count();
         dto.totalYogaExercises = YogaExerciseContent.count();
-        
+
         return Response.ok(dto).build();
     }
 
@@ -129,23 +120,20 @@ public class DashboardAdminResource {
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = SankeyNodeDto.class)))
     public Response getSankeyData() {
         List<SankeyNodeDto> sankeyData = new ArrayList<>();
-        
+
         Map<String, Map<String, Long>> doshaToRoutineCounts = new HashMap<>();
-        
-        // 1. Daten aggregieren
+
         List<MicrohabitContent> allMicrohabits = MicrohabitContent.listAll();
         for (MicrohabitContent item : allMicrohabits) {
             if (item.doshaTypes == null || item.doshaTypes.length == 0 || item.routineTile == null) {
                 continue;
             }
-            
+
             Arrays.sort(item.doshaTypes);
             String doshaKey = String.join(", ", item.doshaTypes);
             String routineTileName = item.routineTile.title;
 
-            doshaToRoutineCounts
-                .computeIfAbsent(doshaKey, k -> new HashMap<>())
-                .merge(routineTileName, 1L, Long::sum);
+            doshaToRoutineCounts.computeIfAbsent(doshaKey, k -> new HashMap<>()).merge(routineTileName, 1L, Long::sum);
         }
 
         long totalMicrohabits = allMicrohabits.size();
@@ -154,10 +142,8 @@ public class DashboardAdminResource {
         doshaToRoutineCounts.forEach((doshaKey, routineMap) -> {
             long totalForDosha = routineMap.values().stream().mapToLong(Long::longValue).sum();
 
-            // Level 1 -> 2: Von "Microhabits" zum Dosha-Typ
             sankeyData.add(new SankeyNodeDto(sourceNode, doshaKey, totalForDosha));
-            
-            // Level 2 -> 3: Vom Dosha-Typ zur Routine-Kachel
+
             routineMap.forEach((routineName, count) -> {
                 sankeyData.add(new SankeyNodeDto(doshaKey, routineName, count));
             });
@@ -171,16 +157,13 @@ public class DashboardAdminResource {
     @Transactional
     @Operation(summary = "Get Top 5 liked content items", description = "Retrieves a ranked list of the most liked content, optionally filtered by content type and the user's dosha type.")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TopContentDto.class)))
-    public Response getTopLikedContent(
-            @QueryParam("contentType") String contentType,
-            @QueryParam("userDoshaType") String userDoshaType) {
+    public Response getTopLikedContent(@QueryParam("contentType") String contentType, @QueryParam("userDoshaType") String userDoshaType) {
 
         String query;
         Parameters params = new Parameters();
 
         if (userDoshaType != null && !userDoshaType.isEmpty() && !userDoshaType.equals("all")) {
-            // Query über die Likes, um nach dem Dosha des likenden Users zu filtern
-            query = "SELECT ci.title, ci.contentType, COUNT(cl.id) as likeCount FROM ContentLike cl JOIN cl.contentItem ci JOIN cl.user u WHERE u.doshaType = :userDoshaType";
+            query = "SELECT ci.title, ci.contentType, COUNT(cl.id) as likeCount FROM ContentLike cl JOIN cl.contentItem ci JOIN AppUser u ON cl.userId = u.id WHERE u.doshaType = :userDoshaType";
             params.and("userDoshaType", userDoshaType);
             if (contentType != null && !contentType.isEmpty() && !contentType.equals("all")) {
                 query += " AND ci.contentType = :contentType";
@@ -188,13 +171,12 @@ public class DashboardAdminResource {
             }
             query += " GROUP BY ci.id, ci.title, ci.contentType ORDER BY likeCount DESC";
         } else {
-            // Einfache Query über das 'likeCount'-Feld, wenn nicht nach User-Dosha gefiltert wird
-            query = "SELECT title, contentType, likeCount FROM ContentItem";
+            query = "SELECT c.title, c.contentType, c.likeCount FROM ContentItem c";
             if (contentType != null && !contentType.isEmpty() && !contentType.equals("all")) {
-                query += " WHERE contentType = :contentType";
+                query += " WHERE c.contentType = :contentType";
                 params.and("contentType", contentType);
             }
-            query += " ORDER BY likeCount DESC";
+            query += " ORDER BY c.likeCount DESC";
         }
 
         TypedQuery<Object[]> typedQuery = entityManager.createQuery(query, Object[].class);
@@ -204,8 +186,8 @@ public class DashboardAdminResource {
         List<Object[]> results = typedQuery.setMaxResults(5).getResultList();
 
         List<TopContentDto> dtoList = results.stream()
-                .map(row -> new TopContentDto((String) row[0], (String) row[1], (Long) row[2]))
-                .collect(Collectors.toList());
+            .map(row -> new TopContentDto((String) row[0], (String) row[1], ((Number) row[2]).longValue()))
+            .collect(Collectors.toList());
 
         return Response.ok(dtoList).build();
     }
@@ -215,9 +197,7 @@ public class DashboardAdminResource {
     @Transactional
     @Operation(summary = "Get Top 5 'done' content items", description = "Retrieves a ranked list of the most completed content, optionally filtered.")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TopContentDto.class)))
-    public Response getTopDoneContent(
-            @QueryParam("contentType") String contentType,
-            @QueryParam("userDoshaType") String userDoshaType) {
+    public Response getTopDoneContent(@QueryParam("contentType") String contentType, @QueryParam("userDoshaType") String userDoshaType) {
 
         String query = "SELECT m.contentItem.title, m.contentItem.contentType, COUNT(m.id) as doneCount FROM MyAyurlyContent m WHERE m.isDone = true";
         Parameters params = new Parameters();
@@ -242,10 +222,7 @@ public class DashboardAdminResource {
     @Operation(summary = "Get usage counts for routine tiles", description = "Retrieves the count of 'done' items for each routine tile.")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TileUsageDto.class)))
     public Response getTileUsage() {
-        List<TileUsageDto> results = MyAyurlyContent.find(
-            "SELECT m.routineTile.title, COUNT(m.id) FROM MyAyurlyContent m WHERE m.isDone = true GROUP BY m.routineTile.title ORDER BY COUNT(m.id) DESC"
-        ).project(TileUsageDto.class).list();
+        List<TileUsageDto> results = MyAyurlyContent.find("SELECT m.routineTile.title, COUNT(m.id) FROM MyAyurlyContent m WHERE m.isDone = true GROUP BY m.routineTile.title ORDER BY COUNT(m.id) DESC").project(TileUsageDto.class).list();
         return Response.ok(results).build();
     }
-
 }
