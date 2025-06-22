@@ -25,7 +25,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,11 +51,15 @@ public class DashboardAdminResource {
     }
 
     public static class SankeyNodeDto {
-        public String sourceType; 
         public String source;
-        public String targetType;
         public String target;
         public long value;
+
+        public SankeyNodeDto(String source, String target, long value) {
+            this.source = source;
+            this.target = target;
+            this.value = value;
+        }
     }
 
     @GET
@@ -90,93 +93,47 @@ public class DashboardAdminResource {
     }
 
     @GET
-    @Path("/sankey-data")
+    @Path("/sankey-data/microhabits")
     @Transactional
-    @Operation(summary = "Get Sankey diagram data", description = "Retrieves aggregated data structured for a Sankey diagram.")
-    @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = SankeyNodeDto.class, type = org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY)))
+    @Operation(summary = "Get Sankey diagram data for Microhabits", description = "Retrieves aggregated data for Microhabits, structured for a Sankey diagram.")
+    @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = SankeyNodeDto.class)))
     public Response getSankeyData() {
-        
         List<SankeyNodeDto> sankeyData = new ArrayList<>();
         
-        // 1. Zähle alle Content-Typen
-        long totalRecipes = RecipeContent.count();
-        long totalMicrohabits = MicrohabitContent.count();
-        long totalProducts = ProductContent.count();
-        long totalYoga = YogaExerciseContent.count();
-        long totalContent = totalRecipes + totalMicrohabits + totalProducts + totalYoga;
-
-        // Level 1 -> 2
-        sankeyData.add(createNode("root", "Inhalte Gesamt", "ContentType", "Rezepte", totalRecipes));
-        sankeyData.add(createNode("root", "Inhalte Gesamt", "ContentType", "Microhabits", totalMicrohabits));
-        sankeyData.add(createNode("root", "Inhalte Gesamt", "ContentType", "Produkte", totalProducts));
-        sankeyData.add(createNode("root", "Inhalte Gesamt", "ContentType", "Yoga", totalYoga));
-
-        // Aggregiere Dosha-Typen für jeden Content-Typ
-        addDoshaNodes("Rezepte", RecipeContent.listAll(), sankeyData);
-        addDoshaNodes("Produkte", ProductContent.listAll(), sankeyData);
-        addDoshaNodes("Yoga", YogaExerciseContent.listAll(), sankeyData);
+        Map<String, Map<String, Long>> doshaToRoutineCounts = new HashMap<>();
         
-        // 3. Spezielle Behandlung für Microhabits (Dosha -> RoutineTile)
-        addMicrohabitNodes(MicrohabitContent.listAll(), sankeyData);
+        // 1. Daten aggregieren
+        List<MicrohabitContent> allMicrohabits = MicrohabitContent.listAll();
+        for (MicrohabitContent item : allMicrohabits) {
+            if (item.doshaTypes == null || item.doshaTypes.length == 0 || item.routineTile == null) {
+                continue;
+            }
+            
+            Arrays.sort(item.doshaTypes);
+            String doshaKey = String.join(", ", item.doshaTypes);
+            String routineTileName = item.routineTile.title;
+
+            doshaToRoutineCounts
+                .computeIfAbsent(doshaKey, k -> new HashMap<>())
+                .merge(routineTileName, 1L, Long::sum);
+        }
+
+        long totalMicrohabits = allMicrohabits.size();
+        final String sourceNode = "Microhabits (" + totalMicrohabits + ")";
+
+        doshaToRoutineCounts.forEach((doshaKey, routineMap) -> {
+            long totalForDosha = routineMap.values().stream().mapToLong(Long::longValue).sum();
+
+            // Level 1 -> 2: Von "Microhabits" zum Dosha-Typ
+            sankeyData.add(new SankeyNodeDto(sourceNode, doshaKey, totalForDosha));
+            
+            // Level 2 -> 3: Vom Dosha-Typ zur Routine-Kachel
+            routineMap.forEach((routineName, count) -> {
+                sankeyData.add(new SankeyNodeDto(doshaKey, routineName, count));
+            });
+        });
 
         return Response.ok(sankeyData).build();
     }
 
-    private SankeyNodeDto createNode(String sourceType, String source, String targetType, String target, long value) {
-        SankeyNodeDto node = new SankeyNodeDto();
-        node.sourceType = sourceType;
-        node.source = source;
-        node.targetType = targetType;
-        node.target = target;
-        node.value = value;
-        return node;
-    }
-    
-    private void addDoshaNodes(String contentTypeName, List<? extends ContentItem> items, List<SankeyNodeDto> sankeyData) {
-        Map<String, Long> doshaCounts = new HashMap<>();
-        for (ContentItem item : items) {
-            String[] doshaTypes = getDoshaTypes(item); 
-            if (doshaTypes != null && doshaTypes.length > 0) {
-                Arrays.sort(doshaTypes); 
-                String doshaKey = String.join(", ", doshaTypes);
-                doshaCounts.put(doshaKey, doshaCounts.getOrDefault(doshaKey, 0L) + 1);
-            }
-        }
-        doshaCounts.forEach((doshaKey, count) -> 
-            sankeyData.add(createNode("ContentType", contentTypeName, "DoshaType", doshaKey, count))
-        );
-    }
-    
-    private void addMicrohabitNodes(List<MicrohabitContent> items, List<SankeyNodeDto> sankeyData) {
-        Map<String, Map<String, Long>> doshaToRoutineCounts = new HashMap<>();
-        for (MicrohabitContent item : items) {
-            if (item.doshaTypes != null && item.doshaTypes.length > 0 && item.routineTile != null) {
-                Arrays.sort(item.doshaTypes);
-                String doshaKey = String.join(", ", item.doshaTypes);
-                String routineTileName = item.routineTile.title;
-
-                doshaToRoutineCounts
-                    .computeIfAbsent(doshaKey, k -> new HashMap<>())
-                    .put(routineTileName, doshaToRoutineCounts.get(doshaKey).getOrDefault(routineTileName, 0L) + 1);
-            }
-        }
-        
-        doshaToRoutineCounts.forEach((doshaKey, routineMap) -> {
-            long totalForDosha = routineMap.values().stream().mapToLong(Long::longValue).sum();
-            sankeyData.add(createNode("ContentType", "Microhabits", "DoshaType", doshaKey, totalForDosha));
-            
-            routineMap.forEach((routineName, count) -> 
-                sankeyData.add(createNode("DoshaType", doshaKey, "RoutineTile", routineName, count))
-            );
-        });
-    }
-
-     private String[] getDoshaTypes(ContentItem item) {
-        try {
-            Field field = item.getClass().getField("doshaTypes");
-            return (String[]) field.get(item);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            return null; 
-        }
-    }
 }
