@@ -47,6 +47,7 @@ public class MyAyurlyContentResource {
         public String contentType;
         public int likeCount;
         public Integer preparationTimeMinutes;
+        public Boolean likedByCurrentUser;
     }
 
     public static class DashboardContentDTO {
@@ -140,6 +141,13 @@ public class MyAyurlyContentResource {
         dto.contentType = contentItem.contentType;
         dto.likeCount = contentItem.likeCount;
         dto.isDone = item.isDone;
+
+        String currentUserId = getCurrentUserIdOptional();
+        if (currentUserId != null) {
+            dto.likedByCurrentUser = ContentLike.count("contentItem.id = ?1 AND userId = ?2", contentItem.id, currentUserId) > 0;
+        } else {
+            dto.likedByCurrentUser = null;
+        }
         
         if (contentItem instanceof RecipeContent) {
             RecipeContent recipe = (RecipeContent) contentItem;
