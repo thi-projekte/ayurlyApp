@@ -7,55 +7,55 @@ import Modal from '../components/UI/Modal'; // Modal-Komponente importieren
 const questions = [
   {
     question: "Wie ist deine Energie über den Tag?",
-    answers: { vata: "Schwankt stark", pitta: "Stabil mit Mittagshoch ", kapha: "Langsam, aber konstant " }
+    answers: { Vata: "Schwankt stark", Pitta: "Stabil mit Mittagshoch ", Kapha: "Langsam, aber konstant " }
   },
   {
     question: "Wie ist deine Verdauung?",
-    answers: { vata: "Unregelmäßig, Blähungen ", pitta: "Stark, manchmal Übersäuerung ", kapha: "Langsam, schweres Gefühl " }
+    answers: { Vata: "Unregelmäßig, Blähungen ", Pitta: "Stark, manchmal Übersäuerung ", Kapha: "Langsam, schweres Gefühl " }
   },
   {
     question: "Wie reagierst du auf Stress?",
-    answers: { vata: "Ängstlich, unruhig ", pitta: "Wütend, gereizt ", kapha: "Zurückgezogen, ruhig " }
+    answers: { Vata: "Ängstlich, unruhig ", Pitta: "Wütend, gereizt ", Kapha: "Zurückgezogen, ruhig " }
   },
   {
     question: "Wie ist dein Schlafverhalten?",
-    answers: { vata: "Leicht, oft unterbrochen", pitta: "Durchschnittlich, oft mit Träumen", kapha: "Tief und lang" }
+    answers: { Vata: "Leicht, oft unterbrochen", Pitta: "Durchschnittlich, oft mit Träumen", Kapha: "Tief und lang" }
   },
   {
     question: "Wie ist deine körperliche Konstitution?",
-    answers: { vata: "Schlank, zierlich", pitta: "Mittel, athletisch", kapha: "Kräftig, stämmig" }
+    answers: { Vata: "Schlank, zierlich", Pitta: "Mittel, athletisch", Kapha: "Kräftig, stämmig" }
   },
   {
     question: "Wie ist deine Hautbeschaffenheit?",
-    answers: { vata: "Trocken, rau", pitta: "Empfindlich, rötlich", kapha: "Weich, ölig" }
+    answers: { Vata: "Trocken, rau", Pitta: "Empfindlich, rötlich", Kapha: "Weich, ölig" }
   },
   {
     question: "Wie gehst du mit Veränderungen um?",
-    answers: { vata: "Unsicher, nervös", pitta: "Zielgerichtet, ehrgeizig", kapha: "Gelassen, manchmal träge" }
+    answers: { Vata: "Unsicher, nervös", Pitta: "Zielgerichtet, ehrgeizig", Kapha: "Gelassen, manchmal träge" }
   },
   {
     question: "Wie ist dein Appetit?",
-    answers: { vata: "Unregelmäßig, vergisst zu essen", pitta: "Stark, regelmäßig", kapha: "Eher gering, isst aus Gewohnheit" }
+    answers: { Vata: "Unregelmäßig, vergisst zu essen", Pitta: "Stark, regelmäßig", Kapha: "Eher gering, isst aus Gewohnheit" }
   },
   {
     question: "Wie ist dein Redeverhalten?",
-    answers: { vata: "Schnell, sprunghaft", pitta: "Deutlich, überzeugend", kapha: "Langsam, bedacht" }
+    answers: { Vata: "Schnell, sprunghaft", Pitta: "Deutlich, überzeugend", Kapha: "Langsam, bedacht" }
   },
   {
     question: "Wie reagierst du auf kaltes Wetter?",
-    answers: { vata: "Empfindlich, friert leicht", pitta: "Erfrischend", kapha: "Erträgt es gut, wird träge" }
+    answers: { Vata: "Empfindlich, friert leicht", Pitta: "Erfrischend", Kapha: "Erträgt es gut, wird träge" }
   },
   {
     question: "Wie gehst du mit Konflikten um?",
-    answers: { vata: "Vermeidet sie, wird ängstlich", pitta: "Stellt sich ihnen direkt", kapha: "Zieht sich zurück, meidet Diskussionen" }
+    answers: { Vata: "Vermeidet sie, wird ängstlich", Pitta: "Stellt sich ihnen direkt", Kapha: "Zieht sich zurück, meidet Diskussionen" }
   },
   {
     question: "Wie ist dein Energielevel am Morgen?",
-    answers: { vata: "Braucht Zeit zum Wachwerden", pitta: "Sofort wach und aktiv", kapha: "Schwerfällig, müde" }
+    answers: { Vata: "Braucht Zeit zum Wachwerden", Pitta: "Sofort wach und aktiv", Kapha: "Schwerfällig, müde" }
   },
   {
     question: "Wie ist deine Denkweise?",
-    answers: { vata: "Kreativ, sprunghaft", pitta: "Analytisch, scharf", kapha: "Beständig, langsam" }
+    answers: { Vata: "Kreativ, sprunghaft", Pitta: "Analytisch, scharf", Kapha: "Beständig, langsam" }
   }
 ];
 
@@ -101,9 +101,9 @@ const DoshaTestPage = () => {
     setResultDosha(maxDosha);
     let text = "Du bist hauptsächlich: ";
     switch (maxDosha) {
-      case "vata": text += "🌀 Vata – kreativ, beweglich, aber manchmal unruhig."; break;
-      case "pitta": text += "🔥 Pitta – zielstrebig, stark, aber schnell reizbar."; break;
-      case "kapha": text += "🌱 Kapha – stabil, liebevoll, aber neigt zur Trägheit."; break;
+      case "Vata": text += "🌀 Vata – kreativ, beweglich, aber manchmal unruhig."; break;
+      case "Pitta": text += "🔥 Pitta – zielstrebig, stark, aber schnell reizbar."; break;
+      case "Kapha": text += "🌱 Kapha – stabil, liebevoll, aber neigt zur Trägheit."; break;
       default: text = "Ergebnis konnte nicht ermittelt werden."; setResultDosha(null);
     }
     setResultText(text);
@@ -159,7 +159,7 @@ const DoshaTestPage = () => {
   const VataModalContent = () => (
     <>
       <div className="generalInfo">
-        <video src="/videos/index/vata.mp4" type="video/mp4" autoPlay loop muted playsInline></video>
+        <video src="/videos/index/Vata.mp4" type="video/mp4" autoPlay loop muted playsInline></video>
         <div className="modalText"> {/* Klasse modalText für Konsistenz mit indexStyles.css */}
           <h2 id="VataName">Vata</h2>
           <p>
@@ -298,7 +298,7 @@ const DoshaTestPage = () => {
   const PittaModalContent = () => (
     <>
         <div className="generalInfo">
-            <video src="/videos/index/Pitta.mp4" type="video/mp4" autoPlay loop muted playsInline id="pittaVideo"></video>
+            <video src="/videos/index/Pitta.mp4" type="video/mp4" autoPlay loop muted playsInline id="PittaVideo"></video>
             <div className="modalText">
               <h2 id="PittaName">Pitta</h2>
               <p>
@@ -442,7 +442,7 @@ const DoshaTestPage = () => {
   const KaphaModalContent = () => (
     <>
         <div className="generalInfo">
-            <video src="/videos/index/Kapha.mp4" type="video/mp4" autoPlay loop muted playsInline id="kaphaVideo"></video>
+            <video src="/videos/index/Kapha.mp4" type="video/mp4" autoPlay loop muted playsInline id="KaphaVideo"></video>
             <div className="modalText">
               <h2 id="KaphaName">Kapha</h2>
               <p>
@@ -578,9 +578,9 @@ const DoshaTestPage = () => {
 
   const getModalContent = () => {
     switch (resultDosha) {
-      case 'vata': return <VataModalContent />;
-      case 'pitta': return <PittaModalContent />;
-      case 'kapha': return <KaphaModalContent />;
+      case 'Vata': return <VataModalContent />;
+      case 'Pitta': return <PittaModalContent />;
+      case 'Kapha': return <KaphaModalContent />;
       default: return null;
     }
   };
