@@ -30,15 +30,11 @@ import java.time.LocalDate;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Admin Dashboard", description = "Operations for the admin dashboard")
-@RolesAllowed("admin") // Sichert alle Endpunkte in dieser Klasse für die Admin-Rolle
+@RolesAllowed("admin") 
 @SecurityRequirement(name = "jwtAuth")
 public class DashboardAdminResource {
 
-    /**
-     * DTO zur Bündelung aller Kennzahlen für das Admin-Dashboard.
-     * Definiert als statische innere Klasse gemäß dem Projektstandard.
-     */
-    public static class DashboardMetricsDto {
+     public static class DashboardMetricsDto {
         public long totalUsers;
         public long activeUsersLast30Days;
         public long totalRecipes;
