@@ -1,6 +1,5 @@
 .adminContainer {
   width: 100%;
-  max-width: 1200px;
   margin: 20px auto;
   padding: 20px;
   background-color: #f9f9f9;
@@ -324,4 +323,83 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+.dashboardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.statCard {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.statCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px burdensome rgba(0, 0, 0, 0.08);
+}
+
+.statCard h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+    color: #555;
+    font-weight: 500;
+}
+
+.statCard p {
+    margin: 0;
+    font-size: 2.5em;
+    font-weight: 600;
+    color: #003329;
+}
+
+.sankeyContainer {
+    grid-column: 1 / -1;
+    width: 1600px;
+    background-color: #fff; padding: 1rem; border-radius: 8px;
+}
+
+.collapsibleContainer {
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-top: 20px;
+    width: 1600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    grid-column: 1 / -1; /* Nimmt immer die volle Breite des Grids ein */
+}
+
+.collapsibleContainer .collapsibleContainer {
+    width: 1560px;
+}
+
+.collapsibleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.collapsibleHeader h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.collapsibleContent {
+    padding: 20px;
+}
+
+.chartFilters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    justify-content: flex-end;
 }

@@ -17,6 +17,7 @@ import { UserProvider } from './contexts/UserContext';
 import ProcessTestComponent from './components/ProcessTestComponent';
 // Admin-Page Imports
 import AdminRoute from './components/Navigation/AdminRoute';
+import DashboardOverview from './components/Admin/DashboardOverview';
 import ProtectedRoute from './components/Navigation/ProtectedRoute';
 import AdminPage from './pages/AdminPage'; 
 import ManageDoshaTypes from './components/Admin/ManageDoshaTypes'; 
@@ -51,8 +52,8 @@ function App() {
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminRoute />}>
               <Route path="" element={<AdminPage />}> {/* Layout-Route */}
-                <Route index element={<Navigate to="content/recipes" replace />} /> {/* Standard für /admin */}
-                <Route path="dashboard" element={<div>Admin Dashboard (Platzhalter)</div>} />
+                <Route index element={<Navigate to="dashboard" replace />} /> {/* Standard für /admin */}
+                <Route path="dashboard" element={<DashboardOverview />} />
                 
                 {/* Content Management - Hauptseite und Unterrouten */}
                 <Route path="content" element={<Outlet/>}> {/* Wrapper für Content-Unterrouten */}

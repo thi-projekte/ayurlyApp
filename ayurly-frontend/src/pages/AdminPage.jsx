@@ -14,7 +14,7 @@ const AdminPage = () => {
   useEffect(() => {
     // Wenn /admin aufgerufen wird, direkt zu recipes weiterleiten
     if (location.pathname === '/admin' || location.pathname === '/admin/') {
-        navigate('content/recipes', { replace: true });
+        navigate('dashboard', { replace: true });
     }
     // Wenn /admin/content aufgerufen wird, auch zu recipes weiterleiten
     else if (location.pathname === '/admin/content') {
