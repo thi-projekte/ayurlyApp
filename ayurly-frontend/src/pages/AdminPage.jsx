@@ -55,9 +55,9 @@ const AdminPage = () => {
 
       {isActive('lookups') && (
         <nav className={styles.adminSubNav}> 
-          <NavLink to="lookups/dosha-types" className={({isActive}) => isActive ? styles.activeSubLink : styles.subLink}>Dosha-Typen</NavLink>
-          <NavLink to="lookups/content-types" className={({isActive}) => isActive ? styles.activeSubLink : styles.subLink}>Content-Typen</NavLink>
-          <NavLink to="lookups/units" className={({isActive}) => isActive ? styles.activeSubLink : styles.subLink}>Einheiten</NavLink>
+          <NavLink to="lookups/dosha-types" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Dosha-Typen</NavLink>
+          <NavLink to="lookups/content-types" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Content-Typen</NavLink>
+          <NavLink to="lookups/units" className={({isActive: isSubActive}) => isSubActive ? `${styles.subLink} ${styles.activeSubLink}` : styles.subLink}>Einheiten</NavLink>
         </nav>
       )}
 
