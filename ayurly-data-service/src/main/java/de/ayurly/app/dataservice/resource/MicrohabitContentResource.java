@@ -19,7 +19,6 @@ import de.ayurly.app.dataservice.entity.content.ContentItem;
 import de.ayurly.app.dataservice.entity.content.ContentLike;
 import de.ayurly.app.dataservice.entity.content.MicrohabitContent;
 import de.ayurly.app.dataservice.entity.lookup.LookupRoutineTile;
-import de.ayurly.app.dataservice.resource.RecipeContentResource.LikeResponseDto;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
@@ -51,6 +50,13 @@ public class MicrohabitContentResource {
     @Inject
     JsonWebToken jwt;
 
+    private String getCurrentUserIdOptional() {
+        if (jwt != null && jwt.getSubject() != null) {
+            return jwt.getSubject();
+        }
+        return null;
+    }
+
     // --- DTOs ---
 
     public static class RoutineTileDto {
@@ -73,8 +79,10 @@ public class MicrohabitContentResource {
         public String[] doshaTypes;
         public RoutineTileDto routineTile;
         public String contentType;
+        public int likeCount;
+        public Boolean likedByCurrentUser;
 
-        public static MicrohabitDto fromEntity(MicrohabitContent entity) {
+        public static MicrohabitDto fromEntity(MicrohabitContent entity, String currentUserId) {
             if (entity == null) return null;
             MicrohabitDto dto = new MicrohabitDto();
             dto.id = entity.id;
@@ -83,15 +91,35 @@ public class MicrohabitContentResource {
             dto.contentType = entity.contentType;
             dto.doshaTypes = entity.doshaTypes;
             dto.routineTile = RoutineTileDto.fromEntity(entity.routineTile);
+            dto.likeCount = entity.likeCount;
+
+            if (currentUserId != null) {
+                dto.likedByCurrentUser = ContentLike.count("contentItem.id = ?1 AND userId = ?2", entity.id, currentUserId) > 0;
+            } else {
+                dto.likedByCurrentUser = null;
+            }
             return dto;
         }
     }
+
 
     public static class MicrohabitCreateUpdateDto {
         public String title;
         public String previewDescription;
         public String[] doshaTypes;
-        public UUID routineTileId; // Wir nehmen die ID entgegen
+        public UUID routineTileId; 
+    }
+
+    public static class LikeResponseDto { 
+        public UUID contentId;
+        public int likeCount;
+        public boolean likedByCurrentUser;
+
+        public LikeResponseDto(UUID contentId, int likeCount, boolean likedByCurrentUser) {
+            this.contentId = contentId;
+            this.likeCount = likeCount;
+            this.likedByCurrentUser = likedByCurrentUser;
+        }
     }
 
     // --- Endpunkte ---
@@ -101,9 +129,10 @@ public class MicrohabitContentResource {
     @Operation(summary = "Get all microhabits", description = "Retrieves a list of all microhabits.")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = MicrohabitDto.class, type = org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY)))
     public List<MicrohabitDto> getAllMicrohabits() {
+        String currentUserId = getCurrentUserIdOptional();
         return MicrohabitContent.<MicrohabitContent>listAll(Sort.by("title"))
                 .stream()
-                .map(MicrohabitDto::fromEntity)
+                .map(habit -> MicrohabitDto.fromEntity(habit, currentUserId))
                 .collect(Collectors.toList());
     }
 
@@ -114,8 +143,9 @@ public class MicrohabitContentResource {
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = MicrohabitDto.class)))
     @APIResponse(responseCode = "404", description = "Microhabit not found")
     public Response getMicrohabitById(@PathParam("id") UUID id) {
+        String currentUserId = getCurrentUserIdOptional();
         return MicrohabitContent.<MicrohabitContent>findByIdOptional(id)
-                .map(habit -> Response.ok(MicrohabitDto.fromEntity(habit)).build())
+                .map(habit -> Response.ok(MicrohabitDto.fromEntity(habit, currentUserId)).build())
                 .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
     }
 
@@ -126,7 +156,6 @@ public class MicrohabitContentResource {
     @APIResponse(responseCode = "201", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = MicrohabitDto.class)))
     @SecurityRequirement(name = "jwtAuth")
     public Response createMicrohabit(@Valid MicrohabitCreateUpdateDto habitDto) {
-        // Finde die zugehörige RoutineTile
         Optional<LookupRoutineTile> routineTileOpt = LookupRoutineTile.findByIdOptional(habitDto.routineTileId);
         if (routineTileOpt.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity("RoutineTile with id " + habitDto.routineTileId + " not found.").build();
@@ -137,13 +166,12 @@ public class MicrohabitContentResource {
         habit.previewDescription = habitDto.previewDescription;
         habit.doshaTypes = habitDto.doshaTypes;
         habit.routineTile = routineTileOpt.get();
-        // habit.contentType wird durch @DiscriminatorValue("MICROHABIT") gesetzt
 
         habit.persist();
         
         LOG.infof("Admin user %s created new microhabit with id %s", jwt.getSubject(), habit.id);
 
-        return Response.created(URI.create("/api/microhabits/" + habit.id)).entity(MicrohabitDto.fromEntity(habit)).build();
+        return Response.created(URI.create("/api/microhabits/" + habit.id)).entity(MicrohabitDto.fromEntity(habit, jwt.getSubject())).build();
     }
 
     @PUT
@@ -175,7 +203,7 @@ public class MicrohabitContentResource {
 
         LOG.infof("Admin user %s updated microhabit with id %s", jwt.getSubject(), habit.id);
 
-        return Response.ok(MicrohabitDto.fromEntity(habit)).build();
+        return Response.ok(MicrohabitDto.fromEntity(habit, jwt.getSubject())).build();
     }
 
     @DELETE
