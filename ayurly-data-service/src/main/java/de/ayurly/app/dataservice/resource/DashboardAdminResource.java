@@ -61,7 +61,7 @@ public class DashboardAdminResource {
         
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
         dto.activeUsersLast30Days = MyAyurlyContent.count(
-            "SELECT DISTINCT user.id FROM MyAyurlyContent WHERE calendar_date >= :date",
+            "SELECT DISTINCT user.id FROM MyAyurlyContent WHERE calendarDate >= :date",
             Parameters.with("date", thirtyDaysAgo)
         );
 
