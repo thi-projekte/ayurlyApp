@@ -73,6 +73,11 @@
   font-weight: 600;
 }
 
+.adminTable th.sortableHeader {
+    cursor: pointer;
+    user-select: none;
+ }
+
 .adminTable tr:nth-child(even) {
   background-color: #f8f8f8;
 }
@@ -304,4 +309,19 @@
 .activeSubLink:hover {
   background-color: #003329;
   color: white;
+}
+
+.tableControls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.tableControls input,
+.tableControls select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }

@@ -23,6 +23,7 @@ import ManageDoshaTypes from './components/Admin/ManageDoshaTypes';
 import ManageContentTypes from './components/Admin/ManageContentTypes'; 
 import ManageUnits from './components/Admin/ManageUnits'; 
 import ManageRecipes from './components/Admin/ManageRecipes';
+import ManageMicrohabits from './components/Admin/ManageMicrohabits';
 import ManageProducts from './components/Admin/ManageProducts';
 import ManageYoga from './components/Admin/ManageYoga';
 
@@ -57,6 +58,7 @@ function App() {
                 <Route path="content" element={<Outlet/>}> {/* Wrapper für Content-Unterrouten */}
                    <Route index element={<Navigate to="recipes" replace />} /> {/* Standard für /admin/content */}
                    <Route path="recipes" element={<ManageRecipes />} /> 
+                   <Route path="microhabits" element={<ManageMicrohabits />} />
                    <Route path="products" element={<ManageProducts />} />
                    <Route path="yoga" element={<ManageYoga />} />
                 </Route>

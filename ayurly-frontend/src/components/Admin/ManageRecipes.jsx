@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useUser } from '../../contexts/UserContext';
 import apiRequest from '../../services/apiService';
 import styles from '../../pages/AdminPage.module.css';
 
 const API_BASE_URL_RECIPES = '/api/recipes';
 const API_BASE_URL_LOOKUPS = '/api/lookups';
-const API_BASE_URL_UPLOADS = '/api/admin/uploads'; 
+const API_BASE_URL_UPLOADS = '/api/admin/uploads';
 
 const initialRecipeFormState = {
   title: '',
-  imageUrl: '', 
+  imageUrl: '',
   previewDescription: '',
   description: '',
   doshaTypes: [],
-  benefits: [{ text: '' }], 
+  benefits: [{ text: '' }],
   preparationTimeMinutes: 0,
   numberOfPortions: 1,
   ingredients: [{ name: '', quantity: '', unit: '', notes: '' }],
@@ -33,6 +33,11 @@ const ManageRecipes = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterDosha, setFilterDosha] = useState('all');
+  const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'ascending' });
+
 
 
   // Lookup-Daten
@@ -79,7 +84,7 @@ const ManageRecipes = () => {
     setSelectedFile(null);
     setImagePreview(null);
     if (fileInputRef.current) {
-        fileInputRef.current.value = ""; 
+      fileInputRef.current.value = "";
     }
     setIsCreating(true);
     setError(null);
@@ -91,14 +96,14 @@ const ManageRecipes = () => {
     setError(null);
     setSelectedFile(null);
     if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+      fileInputRef.current.value = "";
     }
     try {
       const recipeToEdit = await apiRequest(`${API_BASE_URL_RECIPES}/${recipeId}`, 'GET', null, keycloakInstance.token);
       if (recipeToEdit) {
         setFormData({
           title: recipeToEdit.title || '',
-          imageUrl: recipeToEdit.imageUrl || '', 
+          imageUrl: recipeToEdit.imageUrl || '',
           previewDescription: recipeToEdit.previewDescription || '',
           description: recipeToEdit.description || '',
           doshaTypes: recipeToEdit.doshaTypes || [],
@@ -107,8 +112,8 @@ const ManageRecipes = () => {
             : [{ text: '', id: Date.now() }],
           preparationTimeMinutes: recipeToEdit.preparationTimeMinutes || 0,
           numberOfPortions: recipeToEdit.numberOfPortions || 1,
-          ingredients: recipeToEdit.ingredients && recipeToEdit.ingredients.length > 0 ? recipeToEdit.ingredients.map(ing => ({...ing, id: ing.id || Date.now() + Math.random() })) : [{ name: '', quantity: '', unit: '', notes: '', id: Date.now() }],
-          preparationSteps: recipeToEdit.preparationSteps && recipeToEdit.preparationSteps.length > 0 ? recipeToEdit.preparationSteps.map(step => ({...step, id: step.id || Date.now() + Math.random() })) : [{ stepNumber: 1, description: '', id: Date.now() }],
+          ingredients: recipeToEdit.ingredients && recipeToEdit.ingredients.length > 0 ? recipeToEdit.ingredients.map(ing => ({ ...ing, id: ing.id || Date.now() + Math.random() })) : [{ name: '', quantity: '', unit: '', notes: '', id: Date.now() }],
+          preparationSteps: recipeToEdit.preparationSteps && recipeToEdit.preparationSteps.length > 0 ? recipeToEdit.preparationSteps.map(step => ({ ...step, id: step.id || Date.now() + Math.random() })) : [{ stepNumber: 1, description: '', id: Date.now() }],
         });
         setImagePreview(recipeToEdit.imageUrl || null); // Vorschau für bestehendes Bild
         setEditingRecipe(recipeToEdit);
@@ -248,13 +253,13 @@ const ManageRecipes = () => {
     setError(null);
     setSuccessMessage('');
 
-    let uploadedImageUrl = formData.imageUrl; 
+    let uploadedImageUrl = formData.imageUrl;
 
     // 1. Bild hochladen, falls ein neues ausgewählt wurde
     if (selectedFile) {
       const imageUploadFormData = new FormData();
       imageUploadFormData.append('file', selectedFile);
-      imageUploadFormData.append('subfolder', 'recipes'); 
+      imageUploadFormData.append('subfolder', 'recipes');
 
       try {
         const uploadResponse = await fetch(`${API_BASE_URL_UPLOADS}/image`, {
@@ -271,7 +276,7 @@ const ManageRecipes = () => {
           throw new Error(errorData.message || `Bild-Upload fehlgeschlagen: ${uploadResponse.status}`);
         }
         const uploadResult = await uploadResponse.json();
-        uploadedImageUrl = uploadResult.filePath; 
+        uploadedImageUrl = uploadResult.filePath;
       } catch (uploadError) {
         setError(`Fehler beim Bild-Upload: ${uploadError.message}`);
         setIsLoading(false);
@@ -282,8 +287,8 @@ const ManageRecipes = () => {
     // 2. Rezeptdaten speichern
     const payload = {
       ...formData,
-      imageUrl: uploadedImageUrl, 
-      benefits: formData.benefits.map(b => b.text).filter(text => text.trim() !== ''), 
+      imageUrl: uploadedImageUrl,
+      benefits: formData.benefits.map(b => b.text).filter(text => text.trim() !== ''),
       ingredients: formData.ingredients.filter(ing => ing.name.trim() !== ''),
       preparationSteps: formData.preparationSteps.filter(step => step.description.trim() !== ''),
       preparationTimeMinutes: parseInt(formData.preparationTimeMinutes, 10) || 0,
@@ -310,6 +315,53 @@ const ManageRecipes = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const filteredRecipes = useMemo(() => {
+    let filtered = [...recipes];
+
+    // 1. Filterung nach Dosha
+    if (filterDosha !== 'all') {
+      filtered = filtered.filter(recipe => recipe.doshaTypes?.includes(filterDosha));
+    }
+
+    // 2. Suche nach Titel
+    if (searchTerm) {
+      filtered = filtered.filter(recipe =>
+        recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // 3. Sortierung
+    if (sortConfig.key) {
+      filtered.sort((a, b) => {
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
+
+        // Spezifische Behandlung für das doshaTypes Array
+        if (sortConfig.key === 'doshaTypes') {
+          const aString = a.doshaTypes?.join(', ') || '';
+          const bString = b.doshaTypes?.join(', ') || '';
+          if (aString < bString) return sortConfig.direction === 'ascending' ? -1 : 1;
+          if (aString > bString) return sortConfig.direction === 'ascending' ? 1 : -1;
+          return 0;
+        }
+
+        if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return filtered;
+  }, [recipes, searchTerm, filterDosha, sortConfig]);
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
   };
 
   if (isLoading && !editingRecipe && !isCreating) {
@@ -340,14 +392,14 @@ const ManageRecipes = () => {
             <input type="file" id="imageUpload" name="imageUpload" onChange={handleFileChange} accept="image/png, image/jpeg, image/gif, image/webp" ref={fileInputRef} />
             {imagePreview && (
               <div className={styles.imagePreviewContainer}>
-                <img src={imagePreview} alt="Rezept Vorschau" style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px' }}/>
+                <img src={imagePreview} alt="Rezept Vorschau" style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px' }} />
               </div>
             )}
             {formData.imageUrl && !selectedFile && !imagePreview && ( // Zeige existierende URL, wenn keine neue Datei ausgewählt
-                 <div className={styles.imagePreviewContainer}>
-                    <p>Aktuelles Bild:</p>
-                    <img src={formData.imageUrl} alt="Aktuelles Rezeptbild" style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px' }}/>
-                </div>
+              <div className={styles.imagePreviewContainer}>
+                <p>Aktuelles Bild:</p>
+                <img src={formData.imageUrl} alt="Aktuelles Rezeptbild" style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px' }} />
+              </div>
             )}
           </div>
 
@@ -357,7 +409,7 @@ const ManageRecipes = () => {
           </div>
           <div>
             <label htmlFor="description">Ausführliche Beschreibung:</label>
-            <textarea id="description" name="description" value={formData.description} onChange={handleFormChange} style={{minHeight: '100px'}}></textarea>
+            <textarea id="description" name="description" value={formData.description} onChange={handleFormChange} style={{ minHeight: '100px' }}></textarea>
           </div>
           <div>
             <label>Dosha Typen:</label>
@@ -428,44 +480,69 @@ const ManageRecipes = () => {
             <button type="submit" className={styles.saveButton} disabled={isLoading}>
               {isLoading ? 'Speichern...' : 'Rezept Speichern'}
             </button>
-            <button type="button" className={styles.cancelButton} onClick={() => { setEditingRecipe(null); setIsCreating(false); setFormData(initialRecipeFormState); setSelectedFile(null); setImagePreview(null); if(fileInputRef.current) fileInputRef.current.value = "";}} disabled={isLoading}>
+            <button type="button" className={styles.cancelButton} onClick={() => { setEditingRecipe(null); setIsCreating(false); setFormData(initialRecipeFormState); setSelectedFile(null); setImagePreview(null); if (fileInputRef.current) fileInputRef.current.value = ""; }} disabled={isLoading}>
               Abbrechen
             </button>
           </div>
         </form>
       )}
 
-       {/* Tabellenansicht */}
-       {(!editingRecipe && !isCreating && recipes.length > 0) && (
-        <table className={styles.adminTable}>
-          <thead>
-            <tr>
-              <th>Bild</th>
-              <th>Titel</th>
-              <th>Doshas</th>
-              <th>Portionen</th>
-              <th>Zeit (Min)</th>
-              <th>Aktionen</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recipes.map(recipe => (
-              <tr key={recipe.id}>
-                <td>
-                  {recipe.imageUrl && <img src={recipe.imageUrl} alt={recipe.title} style={{width: '70px', height: '50px', objectFit: 'cover', borderRadius: '4px'}} onError={(e) => e.target.style.display='none'}/>}
-                </td>
-                <td>{recipe.title}</td>
-                <td>{recipe.doshaTypes?.join(', ') || '-'}</td>
-                <td>{recipe.numberOfPortions || '-'}</td>
-                <td>{recipe.preparationTimeMinutes || '-'}</td>
-                <td className={styles.actionsCell}>
-                  <button onClick={() => handleEdit(recipe.id)} className={styles.editButton}>Bearbeiten</button>
-                  <button onClick={() => handleDelete(recipe.id)} className={styles.deleteButton}>Löschen</button>
-                </td>
+      {/* Tabellenansicht */}
+      {(!editingRecipe && !isCreating && recipes.length > 0) && (
+        <>
+          <div className={styles.tableControls}>
+            <input
+              type="text"
+              placeholder="Suche nach Titel..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <select value={filterDosha} onChange={(e) => setFilterDosha(e.target.value)}>
+              <option value="all">Alle Dosha-Typen</option>
+              {doshaTypeOptions.map(dosha => (
+                <option key={dosha.value} value={dosha.value}>{dosha.label}</option>
+              ))}
+            </select>
+            <p>Treffer: {filteredRecipes.length}</p>
+          </div>
+          <table className={styles.adminTable}>
+            <thead>
+              <tr>
+                <th>Bild</th>
+                <th className={styles.sortableHeader} onClick={() => requestSort('title')}>
+                  Titel {getSortIndicator('title', sortConfig)}
+                </th>
+                <th className={styles.sortableHeader} onClick={() => requestSort('doshaTypes')}>
+                  Doshas {getSortIndicator('doshaTypes', sortConfig)}
+                </th>
+                <th className={styles.sortableHeader} onClick={() => requestSort('numberOfPortions')}>
+                  Portionen {getSortIndicator('numberOfPortions', sortConfig)}
+                </th>
+                <th className={styles.sortableHeader} onClick={() => requestSort('preparationTimeMinutes')}>
+                  Zeit (Min) {getSortIndicator('preparationTimeMinutes', sortConfig)}
+                </th>
+                <th>Aktionen</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredRecipes.map(recipe => (
+                <tr key={recipe.id}>
+                  <td>
+                    {recipe.imageUrl && <img src={recipe.imageUrl} alt={recipe.title} style={{ width: '70px', height: '50px', objectFit: 'cover', borderRadius: '4px' }} onError={(e) => e.target.style.display = 'none'} />}
+                  </td>
+                  <td>{recipe.title}</td>
+                  <td>{recipe.doshaTypes?.join(', ') || '-'}</td>
+                  <td>{recipe.numberOfPortions || '-'}</td>
+                  <td>{recipe.preparationTimeMinutes || '-'}</td>
+                  <td className={styles.actionsCell}>
+                    <button onClick={() => handleEdit(recipe.id)} className={styles.editButton}>Bearbeiten</button>
+                    <button onClick={() => handleDelete(recipe.id)} className={styles.deleteButton}>Löschen</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
       {(!editingRecipe && !isCreating && !isLoading && recipes.length === 0) && (
         <p>Keine Rezepte gefunden. Erstellen Sie das erste Rezept!</p>
@@ -473,5 +550,11 @@ const ManageRecipes = () => {
     </div>
   );
 };
+
+const getSortIndicator = (key, sortConfig) => {
+    if (sortConfig.key !== key) return '↕';
+    if (sortConfig.direction === 'ascending') return '↑';
+    return '↓';
+  };
 
 export default ManageRecipes;

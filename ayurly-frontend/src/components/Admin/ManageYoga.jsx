@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useUser } from '../../contexts/UserContext';
 import apiRequest from '../../services/apiService';
 import yogaExerciseService from '../../services/yogaExerciseService';
 import styles from '../../pages/AdminPage.module.css';
 
 const API_BASE_URL_LOOKUPS = '/api/lookups';
-const API_BASE_URL_UPLOADS = '/api/admin/uploads'; 
+const API_BASE_URL_UPLOADS = '/api/admin/uploads';
 
 const initialYogaFormState = {
     title: '',
@@ -14,7 +14,7 @@ const initialYogaFormState = {
     videoUrl: '', // For the detail page video
     description: '',
     doshaTypes: [],
-    effects: [{ text: '' }], 
+    effects: [{ text: '' }],
     tips: [{ text: '' }],
     steps: [{ title: '', description: '', subSteps: [{ description: '' }] }],
 };
@@ -35,6 +35,11 @@ const ManageYoga = () => {
     const fileInputRef = useRef(null);
 
     const [doshaTypeOptions, setDoshaTypeOptions] = useState([]);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterDosha, setFilterDosha] = useState('all');
+    const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'ascending' });
+
 
     const fetchExercises = useCallback(async () => {
         setIsLoading(true);
@@ -89,7 +94,7 @@ const ManageYoga = () => {
                     doshaTypes: exerciseToEdit.doshaTypes || [],
                     effects: exerciseToEdit.effects?.length ? exerciseToEdit.effects.map(e => ({ text: e })) : [{ text: '' }],
                     tips: exerciseToEdit.tips?.length ? exerciseToEdit.tips.map(t => ({ text: t })) : [{ text: '' }],
-                    steps: exerciseToEdit.steps?.length ? exerciseToEdit.steps.map(s => ({ ...s, subSteps: s.subSteps?.length ? s.subSteps.map(ss => ({...ss})) : [{ description: '' }] })) : [{ title: '', description: '', subSteps: [{ description: '' }] }],
+                    steps: exerciseToEdit.steps?.length ? exerciseToEdit.steps.map(s => ({ ...s, subSteps: s.subSteps?.length ? s.subSteps.map(ss => ({ ...ss })) : [{ description: '' }] })) : [{ title: '', description: '', subSteps: [{ description: '' }] }],
                 });
                 setImagePreview(exerciseToEdit.imageUrl);
                 setEditingExercise(exerciseToEdit);
@@ -100,9 +105,9 @@ const ManageYoga = () => {
             setIsLoading(false);
         }
     };
-    
+
     const handleDelete = async (id) => {
-        if(window.confirm('Diese Yoga-Übung wirklich löschen?')) {
+        if (window.confirm('Diese Yoga-Übung wirklich löschen?')) {
             await yogaExerciseService.deleteYogaExercise(id);
             fetchExercises();
         }
@@ -237,7 +242,7 @@ const ManageYoga = () => {
                 })).filter(ss => ss.description),
             })).filter(s => s.title),
         };
-        
+
         try {
             if (isCreating) {
                 await yogaExerciseService.createYogaExercise(payload);
@@ -253,6 +258,52 @@ const ManageYoga = () => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const filteredExercises = useMemo(() => {
+        let filtered = [...exercises];
+
+        // 1. Filterung nach Dosha
+        if (filterDosha !== 'all') {
+            filtered = filtered.filter(exercise => exercise.doshaTypes?.includes(filterDosha));
+        }
+
+        // 2. Suche nach Titel
+        if (searchTerm) {
+            filtered = filtered.filter(exercise =>
+                exercise.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // 3. Sortierung
+        if (sortConfig.key) {
+            filtered.sort((a, b) => {
+                const aValue = a[sortConfig.key];
+                const bValue = b[sortConfig.key];
+
+                if (sortConfig.key === 'doshaTypes') {
+                    const aString = a.doshaTypes?.join(', ') || '';
+                    const bString = b.doshaTypes?.join(', ') || '';
+                    if (aString < bString) return sortConfig.direction === 'ascending' ? -1 : 1;
+                    if (aString > bString) return sortConfig.direction === 'ascending' ? 1 : -1;
+                    return 0;
+                }
+
+                if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
+                if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        return filtered;
+    }, [exercises, searchTerm, filterDosha, sortConfig]);
+
+    const requestSort = (key) => {
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
     };
 
     if (isLoading && !isCreating && !editingExercise) return <p>Lade Übungen...</p>;
@@ -273,22 +324,22 @@ const ManageYoga = () => {
                     {/* Basic Info */}
                     <label>Titel: <input name="title" value={formData.title} onChange={handleFormChange} required /></label>
                     <label>Vorschau-Beschreibung: <textarea name="previewDescription" value={formData.previewDescription} onChange={handleFormChange} /></label>
-                    <label>Ausführliche Beschreibung: <textarea name="description" value={formData.description} onChange={handleFormChange} rows="4"/></label>                    
+                    <label>Ausführliche Beschreibung: <textarea name="description" value={formData.description} onChange={handleFormChange} rows="4" /></label>
                     <label>Video hochladen: <input type="file" onChange={handleVideoFileChange} accept="video/mp4,video/webm" /></label>
                     {formData.videoUrl && !selectedVideoFile && <video
-                                                    key={formData.videoUrl}
-                                                    controls
-                                                    autoPlay
-                                                    muted
-                                                    loop
-                                                    playsInline
-                                                    style={{width: '150px', marginTop: '10px'}}
-                                                >
-                                                    <source src={formData.videoUrl} type="video/mp4" />
-                                                    Dein Browser unterstützt das Video-Tag nicht.
-                                                </video>}
-                     <label>Vorschau-Bild: <input type="file" onChange={handleFileChange} ref={fileInputRef} accept="image/*"/></label>
-                    {imagePreview && <img src={imagePreview} alt="Vorschau" style={{width: '150px', marginTop: '10px'}}/>}
+                        key={formData.videoUrl}
+                        controls
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        style={{ width: '150px', marginTop: '10px' }}
+                    >
+                        <source src={formData.videoUrl} type="video/mp4" />
+                        Dein Browser unterstützt das Video-Tag nicht.
+                    </video>}
+                    <label>Vorschau-Bild: <input type="file" onChange={handleFileChange} ref={fileInputRef} accept="image/*" /></label>
+                    {imagePreview && <img src={imagePreview} alt="Vorschau" style={{ width: '150px', marginTop: '10px' }} />}
 
                     {/* Dosha Types */}
                     <h4>Dosha-Typen</h4>
@@ -297,12 +348,12 @@ const ManageYoga = () => {
                             <input type="checkbox" name="doshaTypes" value={d.value} checked={formData.doshaTypes.includes(d.value)} onChange={handleFormChange} /> {d.label}
                         </label>
                     ))}
-                    
+
                     {/* Effects & Tips */}
                     <h4>Wirkung</h4>
                     {formData.effects.map((item, index) => (
                         <div key={index} className={styles.formGroupRepeat}>
-                            <input value={item.text} onChange={(e) => handleSimpleListChange(index, 'effects', e.target.value)} placeholder={`Wirkung ${index + 1}`}/>
+                            <input value={item.text} onChange={(e) => handleSimpleListChange(index, 'effects', e.target.value)} placeholder={`Wirkung ${index + 1}`} />
                             <button type="button" onClick={() => removeSimpleListItem(index, 'effects')} className={styles.removeButton}>-</button>
                         </div>
                     ))}
@@ -311,7 +362,7 @@ const ManageYoga = () => {
                     <h4>Zusätzliche Tipps</h4>
                     {formData.tips.map((item, index) => (
                         <div key={index} className={styles.formGroupRepeat}>
-                            <input value={item.text} onChange={(e) => handleSimpleListChange(index, 'tips', e.target.value)} placeholder={`Tipp ${index + 1}`}/>
+                            <input value={item.text} onChange={(e) => handleSimpleListChange(index, 'tips', e.target.value)} placeholder={`Tipp ${index + 1}`} />
                             <button type="button" onClick={() => removeSimpleListItem(index, 'tips')} className={styles.removeButton}>-</button>
                         </div>
                     ))}
@@ -320,22 +371,22 @@ const ManageYoga = () => {
                     {/* Anleitung */}
                     <h4>Anleitung</h4>
                     {formData.steps.map((step, stepIndex) => (
-                        <div key={stepIndex} style={{border: '1px solid #ccc', padding: '10px', borderRadius: '5px', marginBottom: '10px'}}>
+                        <div key={stepIndex} style={{ border: '1px solid #ccc', padding: '10px', borderRadius: '5px', marginBottom: '10px' }}>
                             <div className={styles.formGroupRepeat}>
                                 <strong>Schritt {stepIndex + 1}</strong>
-                                <input value={step.title} onChange={e => handleStepChange(stepIndex, 'title', e.target.value)} placeholder="Titel des Schritts"/>
+                                <input value={step.title} onChange={e => handleStepChange(stepIndex, 'title', e.target.value)} placeholder="Titel des Schritts" />
                                 <button type="button" onClick={() => removeStep(stepIndex)} className={styles.removeButton}>Hauptschritt löschen</button>
                             </div>
-                            <textarea value={step.description} onChange={e => handleStepChange(stepIndex, 'description', e.target.value)} placeholder="Beschreibung des Hauptschritts" style={{width: '100%', boxSizing: 'border-box'}}/>
-                            
-                            <h5 style={{marginTop: '10px', marginBottom: '5px'}}>Teilschritte:</h5>
+                            <textarea value={step.description} onChange={e => handleStepChange(stepIndex, 'description', e.target.value)} placeholder="Beschreibung des Hauptschritts" style={{ width: '100%', boxSizing: 'border-box' }} />
+
+                            <h5 style={{ marginTop: '10px', marginBottom: '5px' }}>Teilschritte:</h5>
                             {step.subSteps.map((subStep, subStepIndex) => (
-                                <div key={subStepIndex} className={styles.formGroupRepeat} style={{marginLeft: '20px'}}>
-                                    <input value={subStep.description} onChange={e => handleSubStepChange(stepIndex, subStepIndex, e.target.value)} placeholder={`Teilschritt ${subStepIndex + 1}`}/>
+                                <div key={subStepIndex} className={styles.formGroupRepeat} style={{ marginLeft: '20px' }}>
+                                    <input value={subStep.description} onChange={e => handleSubStepChange(stepIndex, subStepIndex, e.target.value)} placeholder={`Teilschritt ${subStepIndex + 1}`} />
                                     <button type="button" onClick={() => removeSubStep(stepIndex, subStepIndex)} className={styles.removeButton}>-</button>
                                 </div>
                             ))}
-                             <button type="button" onClick={() => addSubStep(stepIndex)} className={styles.addButton} style={{marginLeft: '20px'}}>Teilschritt hinzufügen</button>
+                            <button type="button" onClick={() => addSubStep(stepIndex)} className={styles.addButton} style={{ marginLeft: '20px' }}>Teilschritt hinzufügen</button>
                         </div>
                     ))}
                     <button type="button" onClick={addStep} className={styles.addButton}>Hauptschritt hinzufügen</button>
@@ -350,24 +401,51 @@ const ManageYoga = () => {
 
             {/* Table View */}
             {!isCreating && !editingExercise && (
-                <table className={styles.adminTable}>
-                    <thead><tr><th>Titel</th><th>Doshas</th><th>Aktionen</th></tr></thead>
-                    <tbody>
-                        {exercises.map(ex => (
-                            <tr key={ex.id}>
-                                <td>{ex.title}</td>
-                                <td>{ex.doshaTypes?.join(', ')}</td>
-                                <td className={styles.actionsCell}>
-                                    <button onClick={() => handleEdit(ex.id)} className={styles.editButton}>Bearbeiten</button>
-                                    <button onClick={() => handleDelete(ex.id)} className={styles.deleteButton}>Löschen</button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <>
+                    <div className={styles.tableControls}>
+                        <input
+                            type="text"
+                            placeholder="Suche nach Titel..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <select value={filterDosha} onChange={(e) => setFilterDosha(e.target.value)}>
+                            <option value="all">Alle Dosha-Typen</option>
+                            {doshaTypeOptions.map(dosha => (
+                                <option key={dosha.value} value={dosha.value}>{dosha.label}</option>
+                            ))}
+                        </select>
+                        <p>Treffer: {filteredExercises.length}</p>
+                    </div>
+                    <table className={styles.adminTable}>
+                        <thead><tr>
+                            <th className={styles.sortableHeader} onClick={() => requestSort('title')}>Titel {getSortIndicator('title', sortConfig)}</th>
+                            <th className={styles.sortableHeader} onClick={() => requestSort('doshaTypes')}>Doshas {getSortIndicator('doshaTypes', sortConfig)}</th>
+                            <th>Aktionen</th>
+                        </tr></thead>
+                        <tbody>
+                            {filteredExercises.map(ex => (
+                                <tr key={ex.id}>
+                                    <td>{ex.title}</td>
+                                    <td>{ex.doshaTypes?.join(', ')}</td>
+                                    <td className={styles.actionsCell}>
+                                        <button onClick={() => handleEdit(ex.id)} className={styles.editButton}>Bearbeiten</button>
+                                        <button onClick={() => handleDelete(ex.id)} className={styles.deleteButton}>Löschen</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </>
             )}
         </div>
     );
 };
+
+const getSortIndicator = (key, sortConfig) => {
+    if (sortConfig.key !== key) return '↕';
+    if (sortConfig.direction === 'ascending') return '↑';
+    return '↓';
+  };
 
 export default ManageYoga;

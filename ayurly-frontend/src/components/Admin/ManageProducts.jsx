@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useUser } from '../../contexts/UserContext';
 import apiRequest from '../../services/apiService';
 import styles from '../../pages/AdminPage.module.css';
@@ -36,8 +36,12 @@ const ManageProducts = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const fileInputRef = useRef(null);
 
-    // Lookup-Daten
     const [doshaTypeOptions, setDoshaTypeOptions] = useState([]);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterDosha, setFilterDosha] = useState('all');
+    const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'ascending' });
+ 
 
     const fetchProducts = useCallback(async () => {
         if (!keycloakInstance || !keycloakInstance.token) return;
@@ -250,6 +254,52 @@ const ManageProducts = () => {
             setIsLoading(false);
         }
     };
+
+    const filteredProducts = useMemo(() => {
+        let filtered = [...products];
+
+        // 1. Filterung nach Dosha
+        if (filterDosha !== 'all') {
+            filtered = filtered.filter(product => product.doshaTypes?.includes(filterDosha));
+        }
+
+        // 2. Suche nach Titel
+        if (searchTerm) {
+            filtered = filtered.filter(product =>
+                product.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // 3. Sortierung
+        if (sortConfig.key) {
+            filtered.sort((a, b) => {
+                const aValue = a[sortConfig.key];
+                const bValue = b[sortConfig.key];
+
+                if (sortConfig.key === 'doshaTypes') {
+                    const aString = a.doshaTypes?.join(', ') || '';
+                    const bString = b.doshaTypes?.join(', ') || '';
+                    if (aString < bString) return sortConfig.direction === 'ascending' ? -1 : 1;
+                    if (aString > bString) return sortConfig.direction === 'ascending' ? 1 : -1;
+                    return 0;
+                }
+
+                if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
+                if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        return filtered;
+    }, [products, searchTerm, filterDosha, sortConfig]);
+
+    const requestSort = (key) => {
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
+    };
     
     if (isLoading && !editingProduct && !isCreating) {
         return <p>Lade Produkte...</p>;
@@ -326,10 +376,33 @@ const ManageProducts = () => {
             )}
 
             {(!editingProduct && !isCreating && products.length > 0) && (
+                <>
+                <div className={styles.tableControls}>
+                    <input
+                        type="text"
+                        placeholder="Suche nach Titel..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <select value={filterDosha} onChange={(e) => setFilterDosha(e.target.value)}>
+                        <option value="all">Alle Dosha-Typen</option>
+                        {doshaTypeOptions.map(dosha => (
+                            <option key={dosha.value} value={dosha.value}>{dosha.label}</option>
+                        ))}
+                    </select>
+                    <p>Treffer: {filteredProducts.length}</p>
+                </div>
                 <table className={styles.adminTable}>
-                    <thead><tr><th>Bild</th><th>Titel</th><th>Doshas</th><th>Aktionen</th></tr></thead>
+                    <thead>
+                            <tr>
+                                <th>Bild</th>
+                                <th className={styles.sortableHeader} onClick={() => requestSort('title')}>Titel {getSortIndicator('title', sortConfig)}</th>
+                                <th className={styles.sortableHeader} onClick={() => requestSort('doshaTypes')}>Doshas {getSortIndicator('doshaTypes', sortConfig)}</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
                     <tbody>
-                        {products.map(p => (
+                        {filteredProducts.map(p => (
                             <tr key={p.id}>
                                 <td>{p.imageUrl && <img src={p.imageUrl} alt={p.title} style={{width: '70px', height: '50px', objectFit: 'cover'}}/>}</td>
                                 <td>{p.title}</td>
@@ -342,9 +415,16 @@ const ManageProducts = () => {
                         ))}
                     </tbody>
                 </table>
+                </>
             )}
         </div>
     );
 };
+
+const getSortIndicator = (key, sortConfig) => {
+    if (sortConfig.key !== key) return '↕';
+    if (sortConfig.direction === 'ascending') return '↑';
+    return '↓';
+  };
 
 export default ManageProducts;
