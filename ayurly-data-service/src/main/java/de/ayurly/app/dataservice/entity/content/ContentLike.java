@@ -4,6 +4,8 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
@@ -28,6 +30,7 @@ public class ContentLike extends PanacheEntityBase {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_item_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public ContentItem contentItem;
 
     @Column(name = "user_id", nullable = false)

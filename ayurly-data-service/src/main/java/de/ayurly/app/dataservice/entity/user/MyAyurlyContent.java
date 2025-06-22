@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import de.ayurly.app.dataservice.entity.AppUser;
@@ -33,6 +35,7 @@ public class MyAyurlyContent extends PanacheEntityBase {
     public LookupRoutineTile routineTile;
 
     @ManyToOne @JoinColumn(name = "content_item_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     public ContentItem contentItem;
 
     @Column(name = "is_done")

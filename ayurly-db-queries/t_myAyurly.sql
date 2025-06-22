@@ -4,7 +4,7 @@ CREATE TABLE myayurly_content (
     user_id VARCHAR(255) NOT NULL REFERENCES app_user(keycloak_id) ON DELETE CASCADE,
     calendar_date DATE NOT NULL,
     routine_tile_id INT NOT NULL REFERENCES lookup_routine_tiles(id),
-    content_item_id UUID NOT NULL REFERENCES content_items(id),
+    content_item_id UUID NOT NULL REFERENCES content_items(id) ON DELETE CASCADE,
     is_done BOOLEAN DEFAULT FALSE,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT unique_user_day_content UNIQUE (user_id, calendar_date, content_item_id)
