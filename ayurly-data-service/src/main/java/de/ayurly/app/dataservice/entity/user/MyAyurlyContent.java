@@ -39,7 +39,7 @@ public class MyAyurlyContent extends PanacheEntityBase {
     public ContentItem contentItem;
 
     @Column(name = "is_done")
-    public boolean isDone = false;
+    public boolean isDone;
 
     @UpdateTimestamp @Column(name = "updated_at")
     public OffsetDateTime updatedAt;
