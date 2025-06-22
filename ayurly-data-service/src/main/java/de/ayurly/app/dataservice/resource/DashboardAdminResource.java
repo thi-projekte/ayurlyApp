@@ -47,7 +47,7 @@ import java.util.Map;
 public class DashboardAdminResource {
 
     @Inject
-    static EntityManager entityManager;
+    EntityManager entityManager;
 
      public static class DashboardMetricsDto {
         public long totalUsers;
