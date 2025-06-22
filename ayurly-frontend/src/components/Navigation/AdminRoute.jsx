@@ -1,28 +1,32 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useUser } from '../../contexts/UserContext'; 
+import { useUser } from '../../contexts/UserContext';
 
 const AdminRoute = () => {
-  const { keycloakInstance, loadingKeycloak } = useUser();
+    const { keycloakInstance, loadingKeycloak } = useUser();
 
-  if (loadingKeycloak) {
-    return <div>Lade Benutzerinformationen...</div>; 
-  }
+    // Zustand 1: Keycloak lädt noch. Zeige eine Ladeanzeige.
+    // Prüfung von '!keycloakInstance' fängt den Moment ab, in dem das Laden zwar fertig ist, die Instanz aber noch nicht im State angekommen ist.
+    if (loadingKeycloak || !keycloakInstance) {
+        return <div>Lade Benutzerinformationen...</div>;
+    }
 
-  const isAuthenticated = keycloakInstance && keycloakInstance.authenticated;
-  const isAdmin = isAuthenticated && keycloakInstance.hasRealmRole('admin'); 
+    // Zustand 2: Laden beendet, Instanz ist da.
+    const isAuthenticated = keycloakInstance.authenticated;
+    const isAdmin = isAuthenticated && keycloakInstance.hasRealmRole('admin');
 
-  if (!isAuthenticated) {
-    // Weiterleitung zum Login, wenn nicht authentifiziert
-    return <Navigate to="/login" replace />;
-  }
+    // Zustand 2a: Nicht authentifiziert -> zur Login-Seite.
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
 
-  if (!isAdmin) {
-    // Benutzer ist authentifiziert, aber kein Admin
-    return <Navigate to="/" replace />; // Weiterleitung zur Homepage
-  }
+    // Zustand 2b: Authentifiziert, aber kein Admin -> zu myAyurly
+    if (!isAdmin) {
+        return <Navigate to="/myAyurly" replace />;
+    }
 
-  return <Outlet />; // Rendert die Kind-Routen, wenn der Benutzer Admin ist
+    // Zustand 2c: Authentifiziert und Admin -> Zugriff gewähren.
+    return <Outlet />;
 };
 
 export default AdminRoute;
