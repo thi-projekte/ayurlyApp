@@ -1,7 +1,5 @@
 package de.ayurly.app.dataservice.resource;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,8 +13,8 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import de.ayurly.app.dataservice.entity.AppUser;
 import de.ayurly.app.dataservice.entity.content.recipe.RecipeContent;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyContent;
-import de.ayurly.app.dataservice.entity.user.MyAyurlyHistory;
 import de.ayurly.app.dataservice.resource.MyAyurlyResource.DashboardItemDto;
+import de.ayurly.app.dataservice.service.MyAyurlyHistoryService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -33,6 +31,7 @@ import jakarta.ws.rs.core.Response;
 @RolesAllowed("user")
 public class MyAyurlyContentResource {
 
+    
     // --- DTOs als innere Klassen ---
     public static class ContentItemDTO {
         public UUID myAyurlyContentId;
@@ -55,6 +54,9 @@ public class MyAyurlyContentResource {
 
     @Inject
     JsonWebToken jwt;
+
+    @Inject
+    MyAyurlyHistoryService historyService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -79,30 +81,31 @@ public class MyAyurlyContentResource {
     @POST
     @Path("/{id}/toggle-done")
     @Transactional
-    public Response toggleDoneStatus(@PathParam("id") UUID myAyurlyContentId) {
-        MyAyurlyContent content = MyAyurlyContent.findById(myAyurlyContentId);
-        if (content == null || !content.user.id.equals(jwt.getSubject())) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+    public Response toggleDoneStatus(@PathParam("id") UUID id) {
+        String userId = jwt.getSubject();
+        AppUser user = AppUser.findById(userId);
+        
+        MyAyurlyContent contentItem = MyAyurlyContent.findById(id);
+
+        if (contentItem == null || !contentItem.user.id.equals(user.id)) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        content.isDone = !content.isDone;
-        content.persist();
+        if (contentItem.calendarDate.isAfter(LocalDate.now())) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity("Content from the future cannot be marked as done.")
+                           .build();
+        }
 
-        updateHistory(content.user.id, content.calendarDate, content.routineTile.id);
-        
+        contentItem.isDone = !contentItem.isDone;
+        contentItem.persist();
+
+        // Der Aufruf bleibt konzeptionell gleich:
+        historyService.updateHistoryForDay(user, contentItem.calendarDate);
+
         return Response.ok().build();
     }
     
-    private void updateHistory(String userId, LocalDate date, Integer tileId) {
-        MyAyurlyHistory history = MyAyurlyHistory.find("user.id = ?1 and calendarDate = ?2 and routineTile.id = ?3", userId, date, tileId).firstResult();
-        if (history != null && history.totalTasks > 0) {
-            long completed = MyAyurlyContent.count("user.id = ?1 and calendarDate = ?2 and routineTile.id = ?3 and isDone = true", userId, date, tileId);
-            history.completedTasks = (int) completed;
-            history.progressPercentage = BigDecimal.valueOf(completed * 100.0 / history.totalTasks).setScale(2, RoundingMode.HALF_UP);
-            history.persist();
-        }
-    }
-
     private List<ContentItemDTO> filterAndMap(List<MyAyurlyContent> allItems, String tileKey) {
         return allItems.stream()
             .filter(item -> item.routineTile.tileKey.equals(tileKey))
