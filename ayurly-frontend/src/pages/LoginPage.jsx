@@ -11,7 +11,7 @@ const LoginPage = () => {
   // Wenn der User bereits eingeloggt ist, leite ihn von der Login-Seite weg
   useEffect(() => {
     if (!loadingKeycloak && isLoggedIn) {
-      const from = location.state?.from?.pathname || '/account'; // Zurück zur vorherigen Seite oder /account
+      const from = location.state?.from?.pathname || '/myAyurly'; // Zurück zur vorherigen Seite oder /account
       navigate(from, { replace: true });
     }
   }, [isLoggedIn, loadingKeycloak, navigate, location.state]);
