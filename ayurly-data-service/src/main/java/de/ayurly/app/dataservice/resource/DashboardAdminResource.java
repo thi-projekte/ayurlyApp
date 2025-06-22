@@ -17,11 +17,15 @@ import de.ayurly.app.dataservice.entity.user.MyAyurlyContent;
 import io.quarkus.panache.common.Parameters;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -30,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Map;
 
 @Path("/api/admin/dashboard")
@@ -40,6 +45,9 @@ import java.util.Map;
 @RolesAllowed("admin") 
 @SecurityRequirement(name = "jwtAuth")
 public class DashboardAdminResource {
+
+    @Inject
+    static EntityManager entityManager;
 
      public static class DashboardMetricsDto {
         public long totalUsers;
@@ -59,6 +67,28 @@ public class DashboardAdminResource {
             this.source = source;
             this.target = target;
             this.value = value;
+        }
+    }
+
+    public static class TopContentDto {
+        public String title;
+        public String contentType;
+        public long count;
+
+        public TopContentDto(String title, String contentType, long count) {
+            this.title = title;
+            this.contentType = contentType;
+            this.count = count;
+        }
+    }
+
+    public static class TileUsageDto {
+        public String tileName;
+        public long doneCount;
+
+        public TileUsageDto(String tileName, long doneCount) {
+            this.tileName = tileName;
+            this.doneCount = doneCount;
         }
     }
 
@@ -134,6 +164,88 @@ public class DashboardAdminResource {
         });
 
         return Response.ok(sankeyData).build();
+    }
+
+    @GET
+    @Path("/performance/top-liked")
+    @Transactional
+    @Operation(summary = "Get Top 5 liked content items", description = "Retrieves a ranked list of the most liked content, optionally filtered by content type and the user's dosha type.")
+    @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TopContentDto.class)))
+    public Response getTopLikedContent(
+            @QueryParam("contentType") String contentType,
+            @QueryParam("userDoshaType") String userDoshaType) {
+
+        String query;
+        Parameters params = new Parameters();
+
+        if (userDoshaType != null && !userDoshaType.isEmpty() && !userDoshaType.equals("all")) {
+            // Query über die Likes, um nach dem Dosha des likenden Users zu filtern
+            query = "SELECT ci.title, ci.contentType, COUNT(cl.id) as likeCount FROM ContentLike cl JOIN cl.contentItem ci JOIN cl.user u WHERE u.doshaType = :userDoshaType";
+            params.and("userDoshaType", userDoshaType);
+            if (contentType != null && !contentType.isEmpty() && !contentType.equals("all")) {
+                query += " AND ci.contentType = :contentType";
+                params.and("contentType", contentType);
+            }
+            query += " GROUP BY ci.id, ci.title, ci.contentType ORDER BY likeCount DESC";
+        } else {
+            // Einfache Query über das 'likeCount'-Feld, wenn nicht nach User-Dosha gefiltert wird
+            query = "SELECT title, contentType, likeCount FROM ContentItem";
+            if (contentType != null && !contentType.isEmpty() && !contentType.equals("all")) {
+                query += " WHERE contentType = :contentType";
+                params.and("contentType", contentType);
+            }
+            query += " ORDER BY likeCount DESC";
+        }
+
+        TypedQuery<Object[]> typedQuery = entityManager.createQuery(query, Object[].class);
+        for (Map.Entry<String, Object> entry : params.map().entrySet()) {
+            typedQuery.setParameter(entry.getKey(), entry.getValue());
+        }
+        List<Object[]> results = typedQuery.setMaxResults(5).getResultList();
+
+        List<TopContentDto> dtoList = results.stream()
+                .map(row -> new TopContentDto((String) row[0], (String) row[1], (Long) row[2]))
+                .collect(Collectors.toList());
+
+        return Response.ok(dtoList).build();
+    }
+
+    @GET
+    @Path("/performance/top-done")
+    @Transactional
+    @Operation(summary = "Get Top 5 'done' content items", description = "Retrieves a ranked list of the most completed content, optionally filtered.")
+    @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TopContentDto.class)))
+    public Response getTopDoneContent(
+            @QueryParam("contentType") String contentType,
+            @QueryParam("userDoshaType") String userDoshaType) {
+
+        String query = "SELECT m.contentItem.title, m.contentItem.contentType, COUNT(m.id) as doneCount FROM MyAyurlyContent m WHERE m.isDone = true";
+        Parameters params = new Parameters();
+
+        if (contentType != null && !contentType.isEmpty() && !contentType.equals("all")) {
+            query += " AND m.contentItem.contentType = :contentType";
+            params.and("contentType", contentType);
+        }
+        if (userDoshaType != null && !userDoshaType.isEmpty() && !userDoshaType.equals("all")) {
+            query += " AND m.user.doshaType = :userDoshaType";
+            params.and("userDoshaType", userDoshaType);
+        }
+        query += " GROUP BY m.contentItem.id, m.contentItem.title, m.contentItem.contentType ORDER BY doneCount DESC";
+
+        List<TopContentDto> results = MyAyurlyContent.find(query, params).page(0, 5).project(TopContentDto.class).list();
+        return Response.ok(results).build();
+    }
+
+    @GET
+    @Path("/performance/tile-usage")
+    @Transactional
+    @Operation(summary = "Get usage counts for routine tiles", description = "Retrieves the count of 'done' items for each routine tile.")
+    @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = TileUsageDto.class)))
+    public Response getTileUsage() {
+        List<TileUsageDto> results = MyAyurlyContent.find(
+            "SELECT m.routineTile.title, COUNT(m.id) FROM MyAyurlyContent m WHERE m.isDone = true GROUP BY m.routineTile.title ORDER BY COUNT(m.id) DESC"
+        ).project(TileUsageDto.class).list();
+        return Response.ok(results).build();
     }
 
 }
