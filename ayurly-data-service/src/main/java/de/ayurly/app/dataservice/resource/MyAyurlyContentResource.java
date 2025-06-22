@@ -139,6 +139,7 @@ public class MyAyurlyContentResource {
         dto.imageUrl = contentItem.imageUrl;
         dto.contentType = contentItem.contentType;
         dto.likeCount = contentItem.likeCount;
+        dto.isDone = item.isDone;
         
         if (contentItem instanceof RecipeContent) {
             RecipeContent recipe = (RecipeContent) contentItem;
