@@ -16,6 +16,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import de.ayurly.app.dataservice.entity.lookup.LookupContentType;
 import de.ayurly.app.dataservice.entity.lookup.LookupDoshaType;
+import de.ayurly.app.dataservice.entity.lookup.LookupRoutineTile;
 import de.ayurly.app.dataservice.entity.lookup.LookupUnit;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.panache.common.Sort;
@@ -55,6 +56,19 @@ public class LookupResource {
         }
     }
 
+    public static class RoutineTileDto {
+        public int id;
+        public String name;
+
+        public static RoutineTileDto fromEntity(LookupRoutineTile entity) {
+            if (entity == null) return null;
+            RoutineTileDto dto = new RoutineTileDto();
+            dto.id = entity.id;
+            dto.name = entity.tileKey; // Mappen von tileKey auf name für das Frontend
+            return dto;
+        }
+    }
+
     // --- DTOs für CRUD-Operationen (Admin) ---
     public static class LookupCreateUpdateDto {
         @NotBlank(message = "Value cannot be blank")
@@ -85,6 +99,19 @@ public class LookupResource {
         return doshaTypeStream
             .map(dt -> new LookupValueDto(dt.value, dt.label)) 
             .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/routine-tiles")
+    @PermitAll
+    @Operation(summary = "Get all active Routine Tiles (public)")
+    @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = RoutineTileDto.class, type = org.eclipse.microprofile.openapi.annotations.enums.SchemaType.ARRAY)))
+    public List<RoutineTileDto> getPublicRoutineTiles() {
+        List<LookupRoutineTile> routineTileList = LookupRoutineTile.listAll(Sort.by("sortOrder"));
+        Stream<LookupRoutineTile> routineTileStream = routineTileList.stream();
+        return routineTileStream
+                .map(RoutineTileDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @GET
