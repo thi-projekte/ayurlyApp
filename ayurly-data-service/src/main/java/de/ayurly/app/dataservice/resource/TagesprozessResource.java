@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -59,6 +60,17 @@ public class TagesprozessResource {
             return Response.ok(Map.of("status", "CONTENT_EXISTS")).build();
         }
         
+        String processDefinitionKey = "ayurly-tages-content-prozess";
+        // Eindeutigen Business Key für diesen Generierungsvorgang erstellen
+        String businessKey = String.format("generate-%s-%s", userId, selectedDateStr);
+
+        // Prüfen, ob bereits ein Generierungsprozess für diesen Tag läuft
+        List<CibsevenProcessClient.ProcessInstance> existingInstances = processClient.getProcessInstances(processDefinitionKey, businessKey);
+        if (existingInstances != null && !existingInstances.isEmpty()) {
+            LOG.warnf("Generierungsprozess für Business Key %s läuft bereits. Breche Start eines neuen Prozesses ab.", businessKey);
+            return Response.status(Response.Status.CONFLICT).entity(Map.of("error", "Ein Generierungsprozess für diesen Tag läuft bereits.")).build();
+        }
+
         LocalDate today = LocalDate.now(ZoneId.of("Europe/Berlin"));
         boolean isDateValid = !selectedDate.isBefore(today); // true, wenn heute oder in der Zukunft
 
@@ -68,11 +80,11 @@ public class TagesprozessResource {
         // Übergeben Sie das Ergebnis der Prüfung als sauberen Boolean-Wert
         variables.put("isDateValid", new CamundaVariable("Boolean", isDateValid));
         
-        Map<String, Object> processPayload = Map.of("variables", variables);
+        Map<String, Object> processPayload = Map.of("variables", variables, "businessKey", businessKey);
 
         try {
             LOG.infof("Starte Camunda-Prozess 'ayurly-tages-content-prozess' für User %s", userId);
-            CibsevenProcessClient.ProcessInstance instance = processClient.startProcess("ayurly-tages-content-prozess", processPayload);
+            CibsevenProcessClient.ProcessInstance instance = processClient.startProcess(processDefinitionKey, processPayload);
             LOG.infof("Prozess erfolgreich gestartet mit Instanz-ID: %s", instance.id);
             return Response.accepted(Map.of("processInstanceId", instance.id, "status", "PROCESS_STARTED")).build();
         } catch (Exception e) {
@@ -99,6 +111,17 @@ public class TagesprozessResource {
         String userId = jwt.getSubject();
         LocalDate selectedDate = LocalDate.parse(selectedDateStr, DateTimeFormatter.ISO_LOCAL_DATE);
         boolean isDateValid = !selectedDate.isBefore(LocalDate.now(ZoneId.of("Europe/Berlin")));
+        String processDefinitionKey = "ayurly-reshuffle-tile-prozess";
+
+        // Eindeutigen Business Key für diesen Vorgang erstellen
+        String businessKey = String.format("reshuffle-%s-%s-%s", userId, tileKey, selectedDateStr);
+
+        // Prüfen, ob bereits ein Prozess mit diesem Business Key läuft
+        List<CibsevenProcessClient.ProcessInstance> existingInstances = processClient.getProcessInstances(processDefinitionKey, businessKey);
+        if (existingInstances != null && !existingInstances.isEmpty()) {
+            LOG.warnf("Reshuffle-Prozess für Business Key %s läuft bereits. Breche Start eines neuen Prozesses ab.", businessKey);
+            return Response.status(Response.Status.CONFLICT).entity(Map.of("error", "Ein Reshuffle-Prozess für diese Kachel läuft bereits.")).build();
+        }
 
         Map<String, CamundaVariable> variables = new HashMap<>();
         variables.put("userId", new CamundaVariable("String", userId));
@@ -106,11 +129,11 @@ public class TagesprozessResource {
         variables.put("tileKey", new CamundaVariable("String", tileKey));
         variables.put("isDateValid", new CamundaVariable("Boolean", isDateValid));
         
-        Map<String, Object> processPayload = Map.of("variables", variables);
+        Map<String, Object> processPayload = Map.of("variables", variables, "businessKey", businessKey);
 
         try {
             LOG.infof("Starte Camunda-Prozess 'ayurly-reshuffle-tile-prozess' für User %s und Kachel %s", userId, tileKey);
-            CibsevenProcessClient.ProcessInstance instance = processClient.startProcess("ayurly-reshuffle-tile-prozess", processPayload);
+            CibsevenProcessClient.ProcessInstance instance = processClient.startProcess(processDefinitionKey, processPayload);
             LOG.infof("Reshuffle-Prozess erfolgreich gestartet mit Instanz-ID: %s", instance.id);
             return Response.accepted(Map.of("processInstanceId", instance.id, "status", "PROCESS_STARTED")).build();
         } catch (Exception e) {

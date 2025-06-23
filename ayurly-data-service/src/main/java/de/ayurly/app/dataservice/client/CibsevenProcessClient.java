@@ -1,5 +1,6 @@
 package de.ayurly.app.dataservice.client;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -36,4 +37,10 @@ public interface CibsevenProcessClient {
         public String value;
         public String type;
     }
+
+    @GET
+    @Path("/process-instance")
+    @Produces(MediaType.APPLICATION_JSON)
+    List<ProcessInstance> getProcessInstances(@QueryParam("processDefinitionKey") String processDefinitionKey, @QueryParam("businessKey") String businessKey);
+
 }
