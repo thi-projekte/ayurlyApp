@@ -1,6 +1,7 @@
 package de.ayurly.app.dataservice.resource;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,7 @@ public class MyAyurlyContentResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        if (contentItem.calendarDate.isAfter(LocalDate.now())) {
+        if (contentItem.calendarDate.isAfter(LocalDate.now(ZoneId.of("Europe/Berlin")))) {
             return Response.status(Response.Status.BAD_REQUEST)
                            .entity("Content from the future cannot be marked as done.")
                            .build();

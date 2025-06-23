@@ -30,6 +30,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -102,7 +103,7 @@ public class DashboardAdminResource {
 
         dto.totalUsers = AppUser.count();
 
-        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        LocalDate thirtyDaysAgo = LocalDate.now(ZoneId.of("Europe/Berlin")).minusDays(30);
         dto.activeUsersLast30Days = MyAyurlyContent.count("SELECT DISTINCT user.id FROM MyAyurlyContent WHERE calendarDate >= :date", Parameters.with("date", thirtyDaysAgo));
 
         dto.totalRecipes = RecipeContent.count();

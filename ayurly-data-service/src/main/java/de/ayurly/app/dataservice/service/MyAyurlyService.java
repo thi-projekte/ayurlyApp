@@ -3,6 +3,7 @@ package de.ayurly.app.dataservice.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -109,7 +110,7 @@ public class MyAyurlyService {
         MyAyurlyContent content = contentOpt.get();
         
         // Inhalt aus der Zukunft darf nicht abgehakt werden
-        if (content.calendarDate.isAfter(LocalDate.now())) {
+        if (content.calendarDate.isAfter(LocalDate.now(ZoneId.of("Europe/Berlin")))) {
             throw new WebApplicationException("Cannot complete tasks for a future date", 400);
         }
         

@@ -1,6 +1,7 @@
 package de.ayurly.app.dataservice.resource;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
@@ -75,14 +76,14 @@ public class MyAyurlyResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Invalid date format. Use YYYY-MM-DD.").build();
         }
         
-        if (date.isBefore(LocalDate.now())) {
+        if (date.isBefore(LocalDate.now(ZoneId.of("Europe/Berlin")))) {
              // Generieren für die Vergangenheit ist nicht erlaubt, aber Abrufen schon
         }
 
         List<MyAyurlyContent> content = MyAyurlyContent.list("user = ?1 and calendarDate = ?2", user, date);
 
         if (content.isEmpty()) {
-            if (date.isBefore(LocalDate.now())) {
+            if (date.isBefore(LocalDate.now(ZoneId.of("Europe/Berlin")))) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("Cannot generate content for past dates.").build();
             }
             content = myAyurlyService.generateContentForDay(user, date);

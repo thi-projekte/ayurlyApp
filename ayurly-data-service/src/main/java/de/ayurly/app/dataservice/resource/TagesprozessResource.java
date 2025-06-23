@@ -1,6 +1,7 @@
 package de.ayurly.app.dataservice.resource;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class TagesprozessResource {
             return Response.ok(Map.of("status", "CONTENT_EXISTS")).build();
         }
         
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Europe/Berlin"));
         boolean isDateValid = !selectedDate.isBefore(today); // true, wenn heute oder in der Zukunft
 
         Map<String, CamundaVariable> variables = new HashMap<>();
@@ -97,7 +98,7 @@ public class TagesprozessResource {
         
         String userId = jwt.getSubject();
         LocalDate selectedDate = LocalDate.parse(selectedDateStr, DateTimeFormatter.ISO_LOCAL_DATE);
-        boolean isDateValid = !selectedDate.isBefore(LocalDate.now());
+        boolean isDateValid = !selectedDate.isBefore(LocalDate.now(ZoneId.of("Europe/Berlin")));
 
         Map<String, CamundaVariable> variables = new HashMap<>();
         variables.put("userId", new CamundaVariable("String", userId));
