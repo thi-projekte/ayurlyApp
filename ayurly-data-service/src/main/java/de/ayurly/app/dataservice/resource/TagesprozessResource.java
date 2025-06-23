@@ -81,4 +81,40 @@ public class TagesprozessResource {
                     .build();
         }
     }
+
+    @POST
+    @Path("/reshuffle")
+    @RolesAllowed("user")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response reshuffleTagesContent(Map<String, String> payload) {
+        String selectedDateStr = payload.get("date");
+        String tileKey = payload.get("tileKey");
+
+        if (selectedDateStr == null || selectedDateStr.isBlank() || tileKey == null || tileKey.isBlank()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(Map.of("error", "Datum oder tileKey fehlen.")).build();
+        }
+        
+        String userId = jwt.getSubject();
+        LocalDate selectedDate = LocalDate.parse(selectedDateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+        boolean isDateValid = !selectedDate.isBefore(LocalDate.now());
+
+        Map<String, CamundaVariable> variables = new HashMap<>();
+        variables.put("userId", new CamundaVariable("String", userId));
+        variables.put("selectedDate", new CamundaVariable("String", selectedDateStr));
+        variables.put("tileKey", new CamundaVariable("String", tileKey));
+        variables.put("isDateValid", new CamundaVariable("Boolean", isDateValid));
+        
+        Map<String, Object> processPayload = Map.of("variables", variables);
+
+        try {
+            LOG.infof("Starte Camunda-Prozess 'ayurly-reshuffle-tile-prozess' für User %s und Kachel %s", userId, tileKey);
+            CibsevenProcessClient.ProcessInstance instance = processClient.startProcess("ayurly-reshuffle-tile-prozess", processPayload);
+            LOG.infof("Reshuffle-Prozess erfolgreich gestartet mit Instanz-ID: %s", instance.id);
+            return Response.accepted(Map.of("processInstanceId", instance.id, "status", "PROCESS_STARTED")).build();
+        } catch (Exception e) {
+            LOG.errorf(e, "FATALER FEHLER beim Starten des Reshuffle-Prozesses für User %s", userId);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(Map.of("error", "Prozess konnte nicht gestartet werden.")).build();
+        }
+    }
 }

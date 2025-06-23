@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList; 
 import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -56,12 +57,25 @@ public class TagesprozessService {
 
         if ((boolean) prozessVariablen.getOrDefault("showZenMove", true)) {
             findRandomContentIds(YogaExerciseContent.class, doshaType, 1).stream().findFirst()
-                .ifPresent(yogaId -> generierterContent.put("yogaId", yogaId));
+                .ifPresent(yogaId -> generierterContent.put("zenMoveContentIds", new ArrayList<>(List.of(yogaId))));
+            List<UUID> zenMoveMicroHabits = findRandomContentIds("ZEN_MOVE", doshaType, 3);
+            if (generierterContent.containsKey("zenMoveContentIds")) {
+                ((List<UUID>) generierterContent.get("zenMoveContentIds")).addAll(zenMoveMicroHabits);
+            } else if (!zenMoveMicroHabits.isEmpty()) {
+                generierterContent.put("zenMoveContentIds", zenMoveMicroHabits);
+            }
         }
 
         if ((boolean) prozessVariablen.getOrDefault("showNourishCycle", true)) {
             findRandomContentIds(RecipeContent.class, doshaType, 1).stream().findFirst()
-                .ifPresent(recipeId -> generierterContent.put("recipeId", recipeId));
+                .ifPresent(recipeId -> generierterContent.put("nourishCycleContentIds", new ArrayList<>(List.of(recipeId))));
+            // Zusätzliche Microhabits für NourishCycle generieren
+            List<UUID> nourishCycleMicroHabits = findRandomContentIds("NOURISH_CYCLE", doshaType, 3);
+            if (generierterContent.containsKey("nourishCycleContentIds")) {
+                ((List<UUID>) generierterContent.get("nourishCycleContentIds")).addAll(nourishCycleMicroHabits);
+            } else if (!nourishCycleMicroHabits.isEmpty()) {
+                generierterContent.put("nourishCycleContentIds", nourishCycleMicroHabits);
+            }
         }
         
         List<UUID> allMicroHabitIds = new ArrayList<>();
@@ -138,11 +152,11 @@ public class TagesprozessService {
         LocalDate selectedDate = LocalDate.parse((String) prozessVariablen.get("selectedDate"), DateTimeFormatter.ISO_LOCAL_DATE);
         AppUser user = AppUser.findById(userId);
         
-        if (prozessVariablen.containsKey("yogaId")) {
-            saveContentAndHistory(user, selectedDate, "ZEN_MOVE", (UUID)prozessVariablen.get("yogaId"), 1);
+        if (prozessVariablen.containsKey("zenMoveContentIds")) {
+            saveContentForTile(user, selectedDate, "ZEN_MOVE", (List<UUID>) prozessVariablen.get("zenMoveContentIds"));
         }
-        if (prozessVariablen.containsKey("recipeId")) {
-            saveContentAndHistory(user, selectedDate, "NOURISH_CYCLE", (UUID)prozessVariablen.get("recipeId"), 1);
+        if (prozessVariablen.containsKey("nourishCycleContentIds")) {
+            saveContentForTile(user, selectedDate, "NOURISH_CYCLE", (List<UUID>) prozessVariablen.get("nourishCycleContentIds"));
         }
         if (prozessVariablen.containsKey("microHabitIds")) {
             List<UUID> ids = (List<UUID>) prozessVariablen.get("microHabitIds");
@@ -154,51 +168,87 @@ public class TagesprozessService {
     }
 
     private int saveMicroHabitsForTile(AppUser user, LocalDate date, String tileKey, List<UUID> allIds, int startIndex, int count) {
-        LookupRoutineTile tile = LookupRoutineTile.find("tileKey", tileKey).firstResult();
-        int addedCount = 0;
+        List<UUID> tileSpecificIds = new ArrayList<>();
         for (int i = 0; i < count && (startIndex + i) < allIds.size(); i++) {
-            ContentItem item = ContentItem.findById(allIds.get(startIndex + i));
-            MyAyurlyContent content = new MyAyurlyContent();
-            content.user = user;
-            content.calendarDate = date;
-            content.routineTile = tile;
-            content.contentItem = item;
-            content.persist();
-            addedCount++;
+            tileSpecificIds.add(allIds.get(startIndex + i));
         }
-        if (addedCount > 0) {
-            MyAyurlyHistory history = new MyAyurlyHistory();
-            history.user = user;
-            history.calendarDate = date;
-            history.routineTile = tile;
-            history.doshaType = user.doshaType;
-            history.totalTasks = addedCount;
-            history.completedTasks = 0;
-            history.progressPercentage = BigDecimal.ZERO;
-            history.persist();
+        if (!tileSpecificIds.isEmpty()) {
+            saveContentForTile(user, date, tileKey, tileSpecificIds);
         }
-        return startIndex + addedCount;
+        return startIndex + tileSpecificIds.size();
     }
-    
-    private void saveContentAndHistory(AppUser user, LocalDate date, String tileKey, UUID contentId, int totalTasks) {
-        LookupRoutineTile tile = LookupRoutineTile.find("tileKey", tileKey).firstResult();
-        ContentItem item = ContentItem.findById(contentId);
+
+    private void saveContentForTile(AppUser user, LocalDate date, String tileKey, List<UUID> contentIds) {
+        if (contentIds == null || contentIds.isEmpty()) return;
         
-        MyAyurlyContent content = new MyAyurlyContent();
-        content.user = user;
-        content.calendarDate = date;
-        content.routineTile = tile;
-        content.contentItem = item;
-        content.persist();
+        LookupRoutineTile tile = LookupRoutineTile.find("tileKey", tileKey).firstResult();
+        for (UUID contentId : contentIds) {
+            ContentItem item = ContentItem.findById(contentId);
+            if (item != null) {
+                MyAyurlyContent content = new MyAyurlyContent();
+                content.user = user;
+                content.calendarDate = date;
+                content.routineTile = tile;
+                content.contentItem = item;
+                content.persist();
+            }
+        }
 
         MyAyurlyHistory history = new MyAyurlyHistory();
         history.user = user;
         history.calendarDate = date;
         history.routineTile = tile;
         history.doshaType = user.doshaType;
-        history.totalTasks = totalTasks;
+        history.totalTasks = contentIds.size();
         history.completedTasks = 0;
         history.progressPercentage = BigDecimal.ZERO;
         history.persist();
+    }
+    
+     @Transactional
+    public void deleteTileContent(String userId, String dateStr, String tileKey) {
+        LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+        LookupRoutineTile tile = LookupRoutineTile.find("tileKey", tileKey).firstResult();
+        
+        LOG.infof("Lösche History für User %s, Datum %s, Kachel %s", userId, date, tileKey);
+        MyAyurlyHistory.delete("user.id = ?1 and calendarDate = ?2 and routineTile = ?3", userId, date, tile);
+
+        LOG.infof("Lösche Content für User %s, Datum %s, Kachel %s", userId, date, tileKey);
+        MyAyurlyContent.delete("user.id = ?1 and calendarDate = ?2 and routineTile = ?3", userId, date, tile);
+    }
+
+    @Transactional
+    public Map<String, Object> generateSingleTileContent(String userId, String tileKey) {
+        AppUser user = AppUser.findById(userId);
+        String doshaType = user.doshaType != null ? user.doshaType : "Tridoshic";
+        List<UUID> newContentIds = new ArrayList<>();
+
+        switch (tileKey) {
+            case "MORNING_FLOW":
+            case "EVENING_FLOW":
+            case "REST_CYCLE":
+                newContentIds.addAll(findRandomContentIds(tileKey, doshaType, 3));
+                break;
+            case "ZEN_MOVE":
+                findRandomContentIds(YogaExerciseContent.class, doshaType, 1).stream().findFirst().ifPresent(newContentIds::add);
+                newContentIds.addAll(findRandomContentIds(tileKey, doshaType, 3));
+                break;
+            case "NOURISH_CYCLE":
+                findRandomContentIds(RecipeContent.class, doshaType, 1).stream().findFirst().ifPresent(newContentIds::add);
+                newContentIds.addAll(findRandomContentIds(tileKey, doshaType, 3));
+                break;
+            default:
+                LOG.warnf("Unbekannter tileKey für Reshuffle: %s", tileKey);
+                return Collections.emptyMap();
+        }
+        
+        return Map.of("contentIds", newContentIds);
+    }
+
+    @Transactional
+    public void saveSingleTileContent(String userId, String dateStr, String tileKey, List<UUID> contentIds) {
+        LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
+        AppUser user = AppUser.findById(userId);
+        saveContentForTile(user, date, tileKey, contentIds);
     }
 }
