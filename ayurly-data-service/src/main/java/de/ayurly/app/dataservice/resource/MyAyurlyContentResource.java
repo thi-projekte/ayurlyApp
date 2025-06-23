@@ -19,6 +19,7 @@ import de.ayurly.app.dataservice.entity.user.MyAyurlyContent;
 import de.ayurly.app.dataservice.resource.MyAyurlyResource.DashboardItemDto;
 import de.ayurly.app.dataservice.entity.content.yoga.YogaExerciseContent;
 import de.ayurly.app.dataservice.service.MyAyurlyHistoryService;
+import io.quarkus.panache.common.Sort;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -78,7 +79,7 @@ public class MyAyurlyContentResource {
         AppUser user = AppUser.findById(currentUserId);
         LocalDate eventDate = LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE);
 
-        List<MyAyurlyContent> contentForDay = MyAyurlyContent.list("user = ?1 and calendarDate = ?2", user, eventDate);
+        List<MyAyurlyContent> contentForDay = MyAyurlyContent.list("user = ?1 and calendarDate = ?2", Sort.by("contentItem.title"), user, eventDate);
 
         if (contentForDay.isEmpty()) {
              return Response.ok(Map.of("status", "NO_CONTENT_FOUND")).build();
