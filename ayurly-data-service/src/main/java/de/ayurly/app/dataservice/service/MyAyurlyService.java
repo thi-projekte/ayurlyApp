@@ -37,11 +37,9 @@ public class MyAyurlyService {
     public List<MyAyurlyContent> generateContentForDay(AppUser user, LocalDate date) {
         LOG.infof("Generating content for user %s on date %s", user.id, date);
         
-        // Hole alle Kachel-Typen
         Map<String, LookupRoutineTile> tiles = LookupRoutineTile.<LookupRoutineTile>streamAll()
                 .collect(Collectors.toMap(tile -> tile.tileKey, tile -> tile));
 
-        // Generiere Inhalt für jede Kachel basierend auf den User-Präferenzen
         if (user.showNourishCycle) generateContentForTile(user, date, tiles.get("NOURISH_CYCLE"), RecipeContent.class, 1);
         if (user.showZenMove) generateContentForTile(user, date, tiles.get("ZEN_MOVE"), YogaExerciseContent.class, 1);
         if (user.showMorningFlow) generateContentForTile(user, date, tiles.get("MORNING_FLOW"), MicrohabitContent.class, 3);
@@ -88,7 +86,6 @@ public class MyAyurlyService {
         }
     }
 
-    // Hilfsmethode, um den korrekten Tabellennamen für die Native Query zu bekommen
     private String getTableNameForContentType(Class<? extends ContentItem> contentType) {
         if (contentType.equals(RecipeContent.class)) {
             return "recipe_details";
@@ -134,7 +131,6 @@ public class MyAyurlyService {
         long completedTasks = allTasksForTile.stream().filter(c -> c.isDone).count();
         BigDecimal progress = BigDecimal.valueOf(completedTasks * 100.0 / totalTasks).setScale(2, RoundingMode.HALF_UP);
 
-        // Update oder erstelle den Historien-Eintrag
         MyAyurlyHistory history = MyAyurlyHistory.find("user = ?1 and calendarDate = ?2 and routineTile = ?3 and doshaType = ?4",
                 user, date, tile, user.doshaType).firstResult();
         

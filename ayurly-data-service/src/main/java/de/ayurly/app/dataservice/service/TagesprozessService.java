@@ -53,7 +53,7 @@ public class TagesprozessService {
         String doshaType = (String) prozessVariablen.get("doshaType");
         Map<String, Object> generierterContent = new HashMap<>();
 
-        Parameters params = Parameters.with("doshaParam", "%" + doshaType + "%").and("tridoshicParam", "%tridoshic%");
+        Parameters params = Parameters.with("doshaParam", "%" + doshaType + "%").and("tridoshicParam", "%Tridoshic%");
 
         if ((boolean) prozessVariablen.getOrDefault("showZenMove", true)) {
             findRandomContentIds(YogaExerciseContent.class, doshaType, 1).stream().findFirst()
