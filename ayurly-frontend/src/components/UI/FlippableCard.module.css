@@ -39,9 +39,6 @@
     backface-visibility: hidden;
     border-radius: 18px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     padding: 20px;
     box-sizing: border-box;
 }
@@ -49,6 +46,9 @@
 .flipCardFront {
     background-color: #ffffff;
     color: black;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .emoji {
@@ -71,20 +71,20 @@
 }
 
 .cardMeta {
-    margin-top: 240px;
+    margin-top: auto;
     display: flex;
-    justify-content: center;
-    ;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 .clickMe {
     color: #999;
     font-size: 0.8rem;
-    position: fixed;
+    margin-left: 152px;
 }
 
 .chevron {
-    margin-left: 360px;
     color: #999;
 }
 
@@ -103,8 +103,8 @@
         font-size: 0.9rem;
     }
 
-    .chevron {
-        margin-left: 210px;
+    .clickMe {
+        margin-left: 70px;
     }
 }
 
@@ -120,7 +120,7 @@
         margin-bottom: 0;
     }
 
-    .chevron {
-        margin-left: 260px;
+    .clickMe {
+        margin-left: 100px;
     }
 }
