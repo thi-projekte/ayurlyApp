@@ -72,9 +72,8 @@ public class TagesprozessResource {
         }
 
         LocalDate today = LocalDate.now(ZoneId.of("Europe/Berlin"));
-        //boolean isDateValid = !selectedDate.isBefore(today); // true, wenn heute oder in der Zukunft
-        boolean isDateValid = true;
-        
+        boolean isDateValid = !selectedDate.isBefore(today); // true, wenn heute oder in der Zukunft
+
         Map<String, CamundaVariable> variables = new HashMap<>();
         variables.put("userId", new CamundaVariable("String", userId));
         variables.put("selectedDate", new CamundaVariable("String", selectedDateStr));
