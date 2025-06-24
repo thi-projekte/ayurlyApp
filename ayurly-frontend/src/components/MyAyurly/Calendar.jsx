@@ -12,7 +12,12 @@ const DatePickerPopup = ({ onDateSelect, onClose, initialDate, selectedDate, mon
         return new Map(monthlyProgress.map(p => [p.date, Math.round(p.progress)]));
     }, [monthlyProgress]);
 
-    const getLocalDateString = (date) => date.toISOString().split('T')[0];
+    const getLocalDateString = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     const isSameDay = (d1, d2) => d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
 
@@ -197,10 +202,10 @@ const Calendar = ({ onDateSelect, selectedDate, monthlyProgress, onMonthChange }
             </div>
 
             <Modal show={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
-                <DatePickerPopup 
-                    initialDate={selectedDate} 
-                    selectedDate={selectedDate} 
-                    onDateSelect={handleDateSelectAndClosePopup} 
+                <DatePickerPopup
+                    initialDate={selectedDate}
+                    selectedDate={selectedDate}
+                    onDateSelect={handleDateSelectAndClosePopup}
                     onClose={() => setIsPopupOpen(false)}
                     monthlyProgress={monthlyProgress}
                     onMonthChange={onMonthChange}

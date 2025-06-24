@@ -84,43 +84,43 @@ const HomePage = () => {
   ];
 
   const vataTips = [
-    { title: "Regelmäßige Routinen", text: "Schaffe feste Zeiten für Mahlzeiten und Schlaf, um dein Nervensystem zu beruhigen." },
-    { title: "Warme Speisen", text: "Bevorzuge gekochte, nährende Gerichte statt Rohkost, um deine Verdauung zu unterstützen." },
-    { title: "Ausreichend Trinken", text: "Trinke warmes Wasser oder Kräutertees über den Tag verteilt, um hydriert zu bleiben." },
-    { title: "Ölmassagen (Abhyanga)", text: "Eine tägliche Selbstmassage mit warmem Sesamöl erdet und nährt deine Haut." },
-    { title: "Sinnesreize reduzieren", text: "Schaffe ruhige Momente und vermeide übermäßige Stimulation durch Medien." },
-    { title: "Warm halten", text: "Schütze dich vor Kälte und Wind mit warmer Kleidung." },
+    { title: "Regelmäßiger Tagesablauf", text: "Feste Zeiten für Schlaf, Mahlzeiten und Arbeit helfen, Stabilität zu schaffen." },
+    { title: "Warme, gekochte Mahlzeiten", text: "Bevorzuge warme Speisen wie Suppen, Eintöpfe und gekochtes Gemüse." },
+    { title: "Ausreichend Ruhe", text: "Plane Pausen und ausreichend Schlaf ein, um Überanstrengung zu vermeiden." },
+    { title: "Wärme bewahren", text: "Halte dich warm, insbesondere Hände, Füße und Kopf." },
+    { title: "Ölmassagen (Abhyanga)", text: "Tägliche Selbstmassagen mit warmem Sesamöl beruhigen das Nervensystem." },
     { title: "Sanfte Bewegung", text: "Yoga, Tai-Chi oder Spaziergänge sind ideal. Vermeide exzessiven Sport." },
-    { title: "Aromatherapie", text: "Beruhigende Düfte wie Lavendel, Sandelholz oder Geranie wirken ausgleichend." },
-    { title: "Meditation & Erdung", text: "Regelmäßige Meditation hilft, deinen sprunghaften Geist zu zentrieren." },
-    { title: "Ausreichend Schlaf", text: "Gehe früh zu Bett und sorge für eine ruhige Schlafumgebung." }
-  ];
+    { title: "Meditation & Atemübungen", text: "Pranayama und Meditation helfen, den Geist zu beruhigen." },
+    { title: "Vermeide Reizüberflutung", text: "Reduziere Lärm, hektische Umgebungen und übermäßigen Medienkonsum." },
+    { title: "Hydration", text: "Trinke warme Getränke wie Kräutertees oder heißes Wasser mit Zitrone." },
+    { title: "Kreativität", text: "Nimm dir Zeit für kreative Hobbys, die dich erden und Freude bereiten." } // Korrektur aus den Rohdaten
+];
 
-  const pittaTips = [
-    { title: "Kühl bleiben", text: "Vermeide übermäßige Hitze, sowohl durch Sonne als auch durch scharfe Speisen." },
-    { title: "Kühlende Lebensmittel", text: "Iss süße, bittere und herbe Lebensmittel wie Gurken, Melonen und Blattgemüse." },
-    { title: "Regelmäßige Mahlzeiten", text: "Lass keine Mahlzeiten aus, um Heißhunger und Reizbarkeit zu vermeiden." },
-    { title: "Sanfte Öle", text: "Verwende kühlende Öle wie Kokos- oder Sonnenblumenöl für Massagen." },
-    { title: "Zeit in der Natur", text: "Spaziergänge im Wald oder am Wasser wirken beruhigend auf dein inneres Feuer." },
-    { title: "Mäßigung bei Sport", text: "Wähle Sportarten, die dich nicht überhitzen, wie Schwimmen oder Radfahren." },
-    { title: "Loslassen lernen", text: "Übe dich in Geduld und vermeide übermäßigen Ehrgeiz und Perfektionismus." },
-    { title: "Kühle Düfte", text: "Sandelholz, Rose und Minze sind ideale Düfte, um Pitta zu besänftigen." },
-    { title: "Pausen einlegen", text: "Gönne dir bewusste Pausen während der Arbeit, um nicht auszubrennen." },
-    { title: "Ausreichend Trinken", text: "Trinke Wasser und kühlende Tees, aber vermeide eiskalte Getränke." }
-  ];
+const pittaTips = [
+    { title: "Kühl bleiben", text: "Vermeide übermäßige Hitze und direkte Sonneneinstrahlung." },
+    { title: "Ausreichende Flüssigkeit", text: "Trinke zimmerwarmes Wasser und kühlende Getränke" },
+    { title: "Regelmäßige Mahlzeiten", text: "Halte feste Essenszeiten ein und vermeide das Auslassen von Mahlzeiten." },
+    { title: "Milde Gewürze verwenden", text: "Bevorzuge Gewürze wie Fenchel, Koriander, Kardamom und Kurkuma." },
+    { title: "Kühlende Lebensmittel", text: "Integriere Lebensmittel mit kühlenden Eigenschaften in deine Ernährung." },
+    { title: "Stressmanagement", text: "Plane regelmäßige Entspannungsphasen ein, z.B. durch Meditation oder Spaziergänge." },
+    { title: "Moderate Bewegung", text: "Bevorzuge sanfte körperliche Aktivitäten wie Yoga oder Schwimmen." },
+    { title: "Vermeide scharfe, saure und salzige Speisen", text: "Diese können das Pitta-Dosha erhöhen." },
+    { title: "Kühle Farben und Umgebung", text: "Umgebe dich mit beruhigenden Farben wie Blau und Grün." },
+    { title: "Pflege soziale Beziehungen", text: "Vermeide übermäßigen Wettbewerb und fördere harmonische Interaktionen." }
+];
 
-  const kaphaTips = [
-    { title: "In Bewegung bleiben", text: "Regelmäßige, anregende Bewegung ist der Schlüssel, um Trägheit zu überwinden." },
-    { title: "Leichte & warme Kost", text: "Bevorzuge leichte, trockene und warme Speisen. Reduziere schwere, ölige Gerichte." },
-    { title: "Früh aufstehen", text: "Stehe vor 6 Uhr morgens auf, um die Kapha-Zeit zu nutzen und energiegeladen zu starten." },
-    { title: "Trockenmassagen (Garshana)", text: "Eine Massage mit einem Seidenhandschuh regt den Kreislauf an." },
-    { title: "Geistige Anregung", text: "Fordere deinen Geist mit neuen Hobbys, Büchern oder Rätseln." },
-    { title: "Scharfe Gewürze", text: "Ingwer, schwarzer Pfeffer und Chili regen deine langsame Verdauung an." },
-    { title: "Minimalismus praktizieren", text: "Schaffe Ordnung und befreie dich von materiellem und emotionalem Ballast." },
-    { title: "Fastentage einlegen", text: "Ein gelegentlicher flüssiger oder leichter Fastentag kann Kapha ausgleichen." },
-    { title: "Soziale Kontakte pflegen", text: "Aktive Treffen mit Freunden wirken anregend und beugen dem Rückzug vor." },
-    { title: "Warmes Ingwerwasser", text: "Trinke morgens ein Glas warmes Wasser mit Ingwer, um den Stoffwechsel anzukurbeln." }
-  ];
+const kaphaTips = [
+    { title: "Früh aufstehen", text: "Stehe vor 6 Uhr auf, um Trägheit zu vermeiden." },
+    { title: "Regelmäßige Bewegung", text: "Integriere tägliche körperliche Aktivitäten, besonders morgens." },
+    { title: "Leichte Ernährung", text: "Bevorzuge warme, trockene und leicht verdauliche Speisen." },
+    { title: "Vermeide Zwischenmahlzeiten", text: "Halte feste Mahlzeiten ein und vermeide Snacking." },
+    { title: "Anregende Gewürze", text: "Nutze Gewürze wie Ingwer, Pfeffer und Kurkuma zur Anregung des Stoffwechsels." },
+    { title: "Saunabesuche", text: "Regelmäßige Saunagänge können helfen, Kapha zu reduzieren." },
+    { title: "Geistige Aktivität", text: "Halte den Geist aktiv durch Lernen und neue Erfahrungen." },
+    { title: "Vermeide Kälte und Feuchtigkeit", text: "Halte dich warm und trocken, um Kapha nicht zu erhöhen." },
+    { title: "Reduziere Süßes und Fettiges", text: "Begrenze den Konsum von süßen und fettigen Lebensmitteln." },
+    { title: "Positive Veränderung", text: "Sei offen für Neues und vermeide Routine, um geistige Trägheit zu verhindern." }
+];
 
   return (
     <div className="homepage-container">
