@@ -29,7 +29,8 @@ public class TagesprozessWorker {
     void onStart(@Observes StartupEvent ev) {
         ExternalTaskClient client = ExternalTaskClient.create()
                 .baseUrl(cibsevenApiUrl)
-                .asyncResponseTimeout(1000)
+                .asyncResponseTimeout(30000)
+                .disableBackoffStrategy()
                 .build();
 
         client.subscribe("user-preferences-laden").lockDuration(5000).handler(this::handleLadePraeferenzen).open();
