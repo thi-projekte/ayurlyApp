@@ -121,6 +121,21 @@ const HomePage = () => {
         </div>
       </section>
 
+      <section>
+        <div className="info">
+          <div className="text">
+            <h1>Unsere Angebote</h1>
+            <ul id="services">
+              <li><p>Dosha-Test zur Ermittlung deiner ayurvedischen Konstitution</p></li>
+              <li><p>Personalisierte Tagesroutinen für Vata, Pitta und Kapha</p></li>
+              <li><p>Geführte Yoga-Übungen zur Harmonisierung</p></li>
+              <li><p>Ayurvedische Rezepte und Ernährungstipps</p></li>
+            </ul>
+          </div>
+          <img src="/img/index/meditation.png" alt="Meditation" id="meditation" />
+        </div>
+      </section>
+
       <section class="explanation">
       <h1 class="mainHeading">Was ist Ayurveda?</h1>
       <div class="explanantionContent">
@@ -634,20 +649,7 @@ const HomePage = () => {
           </div>
       </Modal>
 
-      <section>
-        <div className="info">
-          <div className="text">
-            <h1>Unsere Angebote</h1>
-            <ul id="services">
-              <li>Dosha-Test zur Ermittlung deiner ayurvedischen Konstitution</li>
-              <li>Personalisierte Tagesroutinen für Vata, Pitta und Kapha</li>
-              <li>Geführte Meditationen & Atemübungen zur Harmonisierung</li>
-              <li>Ayurvedische Rezepte und Ernährungstipps</li>
-            </ul>
-          </div>
-          <img src="/img/index/meditation.png" alt="Meditation" id="meditation" />
-        </div>
-      </section>
+      
 
       <section>
         <div className="Kontakt">
