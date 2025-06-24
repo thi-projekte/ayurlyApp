@@ -228,6 +228,25 @@
   }
 }
 
+@media (max-width: 540px) {
+  .answerButtons button {
+    min-width: 300px;
+  }
+}
+
+@media (max-width: 420px) {
+  .answerButtons button {
+    min-width: 240px;
+    min-height: 60px;
+  }
+}
+
+@media (max-width: 360px) {
+  .answerButtons button {
+    min-width: 200px;
+  }
+}
+
 @media (max-width: 480px) {
   .resultButton {
     font-size: 1em;
