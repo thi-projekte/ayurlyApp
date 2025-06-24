@@ -11,6 +11,7 @@
   font-family: 'Arial', sans-serif;
   line-height: 1.6;
   color: #333;
+  word-wrap: break-word; 
 }
 
 .legalSection {
@@ -52,18 +53,41 @@
   text-decoration: underline;
 }
 
-/* Responsive Design */
+/* --- Responsive Design --- */
 @media (max-width: 768px) {
   .legalContainer {
-    margin: 20px 10px;
-    padding: 20px;
+    margin: 20px; 
+    padding: 25px;
   }
 
   .legalSection h2 {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
   }
 
   .legalSection h3 {
     font-size: 1.4rem;
+  }
+
+  .legalSection h4 {
+    font-size: 1.1rem;
+  }
+
+  .legalSection p, .legalSection a {
+    font-size: 0.95rem; 
+  }
+}
+
+@media (max-width: 480px) {
+  .legalContainer {
+    margin: 10px; 
+    padding: 20px; 
+  }
+
+  .legalSection h2 {
+    font-size: 1.5rem;
+  }
+
+  .legalSection h3 {
+    font-size: 1.25rem;
   }
 }
