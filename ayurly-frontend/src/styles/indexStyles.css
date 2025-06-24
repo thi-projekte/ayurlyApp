@@ -115,7 +115,7 @@ section:last-child {
 }
 
 .mobile-only {
-    display: none;
+    display: none !important;
 }
 
 #VataName {
@@ -332,7 +332,6 @@ body.modal-open {
     flex-direction: column;
     gap: 10px;
     align-items: center;
-    flex: 1 1 280px;
     min-width: 250px;
 }
 
@@ -659,11 +658,11 @@ body.modal-open {
 @media (max-width: 768px) {
 
     .desktop-only {
-        display: none;
+        display: none !important;
     }
 
     .mobile-only {
-        display: block;
+        display: block !important;
         margin-right: auto;
     }
 
@@ -910,6 +909,7 @@ body.modal-open {
 
     .spacerHeading {
         font-size: 15pt;
+        margin-top: 10px;
     }
 
     .info .text h1,

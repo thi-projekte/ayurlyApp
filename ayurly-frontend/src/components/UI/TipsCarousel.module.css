@@ -21,7 +21,7 @@
 
 .tipCard {
     flex: 0 0 80%; 
-    max-width: 240px; 
+    max-width: 220px; 
     scroll-snap-align: center;
     background-color: #f8f8f8;
     border-radius: 14px;
