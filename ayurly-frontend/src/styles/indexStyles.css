@@ -97,6 +97,40 @@ section:last-child {
     font-size: 26pt;
 }
 
+.text p {
+    font-size: 13pt;
+    line-height: 2em;
+    text-align: justify;
+}
+
+.characteristic {
+    text-align: center;
+    font-size: 13pt;
+    background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
+    background-clip: text;
+    color: transparent;
+}
+
+#VataName{
+    background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
+    background-clip: text;
+    color: transparent;
+}
+#PittaName{
+    background: linear-gradient(to right, #FF4500, #FFA500, #FFFF66);
+    background-clip: text;
+    color: transparent;
+}
+#KaphaName{
+    background: linear-gradient(to right, #4CAF50, #81C784, #A5D6A7);
+    background-clip: text;
+    color: transparent;	
+}
+
+.text h2 {
+    font-size: 50pt;
+}
+
 #Vata {
     background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
     background-clip: text;
@@ -152,8 +186,8 @@ body.modal-open {
 }
 
 .generalInfo video {
-    border-radius: 14px;
-    width: 45%;
+    border-radius: 14px 0px 0px 14px;
+    width: 60%;
     height: auto;
     object-fit: cover;
 }
@@ -169,11 +203,7 @@ body.modal-open {
     margin-bottom: 15px;
 }
 
-#VataName,
-#PittaName,
-#KaphaName {
 
-}
 
 .characteristics {
     display: flex;
@@ -202,6 +232,7 @@ body.modal-open {
     background-color: white;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     transition: box-shadow 0.3s ease;
+    max-height: 180px;
 }
 
 .rowContent:hover {
@@ -219,6 +250,7 @@ body.modal-open {
     flex-direction: column;
     margin-top: 30px;
     gap: 20px;
+    justify-content: space-evenly;
 }
 
 .spacerHeading {
@@ -566,6 +598,8 @@ body.modal-open {
     margin-top: 40px;
     margin-bottom: 40px;
 }
+
+
 
 /* ========== MOBILE LAYOUT ANPASSUNGEN ========== */
 

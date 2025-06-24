@@ -6,7 +6,7 @@ import '../styles/indexStyles.css';
 import { useUser } from '../contexts/UserContext';
 
 const HomePage = () => {
-  const { isLoggedIn, userProfile, loadingKeycloak } = useUser(); 
+  const { isLoggedIn, userProfile, loadingKeycloak, doshaType } = useUser(); 
   const [welcomeMessage, setWelcomeMessage] = useState('Willkommen bei Ayurly');
   const [showVataModal, setShowVataModal] = useState(false);
   const [showPittaModal, setShowPittaModal] = useState(false);
@@ -27,7 +27,7 @@ const HomePage = () => {
   // Parallax-Effekt
   useEffect(() => {
     const parallaxEffect = () => {
-      let value = window.scrollY;
+      let value = Math.max(0, window.scrollY);
       const punch = document.getElementById('punch');
       const leaf = document.getElementById('leaf');
       const hill1 = document.getElementById('hill1');
@@ -176,7 +176,9 @@ const HomePage = () => {
         <div className="explanantionContent">
             <h2>🧘‍♀️ Dein Dosha ist der Schlüssel zu deinem inneren Gleichgewicht.</h2>
             <p className="pointingFinger">👇</p>
-            <Link to="/dosha-test" className="discoverDosha">Starte deinen Dosha-Test!</Link>
+            <Link to="/dosha-test" className="discoverDosha">
+              {doshaType ? 'Test wiederholen' : 'Starte deinen Dosha-Test!'}
+            </Link>
         </div>
       </section>
 

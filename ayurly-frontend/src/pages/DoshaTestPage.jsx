@@ -4,6 +4,8 @@ import styles from './DoshaTestPage.module.css';
 import { useUser } from '../contexts/UserContext';
 import Modal from '../components/UI/Modal'; // Modal-Komponente importieren
 
+
+
 const questions = [
   {
     question: "Wie ist deine Energie über den Tag?",
@@ -159,7 +161,7 @@ const DoshaTestPage = () => {
   const VataModalContent = () => (
     <>
       <div className="generalInfo">
-        <video src="/videos/index/Vata.mp4" type="video/mp4" autoPlay loop muted playsInline></video>
+        <video src="/videos/index/vata.mp4" type="video/mp4" autoPlay loop muted playsInline id="VataVideo"></video>
         <div className="modalText"> {/* Klasse modalText für Konsistenz mit indexStyles.css */}
           <h2 id="VataName">Vata</h2>
           <p>
@@ -314,35 +316,35 @@ const DoshaTestPage = () => {
           <div className="characteristics">
             <div className="firstRow">
               <div className="rowContent">
-                <p className="characteristic" id="PittaCharacteristicName">Körperbau</p>
+                <p className="characteristic" id="PittaName">Körperbau</p>
                 <p>Athletisch, mittelgroß, gut proportioniert.</p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="PittaCharacteristicName">Haut & Haare</p>
+                <p className="characteristic" id="PittaName">Haut & Haare</p>
                 <p>
                   Helle, empfindliche Haut mit Neigung zu Rötungen; blondes oder
                   rotes Haar, oft fein und licht.
                 </p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="PittaCharacteristicName">Temperatur</p>
+                <p className="characteristic" id="PittaName">Temperatur</p>
                 <p>Neigung zu Hitzeempfindlichkeit und Schwitzen.</p>
               </div>
             </div>
             <div className="secondRow">
               <div className="rowContent">
-                <p className="characteristic" id="PittaCharacteristicName">Verdauung</p>
+                <p className="characteristic" id="PittaName">Verdauung</p>
                 <p>Starker Appetit und schnelle Verdauung.</p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="PittaCharacteristicName">Geist & Emotionen</p>
+                <p className="characteristic" id="PittaName">Geist & Emotionen</p>
                 <p>
                   Scharfer Intellekt, zielstrebig, organisiert, aber auch
                   anfällig für Ungeduld und Reizbarkeit.
                 </p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="PittaCharacteristicName">Schlaf</p>
+                <p className="characteristic" id="PittaName">Schlaf</p>
                 <p>
                   In der Regel guter, tiefer Schlaf, aber oft nicht sehr lang.
                 </p>
@@ -457,29 +459,29 @@ const DoshaTestPage = () => {
           <div className="characteristics">
             <div className="firstRow">
               <div className="rowContent">
-                <p className="characteristic" id="KaphaCharacteristicName">Körperbau</p>
+                <p className="characteristic" id="KaphaName">Körperbau</p>
                 <p>Kräftig, stabil, neigen zu Übergewicht.</p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="KaphaCharacteristicName">Haut & Haare</p>
+                <p className="characteristic" id="KaphaName">Haut & Haare</p>
                 <p>Fettige Haut, volles und kräftiges Haar.</p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="KaphaCharacteristicName">Temperatur</p>
+                <p className="characteristic" id="KaphaName">Temperatur</p>
                 <p>Kühlere Körpertemperatur, mag Wärme.</p>
               </div>
             </div>
             <div className="secondRow">
               <div className="rowContent">
-                <p className="characteristic" id="KaphaCharacteristicName">Verdauung</p>
+                <p className="characteristic" id="KaphaName">Verdauung</p>
                 <p>Langsamer Stoffwechsel, neigen zu Gewichtszunahme.</p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="KaphaCharacteristicName">Energie</p>
+                <p className="characteristic" id="KaphaName">Energie</p>
                 <p>Langsame, aber ausdauernde Energie; neigen zu Trägheit.</p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="KaphaCharacteristicName">Schlaf</p>
+                <p className="characteristic" id="KaphaName">Schlaf</p>
                 <p>Tiefer und langer Schlaf.</p>
               </div>
             </div>
@@ -603,20 +605,20 @@ const DoshaTestPage = () => {
                   Mehr über {resultDosha.charAt(0).toUpperCase() + resultDosha.slice(1)} erfahren
                 </button>
               )}
-              <Link to={`/rezepte?doshaType=${resultDosha || 'all'}`} className={styles.resultButton}>
+              <button className={styles.resultButton} onClick={() => navigate('/myAyurly')}>
+                Jetzt personalisierte Empfehlungen erhalten!
+              </button>
+              {/* <Link to={`/rezepte`} className={styles.resultButton}>
                 Passende Rezepte finden
               </Link>
-              <button className={`${styles.actionButton} ${styles.resultButton}`} onClick={() => alert('Yoga-Bereich kommt bald!')}>
-                Yoga für {resultDosha ? resultDosha.charAt(0).toUpperCase() + resultDosha.slice(1) : 'Dein Dosha'}
-              </button>
+              <Link to={`/yoga`} className={styles.resultButton}>
+                Passende Yoga-Übungen finden
+              </Link> */}
             </div>
 
             <div className={styles.navigationButtons}>
               <button className={styles.resultButton} onClick={restartTest}>
                 Test neu starten
-              </button>
-              <button className={styles.resultButton} onClick={() => navigate('/account')}>
-                Zum Account
               </button>
             </div>
           </div>
@@ -662,7 +664,7 @@ const DoshaTestPage = () => {
               id="progress-bar"
               style={{ width: `${progressPercent}%` }}
             >
-              {progressPercent}%
+              <span>{progressPercent}%</span>
             </div>
           </div>
 
