@@ -177,7 +177,7 @@ const MyAyurlyPage = () => {
     Vata: { icon: "🌀", description: "Du bist kreativ, beweglich, aber manchmal unruhig." },
     Pitta: { icon: "🔥", description: "Du bist zielstrebig, energiegeladen, aber manchmal auch hitzköpfig." },
     Kapha: { icon: "🌱", description: "Du bist stabil, liebevoll, aber neigst zur Trägheit." },
-    Unbekannt: { icon: "❔", description: "Mache den Test, um dein Dosha zu entdecken." },
+    Unbekannt: { icon: "❔", description: "Mache den Dosha-Test, um personalisierte Empfehlungen erhalten zu können." },
   };
   const currentDosha = doshaDetails[capitalizedDosha];
 
@@ -383,7 +383,14 @@ const MyAyurlyPage = () => {
                 onMonthChange={setCalendarViewDate}
             />
         <div className={styles.statusContainer}>
-          {status === 'error' && (
+          {!doshaType && status !== 'loading' && (
+                <div className={`${styles.statusMessage} ${styles.infoMessage}`}>
+                    <span>
+                        Bitte mache zuerst den <Link to="/dosha-test">Dosha-Test</Link>, damit wir persönliche Inhalte für dich zusammenstellen können.
+                    </span>
+                </div>
+            )}
+          {doshaType && status === 'error' && (
             <div className={`${styles.statusMessage} ${styles.errorMessage}`}>
               <FaExclamationTriangle />
               <span>Leider können aktuell keine Inhalte geladen werden.</span>

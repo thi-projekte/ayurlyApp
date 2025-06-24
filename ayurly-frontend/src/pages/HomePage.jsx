@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 import Modal from '../components/UI/Modal';
 import FlippableCard from '../components/UI/FlippableCard';
-import '../styles/indexStyles.css'; 
+import TipsCarousel from '../components/UI/TipsCarousel';
+import '../styles/indexStyles.css';
 import { useUser } from '../contexts/UserContext';
 
 const HomePage = () => {
-  const { isLoggedIn, userProfile, loadingKeycloak, doshaType } = useUser(); 
+  const { isLoggedIn, userProfile, loadingKeycloak, doshaType } = useUser();
   const [welcomeMessage, setWelcomeMessage] = useState('Willkommen bei Ayurly');
   const [showVataModal, setShowVataModal] = useState(false);
   const [showPittaModal, setShowPittaModal] = useState(false);
@@ -16,7 +17,7 @@ const HomePage = () => {
   useEffect(() => {
     if (!loadingKeycloak) { // Erst handeln, wenn Keycloak-Initialisierung abgeschlossen ist
       if (isLoggedIn && userProfile) {
-        const firstName = userProfile.firstName || userProfile.username || 'Nutzer'; 
+        const firstName = userProfile.firstName || userProfile.username || 'Nutzer';
         setWelcomeMessage(`Willkommen, ${firstName}`);
       } else {
         setWelcomeMessage('Willkommen bei Ayurly'); // Für nicht eingeloggte User
@@ -82,8 +83,47 @@ const HomePage = () => {
     }
   ];
 
+  const vataTips = [
+    { title: "Regelmäßige Routinen", text: "Schaffe feste Zeiten für Mahlzeiten und Schlaf, um dein Nervensystem zu beruhigen." },
+    { title: "Warme Speisen", text: "Bevorzuge gekochte, nährende Gerichte statt Rohkost, um deine Verdauung zu unterstützen." },
+    { title: "Ausreichend Trinken", text: "Trinke warmes Wasser oder Kräutertees über den Tag verteilt, um hydriert zu bleiben." },
+    { title: "Ölmassagen (Abhyanga)", text: "Eine tägliche Selbstmassage mit warmem Sesamöl erdet und nährt deine Haut." },
+    { title: "Sinnesreize reduzieren", text: "Schaffe ruhige Momente und vermeide übermäßige Stimulation durch Medien." },
+    { title: "Warm halten", text: "Schütze dich vor Kälte und Wind mit warmer Kleidung." },
+    { title: "Sanfte Bewegung", text: "Yoga, Tai-Chi oder Spaziergänge sind ideal. Vermeide exzessiven Sport." },
+    { title: "Aromatherapie", text: "Beruhigende Düfte wie Lavendel, Sandelholz oder Geranie wirken ausgleichend." },
+    { title: "Meditation & Erdung", text: "Regelmäßige Meditation hilft, deinen sprunghaften Geist zu zentrieren." },
+    { title: "Ausreichend Schlaf", text: "Gehe früh zu Bett und sorge für eine ruhige Schlafumgebung." }
+  ];
+
+  const pittaTips = [
+    { title: "Kühl bleiben", text: "Vermeide übermäßige Hitze, sowohl durch Sonne als auch durch scharfe Speisen." },
+    { title: "Kühlende Lebensmittel", text: "Iss süße, bittere und herbe Lebensmittel wie Gurken, Melonen und Blattgemüse." },
+    { title: "Regelmäßige Mahlzeiten", text: "Lass keine Mahlzeiten aus, um Heißhunger und Reizbarkeit zu vermeiden." },
+    { title: "Sanfte Öle", text: "Verwende kühlende Öle wie Kokos- oder Sonnenblumenöl für Massagen." },
+    { title: "Zeit in der Natur", text: "Spaziergänge im Wald oder am Wasser wirken beruhigend auf dein inneres Feuer." },
+    { title: "Mäßigung bei Sport", text: "Wähle Sportarten, die dich nicht überhitzen, wie Schwimmen oder Radfahren." },
+    { title: "Loslassen lernen", text: "Übe dich in Geduld und vermeide übermäßigen Ehrgeiz und Perfektionismus." },
+    { title: "Kühle Düfte", text: "Sandelholz, Rose und Minze sind ideale Düfte, um Pitta zu besänftigen." },
+    { title: "Pausen einlegen", text: "Gönne dir bewusste Pausen während der Arbeit, um nicht auszubrennen." },
+    { title: "Ausreichend Trinken", text: "Trinke Wasser und kühlende Tees, aber vermeide eiskalte Getränke." }
+  ];
+
+  const kaphaTips = [
+    { title: "In Bewegung bleiben", text: "Regelmäßige, anregende Bewegung ist der Schlüssel, um Trägheit zu überwinden." },
+    { title: "Leichte & warme Kost", text: "Bevorzuge leichte, trockene und warme Speisen. Reduziere schwere, ölige Gerichte." },
+    { title: "Früh aufstehen", text: "Stehe vor 6 Uhr morgens auf, um die Kapha-Zeit zu nutzen und energiegeladen zu starten." },
+    { title: "Trockenmassagen (Garshana)", text: "Eine Massage mit einem Seidenhandschuh regt den Kreislauf an." },
+    { title: "Geistige Anregung", text: "Fordere deinen Geist mit neuen Hobbys, Büchern oder Rätseln." },
+    { title: "Scharfe Gewürze", text: "Ingwer, schwarzer Pfeffer und Chili regen deine langsame Verdauung an." },
+    { title: "Minimalismus praktizieren", text: "Schaffe Ordnung und befreie dich von materiellem und emotionalem Ballast." },
+    { title: "Fastentage einlegen", text: "Ein gelegentlicher flüssiger oder leichter Fastentag kann Kapha ausgleichen." },
+    { title: "Soziale Kontakte pflegen", text: "Aktive Treffen mit Freunden wirken anregend und beugen dem Rückzug vor." },
+    { title: "Warmes Ingwerwasser", text: "Trinke morgens ein Glas warmes Wasser mit Ingwer, um den Stoffwechsel anzukurbeln." }
+  ];
+
   return (
-    <div className="homepage-container"> 
+    <div className="homepage-container">
       <section className="parallax">
         <img src="/img/index/hill1.png" alt="" id="hill1" />
         <img src="/img/index/hill2.png" alt="" id="hill2" />
@@ -92,7 +132,7 @@ const HomePage = () => {
         <img src="/img/index/hill5.png" alt="" id="hill5" />
         <img src="/img/index/tree.png" alt="" id="tree" />
         {/* Dynamische Willkommensnachricht */}
-        <h2 id="punch">&#128075; {welcomeMessage}</h2> 
+        <h2 id="punch">&#128075; {welcomeMessage}</h2>
         <img src="/img/index/leaf.png" alt="" id="leaf" />
         <img src="/img/index/plant.png" alt="" id="plant" />
       </section>
@@ -106,148 +146,148 @@ const HomePage = () => {
         </p>
       </section>
       <div className="InfoSectionContainer">
-      <section>
-        <div className="info">
-          <img src="/img/index/ayurlyLogo.png" alt="Ayurly Logo" />
-          <div className="text">
-            <h1>Was ist Ayurly?</h1>
+        <section>
+          <div className="info">
+            <img src="/img/index/ayurlyLogo.png" alt="Ayurly Logo" />
+            <div className="text">
+              <h1>Was ist Ayurly?</h1>
+              <p>
+                Ayurly begleitet dich auf deiner ganz persönlichen Reise zu mehr
+                Balance, Wohlbefinden und innerer Ruhe – basierend auf den
+                Prinzipien des Ayurveda. Entdecke deine individuelle Konstitution
+                (Dosha) und finde Routinen, die wirklich zu dir passen.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div className="info">
+            <div className="text">
+              <h1>Unsere Angebote</h1>
+              <ul id="services">
+                <li><Link to="/dosha-test"><p>Dosha-Test zur Ermittlung deiner ayurvedischen Konstitution</p></Link></li>
+                <li><Link to="/myAyurly"><p>Personalisierte Tagesroutinen für Vata, Pitta und Kapha</p></Link></li>
+                <li><Link to="/yoga"><p>Geführte Yoga-Übungen zur Harmonisierung</p></Link></li>
+                <li><Link to="/rezepte"><p>Ayurvedische Rezepte und Ernährungstipps</p></Link></li>
+              </ul>
+            </div>
+            <img src="/img/index/meditation.png" alt="Meditation" id="meditation" />
+          </div>
+        </section>
+
+        <section class="explanation">
+          <h1 class="mainHeading">Was ist Ayurveda?</h1>
+          <div class="explanantionContent">
+            <div class="explanationDescription">
+              <h3>🌿 Ayurveda – Das Wissen vom Leben</h3>
+              <p class="ayurveda">
+                Ayurveda ist das älteste überlieferte Gesundheitssystem der Welt und
+                hat seinen Ursprung in Indien. Der Name kommt aus dem Sanskrit und
+                setzt sich zusammen aus:
+              </p>
+            </div>
+            <div class="wordConstruction">
+              <p>🕉️ Ayus = Leben</p>
+              <p>📚 Veda = Wissen</p>
+              <p>➡️ „Wissen vom Leben“</p>
+            </div>
+            <div class="explanationDescription">
+              <h3 class="ayurveda">
+                🧠💚 Ganzheitliche Gesundheit statt nur Symptom-Behandlung
+              </h3>
+              <p>
+                Ayurveda betrachtet Gesundheit nicht nur als das Fehlen von
+                Krankheit, sondern als einen Zustand des harmonischen Gleichgewichts
+                zwischen Körper, Geist und Seele. Es ist ein tiefgründiger,
+                ganzheitlicher Ansatz, der darauf abzielt, das Wohlbefinden in allen
+                Bereichen deines Lebens zu fördern. Im Gegensatz zur westlichen
+                Medizin, die oft Symptome behandelt, geht es im Ayurveda darum, die
+                Ursache von Ungleichgewichten zu erkennen und das natürliche
+                Gleichgewicht wiederherzustellen.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="explanation">
+          <h1 class="mainHeading">Und was sind Doshas?</h1>
+          <div className="explanantionContent">
+            <h2>🌬️🔥💧 Dosha – Die Bioenergien des Lebens</h2>
             <p>
-              Ayurly begleitet dich auf deiner ganz persönlichen Reise zu mehr
-              Balance, Wohlbefinden und innerer Ruhe – basierend auf den
-              Prinzipien des Ayurveda. Entdecke deine individuelle Konstitution
-              (Dosha) und finde Routinen, die wirklich zu dir passen.
+              Im Ayurveda spielt das Konzept der Doshas eine zentrale Rolle. Der Begriff stammt aus dem Sanskrit und bedeutet so viel wie „Fehlfunktion“ oder „das, was aus dem Gleichgewicht geraten kann“ – doch in einem positiven Sinne beschreibt er die fundamentalen Bioenergien, die in jedem Menschen wirken.
             </p>
           </div>
-        </div>
-      </section>
-
-      <section>
-        <div className="info">
-          <div className="text">
-            <h1>Unsere Angebote</h1>
-            <ul id="services">
-              <li><p>Dosha-Test zur Ermittlung deiner ayurvedischen Konstitution</p></li>
-              <li><p>Personalisierte Tagesroutinen für Vata, Pitta und Kapha</p></li>
-              <li><p>Geführte Yoga-Übungen zur Harmonisierung</p></li>
-              <li><p>Ayurvedische Rezepte und Ernährungstipps</p></li>
-            </ul>
+          <div className="flippableCardsContainer">
+            {doshasExplainedData.map((card, index) => (
+              <FlippableCard
+                key={index}
+                emoji={card.emoji}
+                text={card.text}
+                initialFlipped={false} // Alle Karten starten mit Emoji-Seite
+              />
+            ))}
           </div>
-          <img src="/img/index/meditation.png" alt="Meditation" id="meditation" />
-        </div>
-      </section>
-
-      <section class="explanation">
-      <h1 class="mainHeading">Was ist Ayurveda?</h1>
-      <div class="explanantionContent">
-        <div class="explanationDescription">
-          <h3>🌿 Ayurveda – Das Wissen vom Leben</h3>
-          <p class="ayurveda">
-            Ayurveda ist das älteste überlieferte Gesundheitssystem der Welt und
-            hat seinen Ursprung in Indien. Der Name kommt aus dem Sanskrit und
-            setzt sich zusammen aus:
-          </p>
-        </div>
-        <div class="wordConstruction">
-          <p>🕉️ Ayus = Leben</p>
-          <p>📚 Veda = Wissen</p>
-          <p>➡️ „Wissen vom Leben“</p>
-        </div>
-        <div class="explanationDescription">
-          <h3 class="ayurveda">
-            🧠💚 Ganzheitliche Gesundheit statt nur Symptom-Behandlung
-          </h3>
-          <p>
-            Ayurveda betrachtet Gesundheit nicht nur als das Fehlen von
-            Krankheit, sondern als einen Zustand des harmonischen Gleichgewichts
-            zwischen Körper, Geist und Seele. Es ist ein tiefgründiger,
-            ganzheitlicher Ansatz, der darauf abzielt, das Wohlbefinden in allen
-            Bereichen deines Lebens zu fördern. Im Gegensatz zur westlichen
-            Medizin, die oft Symptome behandelt, geht es im Ayurveda darum, die
-            Ursache von Ungleichgewichten zu erkennen und das natürliche
-            Gleichgewicht wiederherzustellen.
-          </p>
-        </div>
-      </div>
-    </section>
-
-      <section className="explanation">
-        <h1 class="mainHeading">Und was sind Doshas?</h1>
-        <div className="explanantionContent"> 
-          <h2>🌬️🔥💧 Dosha – Die Bioenergien des Lebens</h2>
-          <p>
-            Im Ayurveda spielt das Konzept der Doshas eine zentrale Rolle. Der Begriff stammt aus dem Sanskrit und bedeutet so viel wie „Fehlfunktion“ oder „das, was aus dem Gleichgewicht geraten kann“ – doch in einem positiven Sinne beschreibt er die fundamentalen Bioenergien, die in jedem Menschen wirken.
-          </p>
-        </div>
-        <div className="flippableCardsContainer">
-          {doshasExplainedData.map((card, index) => (
-            <FlippableCard
-              key={index}
-              emoji={card.emoji}
-              text={card.text}
-              initialFlipped={false} // Alle Karten starten mit Emoji-Seite
-            />
-          ))}
-        </div>
-        <div className="explanantionContent">
+          <div className="explanantionContent">
             <h2>🧘‍♀️ Dein Dosha ist der Schlüssel zu deinem inneren Gleichgewicht.</h2>
             <p className="pointingFinger">👇</p>
             <Link to="/dosha-test" className="discoverDosha">
               {doshaType ? 'Test wiederholen' : 'Starte deinen Dosha-Test!'}
             </Link>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <section>
-        <div className="doshas">
-          <h1>Die 3 Doshas im Überblick</h1>
-          <div className="doshaCards">
-            <div className="card">
-              <p className="doshaIcon">🌀</p>
-              <p className="doshaName" id="Vata">Vata</p>
-              <p className="doshaInfo">
-                Vata steht für Bewegung, Kreativität und Flexibilität. Es steuert
-                Atmung, Kreislauf und Nervensystem.
-              </p>
-              <a href="#" className="discoverDosha" onClick={openModal(setShowVataModal)}>Entdecken</a>
-            </div>
-            <div className="card">
-              <p className="doshaIcon">🔥</p>
-              <p className="doshaName" id="Pitta">Pitta</p>
-              <p className="doshaInfo">
-                Pitta steht für Feuer, Energie und Transformation. Es regelt
-                Verdauung, Stoffwechsel und Intelligenz.
-              </p>
-              <a href="#" className="discoverDosha" onClick={openModal(setShowPittaModal)}>Entdecken</a>
-            </div>
-            <div className="card">
-              <p className="doshaIcon">🌱</p>
-              <p className="doshaName" id="Kapha">Kapha</p>
-              <p className="doshaInfo">
-                Kapha symbolisiert Struktur, Stabilität und Ausdauer. Es
-                beeinflusst Immunität, Gelenke und Flüssigkeitshaushalt.
-              </p>
-              <a href="#" className="discoverDosha" onClick={openModal(setShowKaphaModal)}>Entdecken</a>
+        <section>
+          <div className="doshas">
+            <h1>Die 3 Doshas im Überblick</h1>
+            <div className="doshaCards">
+              <div className="card">
+                <p className="doshaIcon">🌀</p>
+                <p className="doshaName" id="Vata">Vata</p>
+                <p className="doshaInfo">
+                  Vata steht für Bewegung, Kreativität und Flexibilität. Es steuert
+                  Atmung, Kreislauf und Nervensystem.
+                </p>
+                <a href="#" className="discoverDosha" onClick={openModal(setShowVataModal)}>Entdecken</a>
+              </div>
+              <div className="card">
+                <p className="doshaIcon">🔥</p>
+                <p className="doshaName" id="Pitta">Pitta</p>
+                <p className="doshaInfo">
+                  Pitta steht für Feuer, Energie und Transformation. Es regelt
+                  Verdauung, Stoffwechsel und Intelligenz.
+                </p>
+                <a href="#" className="discoverDosha" onClick={openModal(setShowPittaModal)}>Entdecken</a>
+              </div>
+              <div className="card">
+                <p className="doshaIcon">🌱</p>
+                <p className="doshaName" id="Kapha">Kapha</p>
+                <p className="doshaInfo">
+                  Kapha symbolisiert Struktur, Stabilität und Ausdauer. Es
+                  beeinflusst Immunität, Gelenke und Flüssigkeitshaushalt.
+                </p>
+                <a href="#" className="discoverDosha" onClick={openModal(setShowKaphaModal)}>Entdecken</a>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Vata Modal */}
-      <Modal show={showVataModal} onClose={closeModal(setShowVataModal)}>
-        <div className="generalInfo">
-          <video src="/videos/index/vata.mp4" type="video/mp4" autoPlay loop muted playsInline></video>
-          <div className="text">
-            <h2 id="VataName">Vata</h2>
-            <p>
-              Vata ist eines der drei Doshas im Ayurveda und repräsentiert die
-              Elemente Luft und Äther (Raum). Es ist verantwortlich für
-              Bewegung, Kommunikation, Atmung und das Nervensystem. Vata
-              dominiert typischerweise in den kälteren Jahreszeiten,
-              insbesondere im Herbst und Winter.
-            </p>
+        {/* Vata Modal */}
+        <Modal show={showVataModal} onClose={closeModal(setShowVataModal)}>
+          <div className="generalInfo">
+            <video src="/videos/index/vata.mp4" type="video/mp4" autoPlay loop muted playsInline></video>
+            <div className="text">
+              <h2 id="VataName">Vata</h2>
+              <p>
+                Vata ist eines der drei Doshas im Ayurveda und repräsentiert die
+                Elemente Luft und Äther (Raum). Es ist verantwortlich für
+                Bewegung, Kommunikation, Atmung und das Nervensystem. Vata
+                dominiert typischerweise in den kälteren Jahreszeiten,
+                insbesondere im Herbst und Winter.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="characteristics">
+          <div className="characteristics">
             <div className="firstRow">
               <div className="rowContent">
                 <p className="characteristic">Körperbau</p>
@@ -279,8 +319,8 @@ const HomePage = () => {
                 <p>Leichter Schlaf, neigt zu Schlaflosigkeit.</p>
               </div>
             </div>
-        </div>
-        <div className="problems">
+          </div>
+          <div className="problems">
             <h3 className="spacerHeading">Probleme bei Vata Überschuss</h3>
             <div className="problem">
               <p className="problemName">🫀 Körperliche Symptome</p>
@@ -302,12 +342,13 @@ const HomePage = () => {
                 Unruhe, Überforderung, Schwierigkeiten, zur Ruhe zu kommen.
               </p>
             </div>
-        </div>
-        <div className="tips">
+          </div>
+          <div className="tips">
             <h3 className="spacerHeading">10 Tipps Für den Vata-Typ</h3>
-            <img src="/img/index/VataTipp.gif" alt="Vata Tipps" />
-        </div>
-        <div className="foodTips">
+            <img src="/img/index/VataTipp.gif" alt="Vata Tipps" className="desktop-only" />
+            <div className="mobile-only"><TipsCarousel tips={vataTips} /></div>
+          </div>
+          <div className="foodTips">
             <h3 className="spacerHeading">Ernährungstipps</h3>
             <div className="foodtip">
               <div className="tipCard">
@@ -332,8 +373,8 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
-        </div>
-        <div className="recommendations">
+          </div>
+          <div className="recommendations">
             <h3 className="spacerHeading">Empfohlene Lebensmittel</h3>
             <div className="recommendationRow">
               <div className="recommendation">
@@ -344,7 +385,7 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="recommendation">
-                <img src="/img/index/gemuese.jpg" alt="Gemüse" /> 
+                <img src="/img/index/gemuese.jpg" alt="Gemüse" />
                 <div className="recommendationDescription">
                   <p className="recommendationName">Gemüse</p>
                   <p>Karotten, Rüben, Kürbis, Zucchini, Süßkartoffel.</p>
@@ -367,12 +408,12 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
-        </div>
-      </Modal>
+          </div>
+        </Modal>
 
-      {/* Pitta Modal */}
-      <Modal show={showPittaModal} onClose={closeModal(setShowPittaModal)}>
-        <div className="generalInfo">
+        {/* Pitta Modal */}
+        <Modal show={showPittaModal} onClose={closeModal(setShowPittaModal)}>
+          <div className="generalInfo">
             <video src="/videos/index/Pitta.mp4" type="video/mp4" autoPlay loop muted playsInline id="pittaVideo"></video>
             <div className="text">
               <h2 id="PittaName">Pitta</h2>
@@ -389,7 +430,7 @@ const HomePage = () => {
           <div className="characteristics">
             <div className="firstRow">
               <div className="rowContent">
-                <p className="characteristic" id="PittaName">Körperbau</p> 
+                <p className="characteristic" id="PittaName">Körperbau</p>
                 <p>Athletisch, mittelgroß, gut proportioniert.</p>
               </div>
               <div className="rowContent">
@@ -448,7 +489,8 @@ const HomePage = () => {
           </div>
           <div className="tips">
             <h3 className="spacerHeading">10 Tipps Für den Pitta-Typ</h3>
-            <img src="/img/index/PittaTipp.gif" alt="Pitta Tipps" />
+            <img src="/img/index/PittaTipp.gif" alt="Pitta Tipps" className="desktop-only" />
+            <div className="mobile-only"><TipsCarousel tips={pittaTips} /></div>
           </div>
           <div className="foodTips">
             <h3 className="spacerHeading">Ernährungstipps</h3>
@@ -511,11 +553,11 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-      </Modal>
+        </Modal>
 
-      {/* Kapha Modal */}
-      <Modal show={showKaphaModal} onClose={closeModal(setShowKaphaModal)}>
-        <div className="generalInfo">
+        {/* Kapha Modal */}
+        <Modal show={showKaphaModal} onClose={closeModal(setShowKaphaModal)}>
+          <div className="generalInfo">
             <video src="/videos/index/Kapha.mp4" type="video/mp4" autoPlay loop muted playsInline id="kaphaVideo"></video>
             <div className="text">
               <h2 id="KaphaName">Kapha</h2>
@@ -539,7 +581,7 @@ const HomePage = () => {
                 <p>Fettige Haut, volles und kräftiges Haar.</p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="KaphaName">Temperatur</p> 
+                <p className="characteristic" id="KaphaName">Temperatur</p>
                 <p>Kühlere Körpertemperatur, mag Wärme.</p>
               </div>
             </div>
@@ -549,7 +591,7 @@ const HomePage = () => {
                 <p>Langsamer Stoffwechsel, neigen zu Gewichtszunahme.</p>
               </div>
               <div className="rowContent">
-                <p className="characteristic" id="KaphaName">Energie</p> 
+                <p className="characteristic" id="KaphaName">Energie</p>
                 <p>Langsame, aber ausdauernde Energie; neigen zu Trägheit.</p>
               </div>
               <div className="rowContent">
@@ -582,7 +624,8 @@ const HomePage = () => {
           </div>
           <div className="tips">
             <h3 className="spacerHeading">10 Tipps Für den Kapha-Typ</h3>
-            <img src="/img/index/KaphaTipp.gif" alt="Kapha Tipps" />
+            <img src="/img/index/KaphaTipp.gif" alt="Kapha Tipps" className="desktop-only" />
+            <div className="mobile-only"><TipsCarousel tips={kaphaTips} /></div>
           </div>
           <div className="foodTips">
             <h3 className="spacerHeading">Ernährungstipps</h3>
@@ -647,29 +690,29 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-      </Modal>
+        </Modal>
 
-      
 
-      <section>
-        <div className="Kontakt">
-          <div className="text">
-            <h1>Kontakt</h1>
-            <p>
-              Du hast Fragen oder Feedback? Wir freuen uns auf deine Nachricht!
-            </p>
+
+        <section>
+          <div className="Kontakt">
+            <div className="text">
+              <h1>Kontakt</h1>
+              <p>
+                Du hast Fragen oder Feedback? Wir freuen uns auf deine Nachricht!
+              </p>
+            </div>
+            <div className="socialMedia">
+              {/* Für externe Links ist <a> besser als <Link> von react-router-dom */}
+              <a href="https://www.instagram.com/ayurly.balance" target="_blank" rel="noopener noreferrer">
+                <i className="fi fi-brands-instagram"></i>ayurly.balance
+              </a>
+              <a href="mailto:info@ayurly.com">
+                <i className="fi fi-br-mailbox-envelope"></i>info@ayurly.com
+              </a>
+            </div>
           </div>
-          <div className="socialMedia">
-            {/* Für externe Links ist <a> besser als <Link> von react-router-dom */}
-            <a href="https://www.instagram.com/ayurly.balance" target="_blank" rel="noopener noreferrer">
-              <i className="fi fi-brands-instagram"></i>ayurly.balance
-            </a>
-            <a href="mailto:info@ayurly.com">
-              <i className="fi fi-br-mailbox-envelope"></i>info@ayurly.com
-            </a>
-          </div>
-        </div>
-      </section>
+        </section>
       </div>
     </div>
   );

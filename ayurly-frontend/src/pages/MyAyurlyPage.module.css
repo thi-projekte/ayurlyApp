@@ -171,6 +171,16 @@
     font-size: 13pt;
 }
 
+.statusMessage {
+    text-align: center;
+    font-size: 15pt;
+    font-weight: 500;
+}
+
+.infoMessage {
+    display: none;
+}
+
 .settings {
     display: flex;
     gap: 10px;
@@ -517,6 +527,10 @@
         flex-direction: column;
     }
 
+    .myAyurlyContainer {
+        padding: 20px 40px;
+    }
+
     .profileCard {
         min-width: unset;
     }
@@ -534,6 +548,10 @@
         align-items: center;
         text-align: center;
         gap: 20px;
+    }
+
+    .infoMessage {
+        display: block;
     }
 
     .profileWrapper {

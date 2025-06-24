@@ -12,7 +12,7 @@ p {
 }
 
 li p {
-    display:inline;
+    display: inline;
 }
 
 .parallax {
@@ -114,20 +114,26 @@ section:last-child {
     color: transparent;
 }
 
-#VataName{
+.mobile-only {
+    display: none;
+}
+
+#VataName {
     background: linear-gradient(to right, #1d11bb, #518ceb, #5b96f5);
     background-clip: text;
     color: transparent;
 }
-#PittaName{
+
+#PittaName {
     background: linear-gradient(to right, #FF4500, #FFA500, #FFFF66);
     background-clip: text;
     color: transparent;
 }
-#KaphaName{
+
+#KaphaName {
     background: linear-gradient(to right, #4CAF50, #81C784, #A5D6A7);
     background-clip: text;
-    color: transparent;	
+    color: transparent;
 }
 
 .text h2 {
@@ -607,7 +613,7 @@ body.modal-open {
 /* ========== MOBILE LAYOUT ANPASSUNGEN ========== */
 
 @media (max-width: 1024px) {
-    
+
     .parallax {
         height: 75vh;
     }
@@ -651,7 +657,16 @@ body.modal-open {
 
 
 @media (max-width: 768px) {
-    
+
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: block;
+        margin-right: auto;
+    }
+
     .parallax {
         height: 60vh;
     }
