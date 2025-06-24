@@ -4,11 +4,15 @@ package de.ayurly.app.dataservice.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import de.ayurly.app.dataservice.entity.AppUser;
@@ -20,11 +24,104 @@ import de.ayurly.app.dataservice.entity.lookup.LookupRoutineTile;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyContent;
 import de.ayurly.app.dataservice.entity.user.MyAyurlyHistory;
 import io.quarkus.panache.common.Parameters;
+import org.jboss.logging.Logger;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class MyAyurlyHistoryService {
+
+    private static final Logger LOG = Logger.getLogger(MyAyurlyHistoryService.class);
+
+    @Inject
+    EntityManager entityManager;
+    
+    public static class GraphDataPoint {
+        public String label;
+        public double progress;
+
+        public GraphDataPoint(String label, Double progress) {
+            this.label = label;
+            this.progress = (progress != null) ? progress : 0.0;
+        }
+    }
+
+    @Transactional
+    public List<GraphDataPoint> getAggregatedHistory(String userId, String timeframe) {
+        
+        LocalDate endDate = LocalDate.now(ZoneId.of("Europe/Berlin"));
+        LocalDate startDate;
+        String dateSelection;
+        String dateGrouping;
+        DateTimeFormatter formatter;
+
+        switch (timeframe) {
+            case "week":
+                startDate = endDate.minusDays(6);
+                dateGrouping = "TO_CHAR(calendarDate, 'YYYY-MM-DD')";
+                formatter = DateTimeFormatter.ofPattern("dd.MM.");
+                break;
+            case "month":
+                startDate = endDate.minusMonths(1).plusDays(1);
+                dateGrouping = "TO_CHAR(calendarDate, 'YYYY-MM-DD')";
+                formatter = DateTimeFormatter.ofPattern("dd.MM.");
+                break;
+            case "year":
+                startDate = endDate.minusYears(1).plusDays(1);
+                dateGrouping = "TO_CHAR(calendarDate, 'YYYY-WW')"; // Gruppiert nach Kalenderwoche
+                formatter = DateTimeFormatter.ofPattern("w"); // 'w' für Woche des Jahres
+                break;
+            case "total":
+                // Finde das erste Datum des Users
+                MyAyurlyHistory firstEntry = MyAyurlyHistory.find("user.id = ?1 ORDER BY calendarDate ASC", userId).firstResult();
+                startDate = (firstEntry != null) ? firstEntry.calendarDate : endDate;
+                // Aggregiere monatlich für die Gesamtansicht
+                dateGrouping = "TO_CHAR(calendarDate, 'YYYY-MM')"; 
+                formatter = DateTimeFormatter.ofPattern("MMM yy");
+                break;
+            default:
+                 return new ArrayList<>();
+        }
+        
+        dateSelection = "MIN(" + dateGrouping + ")";
+
+        StringBuilder queryBuilder = new StringBuilder();
+        Parameters params = Parameters.with("userId", userId).and("startDate", startDate).and("endDate", endDate);
+        queryBuilder.append("SELECT NEW de.ayurly.app.dataservice.service.MyAyurlyHistoryService$GraphDataPoint(" + dateSelection + ", AVG(progressPercentage)) ");
+        queryBuilder.append("FROM MyAyurlyHistory WHERE user.id = :userId AND calendarDate BETWEEN :startDate AND :endDate ");
+        queryBuilder.append("GROUP BY " + dateGrouping + " ORDER BY " + dateSelection + " ASC");
+
+        LOG.infof("Executing history query: %s with params: %s", queryBuilder.toString(), params.map());
+
+       var query = entityManager.createQuery(queryBuilder.toString(), GraphDataPoint.class);
+        for (Map.Entry<String, Object> entry : params.map().entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+        List<GraphDataPoint> results = query.getResultList();
+
+        // Formatiere das Label für die Anzeige im Frontend
+        results.forEach(point -> {
+             try {
+                if ("year".equals(timeframe)) {
+                   // Format für KW: 'KW 26'
+                    String weekNum = LocalDate.parse(point.label.substring(0,4) + "-W" + point.label.substring(5,7) + "-1", DateTimeFormatter.ISO_WEEK_DATE).format(formatter);
+                    point.label = "KW " + weekNum;
+                } else if ("total".equals(timeframe)) {
+                     point.label = LocalDate.parse(point.label + "-01").format(formatter);
+                }
+                else { // "week" or "month"
+                    point.label = LocalDate.parse(point.label).format(formatter);
+               }
+             } catch (Exception e) {
+                 LOG.warnf("Could not parse date label: %s for timeframe %s", point.label, timeframe);
+                 // Label bleibt unverändert im Fehlerfall
+             }
+        });
+
+        return results;
+    }
 
     @Transactional
     public void updateHistoryForDay(AppUser user, LocalDate date) {
