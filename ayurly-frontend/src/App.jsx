@@ -15,6 +15,7 @@ import LoginPage from './pages/LoginPage';
 import MyAyurlyPage from './pages/MyAyurlyPage';
 import { UserProvider } from './contexts/UserContext';
 import ProcessTestComponent from './components/ProcessTestComponent';
+import ScrollToTop from './components/UI/ScrollToTop';
 // Admin-Page Imports
 import AdminRoute from './components/Navigation/AdminRoute';
 import DashboardOverview from './components/Admin/DashboardOverview';
@@ -31,6 +32,7 @@ import ManageYoga from './components/Admin/ManageYoga';
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <UserProvider> {/* UserContext umschließt alles */}
         <Navbar /> {/* Navbar immer anzeigen */}
         <main> {/* main content wird dynamisch über die simulierten Routen geladen */}
