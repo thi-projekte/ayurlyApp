@@ -39,4 +39,20 @@ public class MyAyurlyHistoryResource {
         
         return Response.ok(data).build();
     }
+
+    @GET
+    @Path("/monthly-summary")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMonthlySummary(
+            @QueryParam("year") int year,
+            @QueryParam("month") int month) {
+        
+        String userId = jwt.getSubject();
+        if (year == 0 || month == 0) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Year and month are required.").build();
+        }
+
+        List<MyAyurlyHistoryService.CalendarDayProgress> data = historyService.getMonthlyProgress(userId, year, month);
+        return Response.ok(data).build();
+    }
 }

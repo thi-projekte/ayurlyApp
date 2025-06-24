@@ -48,6 +48,31 @@ public class MyAyurlyHistoryService {
         }
     }
 
+    public static class CalendarDayProgress {
+        public String date; // Format: "YYYY-MM-DD"
+        public double progress;
+
+        public CalendarDayProgress(LocalDate date, Double progress) {
+            this.date = date.toString();
+            this.progress = (progress != null) ? progress : 0.0;
+        }
+    }
+
+    @Transactional
+    public List<CalendarDayProgress> getMonthlyProgress(String userId, int year, int month) {
+        String hql = "SELECT NEW de.ayurly.app.dataservice.service.MyAyurlyHistoryService$CalendarDayProgress(h.calendarDate, AVG(h.progressPercentage)) " +
+                 "FROM MyAyurlyHistory h " +
+                 "WHERE h.user.id = :userId AND YEAR(h.calendarDate) = :year AND MONTH(h.calendarDate) = :month " +
+                 "GROUP BY h.calendarDate " +
+                 "ORDER BY h.calendarDate ASC";
+    
+        return entityManager.createQuery(hql, CalendarDayProgress.class)
+            .setParameter("userId", userId)
+            .setParameter("year", year)
+            .setParameter("month", month)
+            .getResultList();
+    }
+
     @Transactional
     public List<GraphDataPoint> getAggregatedHistory(String userId, String timeframe) {
         
