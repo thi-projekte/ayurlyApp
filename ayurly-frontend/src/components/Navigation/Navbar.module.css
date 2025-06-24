@@ -161,7 +161,7 @@
     align-items: center;
     z-index: 1000; 
 
-    padding-top: 5px; 
+    padding-top: 9px; 
     padding-bottom: env(safe-area-inset-bottom); 
     
     padding-left: env(safe-area-inset-left);
