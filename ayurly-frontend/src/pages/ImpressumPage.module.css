@@ -11,7 +11,8 @@
   font-family: 'Arial', sans-serif;
   line-height: 1.6;
   color: #333;
-  word-wrap: break-word; 
+  overflow-wrap: break-word; /* Standard-Eigenschaft für den Wortumbruch */
+  box-sizing: border-box;    /* Stellt sicher, dass Padding in der Breite enthalten ist */
 }
 
 .legalSection {
@@ -56,8 +57,8 @@
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
   .legalContainer {
-    margin: 20px; 
-    padding: 25px;
+    margin: 20px; /* Reduzierter Margin für Tablets */
+    padding: 25px; /* Angepasstes Padding */
   }
 
   .legalSection h2 {
@@ -73,14 +74,17 @@
   }
 
   .legalSection p, .legalSection a {
-    font-size: 0.95rem; 
+    font-size: 0.95rem; /* Etwas kleinere Schrift für bessere Lesbarkeit */
   }
 }
 
 @media (max-width: 480px) {
   .legalContainer {
-    margin: 10px; 
-    padding: 20px; 
+    width: 100%;          
+    margin: 0;            
+    padding: 20px;        
+    border-radius: 0;    
+    box-shadow: none;     
   }
 
   .legalSection h2 {
