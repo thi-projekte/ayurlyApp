@@ -124,6 +124,20 @@ export const UserProvider = ({ children }) => {
     return anonymousDoshaType;
   };
 
+  const updateUserPreferences = async (preferences) => {
+    if (!keycloak || !keycloak.token) {
+      throw new Error("Nicht authentifiziert.");
+    }
+    try {
+      // Die Service-Funktion wird im nächsten Schritt erstellt
+      const updatedProfile = await userService.updateUserPreferences(preferences, keycloak.token);
+      setUserProfile(updatedProfile); // State mit der Antwort vom Backend aktualisieren
+    } catch (error) {
+      console.error("UserContext: Fehler beim Aktualisieren der Präferenzen:", error);
+      throw error; // Fehler weitergeben, damit die Komponente ihn behandeln kann
+    }
+  };
+
   return (
     <UserContext.Provider value={{
       isLoggedIn,
@@ -133,6 +147,7 @@ export const UserProvider = ({ children }) => {
       logout,
       register,
       updateUserDosha: updateDoshaTypeContextual, 
+      updateUserPreferences,
       keycloakInstance: keycloak,
       loadingKeycloak,
       accountManagementUrl: keycloak?.authenticated ? keycloak.createAccountUrl() : null

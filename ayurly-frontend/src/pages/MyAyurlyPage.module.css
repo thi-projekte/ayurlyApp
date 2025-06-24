@@ -13,19 +13,22 @@
     display: flex;
     gap: 30px;
     flex-wrap: wrap;
-    align-items: stretch; 
+    align-items: stretch;
 }
 
-.doshaCard, .profileCard {
+.doshaCard,
+.profileCard {
     background-color: white;
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     padding: 30px;
     display: flex;
 }
-.doshaCard:hover, .profileCard:hover {
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+
+.doshaCard:hover,
+.profileCard:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     transform: translateY(2px);
 }
 
@@ -36,53 +39,88 @@
     gap: 15px;
     align-items: center;
 }
+
 .doshaIcon {
-  font-size: 90pt;
-  background: linear-gradient(360deg, #86837F, black);
-  height: 180px;
-  width: 180px;
-  border-radius: 85% 70% 78% 73%;
-  animation: rotate_bubbles 7s linear infinite;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+    font-size: 90pt;
+    background: linear-gradient(360deg, #86837F, black);
+    height: 180px;
+    width: 180px;
+    border-radius: 85% 70% 78% 73%;
+    animation: rotate_bubbles 7s linear infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
+
 @keyframes rotate_bubbles {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
+
 .doshaIcon span {
-    transform: rotate(-360deg); 
-  animation: counterRotate 7s linear infinite;
-  position: absolute;
-  pointer-events: none;
+    transform: rotate(-360deg);
+    animation: counterRotate 7s linear infinite;
+    position: absolute;
+    pointer-events: none;
 }
+
 @keyframes counterRotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(-360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(-360deg);
+    }
 }
+
 .doshaName {
     font-size: 30pt;
     background: linear-gradient(to right, rgb(255, 69, 0), rgb(255, 165, 0), rgb(255, 255, 102)) text;
     color: transparent;
 }
+
 .doshaDescription {
     line-height: 1.5rem;
     text-align: center;
     color: gray;
     font-size: 13pt;
 }
+
 .redoTestLink {
     padding: 10px 30px;
-    margin-top: auto; 
+    margin-top: auto;
     color: white;
     background: linear-gradient(to right, #86837F, black);
     border-radius: 100px;
     transition: background 0.3s;
 }
+
 .redoTestLink:hover {
     background: black;
+}
+
+.recipeCard {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    border: 1px solid #eee;
+    width: 100%;
+}
+
+.recipeCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }
 
 .profileCard {
@@ -95,37 +133,44 @@
     gap: 50px;
     padding: 30px;
 }
+
 .profileImage {
     width: 35%;
     border-radius: 50%;
     object-fit: cover;
 }
+
 .profileWrapper {
     display: flex;
     flex-grow: 1;
     justify-content: space-between;
 }
+
 .profileContent {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
+
 .name h2 {
     font-size: 30pt;
     color: #333;
     line-height: 1.1;
 }
+
 .name h2:first-child {
     font-size: 35pt;
     color: #e26a2c;
     font-weight: bold;
 }
+
 .userInfo {
     display: flex;
     gap: 10px;
     align-items: center;
     font-size: 13pt;
 }
+
 .settings {
     display: flex;
     gap: 10px;
@@ -136,6 +181,7 @@
     align-self: flex-start;
     height: fit-content;
 }
+
 .settings:hover {
     color: #e26a2c;
 }
@@ -153,76 +199,335 @@
     font-size: 13pt;
     transition: background-color 0.2s, color 0.2s;
 }
+
 .logoutButton:hover {
-    color: #e26a2c;;
+    color: #e26a2c;
+    ;
     border-color: #e53935;
+}
+
+.row>.disabledCard {
+    display: none;
 }
 
 .spacer {
     margin: 50px 0 10px 0;
     color: gray;
     font-size: 1.5em;
-    text-align:center;
+    text-align: center;
+    order: 1;
 }
+
+.spacer {
+    margin: 20px;
+    color: gray;
+    font-size: 1.2em;
+    text-align: center;
+}
+
 .dashboard {
     display: flex;
     flex-direction: column;
     gap: 30px;
+    order: 2;
 }
+
 .row {
     display: flex;
     gap: 30px;
     flex-wrap: wrap;
 }
+
 .routineCard {
     flex: 1;
     min-width: 300px;
     background-color: white;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
     padding: 25px 30px;
     border-radius: 20px;
     cursor: pointer;
-    min-height: 200px; 
+    min-height: 200px;
     display: flex;
     align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
 }
+
 .routineCard:hover {
     box-shadow: none;
     transform: translateY(2px);
 }
+
 .cardTitle {
     font-size: 20pt;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
+
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #e26a2c;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.cardContent {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.previewCardLink {
+    text-decoration: none;
+    color: inherit;
+}
+
+.contentItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    font-size: 1rem;
+    max-width: 550px;
+}
+
+.checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #e26a2c;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.checkbox:checked {
+    background-color: #e26a2c;
+    border-color: #e26a2c;
+}
+
+.checkbox:checked::before {
+    content: '✔';
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.checkbox:disabled {
+    border-color: #ccc;
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
+.itemTitle {
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+.noContentText {
+    color: #a0a0a0;
+    font-style: italic;
+}
+
+.previewCard {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    background-color: #fff;
+    width: 100%;
+    max-width: 280px;
+    transition: transform 0.2s ease-out;
+    flex-grow: 1;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.cardItemWrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 450px;
+}
+
+.previewCard:hover {
+    transform: translateY(-4px);
+}
+
+.cardImageContainer {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    padding-top: 75%;
+    overflow: hidden;
+}
+
+.cardImageContainer img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cardCheckbox {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border-width: 3px;
+    z-index: 2;
+}
+
+.cardOverlayCheckbox {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(2px);
+    border-width: 3px;
+    z-index: 2;
+}
+
+.cardOverlayCheckbox:checked {
+    background-color: #e26a2c;
+}
+
+.recipeInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 15px 20px 10px 20px;
+    flex-grow: 1;
+}
+
+.recipeName {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.description {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.cardMetaActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px 15px 20px;
+    font-size: 0.85rem;
+    color: #555;
+    border-top: 1px solid #f0f0f0;
+}
+
+.prepTime {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cardInfo {
+    padding: 12px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cardInfoTitle {
+    font-weight: 600;
+    color: #333;
+}
+
+.cardMeta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: auto;
+}
+
+.cardMeta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.topSection {
+    order: 4;
+}
+
+
 
 @media (min-width: 1600px) and (max-width: 1800px) {
     .profileImage {
-    width: 45%;
-  }
+        width: 45%;
+    }
 }
 
 @media (min-width: 1400px) and (max-width: 1600px) {
     .profileImage {
-    width: 48%;
-  }
+        width: 48%;
+    }
 }
 
 @media (min-width: 1200px) and (max-width: 1400px) {
     .profileImage {
-    width: 40%;
-  }
+        width: 40%;
+    }
 }
 
 @media (min-width: 768px) and (max-width: 880px) {
     .profileImage {
-    width: 40%;
-  }
+        width: 40%;
+    }
 }
 
 @media (max-width: 1400px) {
-    .profileAndDosha { flex-direction: column; }
-    .profileCard { min-width: unset; }
+    .profileAndDosha {
+        flex-direction: column;
+    }
+
+    .profileCard {
+        min-width: unset;
+    }
+
+    .cardItemWrapper {
+        flex-direction: row;
+        align-items: center;
+        max-width: 100%;
+    }
 }
+
 @media (max-width: 768px) {
     .profileCard {
         flex-direction: column;
@@ -230,19 +535,32 @@
         text-align: center;
         gap: 20px;
     }
+
     .profileWrapper {
         flex-direction: column;
         align-items: center;
         gap: 20px;
     }
-    .settings { align-self: center; margin-top: 20px}
-    .row { flex-direction: column; }
 
-    .myAyurlyContainer {
-      width: 100%;
-      padding: 20px 20px;
+    .settings {
+        margin-top: 10px
     }
 
-    .dashboard { order: 3; } 
-    .topSection { order: 4; margin-top: 100px;} 
+    .row {
+        flex-direction: column;
+    }
+
+    .myAyurlyContainer {
+        width: 100%;
+        padding: 20px 20px;
+    }
+
+    .dashboard {
+        order: 3;
+    }
+
+    .topSection {
+        order: 4;
+        margin-top: 100px;
+    }
 }

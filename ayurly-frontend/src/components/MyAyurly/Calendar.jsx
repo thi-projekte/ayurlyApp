@@ -1,11 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styles from './Calendar.module.css';
 import { FaCalendarAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import Modal from '../UI/Modal';
 
-const DatePickerPopup = ({ onDateSelect, onClose, initialDate, selectedDate}) => {
+const DatePickerPopup = ({ onDateSelect, onClose, initialDate, selectedDate, monthlyProgress, onMonthChange }) => {
     const [view, setView] = useState('days'); // 'days', 'months', 'years'
     const [currentDate, setCurrentDate] = useState(initialDate || new Date());
+
+    const progressMap = useMemo(() => {
+        if (!monthlyProgress) return new Map();
+        return new Map(monthlyProgress.map(p => [p.date, Math.round(p.progress)]));
+    }, [monthlyProgress]);
+
+    const getLocalDateString = (date) => date.toISOString().split('T')[0];
 
     const isSameDay = (d1, d2) => d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
 
@@ -34,9 +41,15 @@ const DatePickerPopup = ({ onDateSelect, onClose, initialDate, selectedDate}) =>
         for (let day = 1; day <= daysInMonth; day++) {
             const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
             const isCurrentlySelected = isSameDay(fullDate, selectedDate);
+            const dateString = getLocalDateString(fullDate);
+            const progress = progressMap.get(dateString);
             const dayClass = `${styles.dayCell} ${isCurrentlySelected ? styles.selectedDay : ''}`;
 
-            daysArray.push(<div key={day} className={dayClass} onClick={() => { onDateSelect(fullDate); onClose(); }}>{day}</div>
+            daysArray.push(
+                <div key={day} className={dayClass} onClick={() => { onDateSelect(fullDate); onClose(); }}>
+                    <span>{day}</span>
+                    {progress !== undefined && <span className={styles.progressText}>{progress}%</span>}
+                </div>
             );
         }
         return daysArray;
@@ -73,13 +86,13 @@ const DatePickerPopup = ({ onDateSelect, onClose, initialDate, selectedDate}) =>
     };
 
     const handlePrevClick = () => {
-        if (view === 'days') changeMonth(-1);
+        if (view === 'days') { changeMonth(-1); onMonthChange(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)); }
         else if (view === 'months') changeYear(-1);
         else changeYearRange(-1);
     };
 
     const handleNextClick = () => {
-        if (view === 'days') changeMonth(1);
+        if (view === 'days') { changeMonth(1); onMonthChange(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)); }
         else if (view === 'months') changeYear(1);
         else changeYearRange(1);
     };
@@ -98,13 +111,12 @@ const DatePickerPopup = ({ onDateSelect, onClose, initialDate, selectedDate}) =>
             <div className={styles.popupFooter}>
                 <button className={styles.todayButton} onClick={handleTodayClick}>Heute</button>
             </div>
-         </div>
+        </div>
     );
 };
 
 
-const Calendar = ({ onDateSelect }) => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
+const Calendar = ({ onDateSelect, selectedDate, monthlyProgress, onMonthChange }) => {
     const [centerDate, setCenterDate] = useState(new Date()); // Das Datum im Zentrum der 7-Tage-Ansicht
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -121,11 +133,14 @@ const Calendar = ({ onDateSelect }) => {
 
     // Callback an die Eltern-Komponente, wenn sich das ausgewählte Datum ändert
     useEffect(() => {
+        if (onDateSelect) {
+            onDateSelect(selectedDate);
+        }
         onDateSelect(selectedDate);
     }, [selectedDate, onDateSelect]);
 
     const handleDateSelectAndClosePopup = (date) => {
-        setSelectedDate(date);
+        onDateSelect(date);
         setCenterDate(date); // Zentriert die Ansicht auf das im Popup ausgewählte Datum
         setIsPopupOpen(false);
     };
@@ -163,7 +178,7 @@ const Calendar = ({ onDateSelect }) => {
                         const isToday = isSameDay(date, new Date());
 
                         return (
-                            <div key={date.toISOString()} className={`${styles.dateItem} ${isSelected ? styles.selected : ''} ${isToday ? styles.today : ''}`} onClick={() => setSelectedDate(date)}>
+                            <div key={date.toISOString()} className={`${styles.dateItem} ${isSelected ? styles.selected : ''} ${isToday ? styles.today : ''}`} onClick={() => onDateSelect(date)}>
                                 <span className={styles.dayName}>{dayName}</span>
                                 <span className={styles.dayNumber}>{dayNumber}</span>
                             </div>
@@ -182,7 +197,14 @@ const Calendar = ({ onDateSelect }) => {
             </div>
 
             <Modal show={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
-                <DatePickerPopup initialDate={selectedDate} selectedDate={selectedDate} onDateSelect={handleDateSelectAndClosePopup} onClose={() => setIsPopupOpen(false)} />
+                <DatePickerPopup 
+                    initialDate={selectedDate} 
+                    selectedDate={selectedDate} 
+                    onDateSelect={handleDateSelectAndClosePopup} 
+                    onClose={() => setIsPopupOpen(false)}
+                    monthlyProgress={monthlyProgress}
+                    onMonthChange={onMonthChange}
+                />
             </Modal>
         </>
     );

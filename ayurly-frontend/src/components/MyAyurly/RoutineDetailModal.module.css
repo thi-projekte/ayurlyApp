@@ -1,0 +1,181 @@
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.8em;
+    color: #333;
+}
+
+.reshuffleButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.reshuffleButton:hover {
+    background-color: #e0e0e0;
+}
+
+.modalContent {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.closeButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #e26a2c;
+    color: white;
+}
+
+.contentItemWrapper {
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 20px;
+    width: 60%;
+    margin: auto;
+}
+.contentItemWrapper:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* Styles für DetailedMicrohabit */
+.detailedItemWrapper {
+    /* ... */
+}
+.itemHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+.itemTitle {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 0;
+}
+.itemDescription {
+    color: #555;
+    margin-top: 8px;
+    line-height: 1.6;
+}
+.itemCheckbox {
+    flex-shrink: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    border: 2px solid #e26a2c;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+main .mobileVersion {
+    display:none;
+}
+
+.itemCheckbox:checked, .cardOverlayCheckbox:checked {
+    background-color: #e26a2c;
+    border-color: #e26a2c;
+}
+
+.itemCheckbox:checked::before, .cardOverlayCheckbox:checked::before {
+    content: '✔';
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.itemCheckbox:disabled {
+    border-color: #ccc;
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+
+.cardOverlayCheckbox {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.cardWrapper {
+    position: relative;
+}
+
+.itemMeta {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    align-content: center;
+    align-items: center;
+}
+
+.likeButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.likeButton:hover {
+    background: #e0e0e0;
+}
+
+.likeButton.liked {
+    background-color: #fff0f0;
+    border-color: #ffc0c0;
+    color: #c0392b;
+}
+
+@media (max-width: 1400px) {
+    .contentItemWrapper {
+        width: 80%;
+    }
+}
+
+@media (max-width: 768px) {
+    main .mobileVersion {
+        display: flex;
+        justify-content: end;
+    }
+
+    main .desktopVersion {
+        display:none;
+    }
+}

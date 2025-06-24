@@ -1,0 +1,110 @@
+.modalHeader {
+    text-align: center;
+    margin-bottom: 25px;
+}
+.modalHeader h2 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 8px;
+}
+.modalHeader p {
+    color: #666;
+    font-size: 1em;
+}
+
+.preferencesList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.preferenceItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+}
+
+.preferenceLabel {
+    font-size: 1.1em;
+    font-weight: 500;
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+.modalActions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+.saveButton {
+    background-color: #003329;
+    color: white;
+}
+.saveButton:hover { background-color: #004d3f; }
+.cancelButton {
+    background-color: #e0e0e0;
+    color: #333;
+}
+.cancelButton:hover { background-color: #c7c7c7; }
+
+.errorMessage {
+    color: #d32f2f;
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* Toggle Switch CSS */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #e26a2c;
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}

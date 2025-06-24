@@ -64,7 +64,35 @@ const updateUserDosha = async (doshaType, token) => {
   }
 };
 
+/**
+ * Aktualisiert die Anzeige-Präferenzen des Benutzers im Backend.
+ * @param {object} preferences - Ein Objekt mit den boolean-Flags, z.B. { showMorningFlow: true, ... }.
+ * @param {string} token - Das Keycloak Access Token.
+ * @returns {Promise<object>} Das aktualisierte Benutzerprofil vom Backend.
+ */
+const updateUserPreferences = async (preferences, token) => {
+  if (!token) {
+    throw new Error("No token provided for updating user preferences.");
+  }
+  try {
+    const response = await fetch(`${API_BASE_URL}/me/preferences`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(preferences),
+    });
+    if (!response.ok) throw new Error('Failed to update preferences.');
+    return await response.json();
+  } catch (error) {
+    console.error("Error in updateUserPreferences:", error);
+    throw error;
+  }
+};
+
 export default {
   fetchUserProfile,
   updateUserDosha,
+  updateUserPreferences,
 };

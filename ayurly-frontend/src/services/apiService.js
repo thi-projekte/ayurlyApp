@@ -29,7 +29,9 @@ const apiRequest = async (url, method = 'GET', body = null, token) => {
       }
       // Erzeuge einen Fehler mit der Nachricht vom Backend oder einem generischen Text
       const errorMessage = errorData.message || errorData.error || `HTTP error! status: ${response.status}`;
-      throw new Error(errorMessage);
+      const error = new Error(errorMessage);
+      error.status = response.status; // Dies macht den Status-Code im catch-Block verfügbar.
+      throw error;
     }
     if (response.status === 204) { // No Content, z.B. bei erfolgreichem DELETE
       return null;
