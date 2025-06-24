@@ -16,6 +16,7 @@ import MyAyurlyPage from './pages/MyAyurlyPage';
 import { UserProvider } from './contexts/UserContext';
 import ProcessTestComponent from './components/ProcessTestComponent';
 import ScrollToTop from './components/UI/ScrollToTop';
+import ImpressumPage from './pages/ImpressumPage';
 // Admin-Page Imports
 import AdminRoute from './components/Navigation/AdminRoute';
 import DashboardOverview from './components/Admin/DashboardOverview';
@@ -48,6 +49,7 @@ function App() {
             <Route path="/produkte/:produktId" element={<ProdukteDetailPage />} />
             <Route path="/lifestyle" element={<LifestylePage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/impressum" element={<ImpressumPage />} />
             <Route path="/myAyurly" element={<ProtectedRoute />}>
               <Route path="" element={<MyAyurlyPage />} />
             </Route>
