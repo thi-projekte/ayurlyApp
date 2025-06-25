@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from './DoshaTestPage.module.css';
 import { useUser } from '../contexts/UserContext';
-import Modal from '../components/UI/Modal'; // Modal-Komponente importieren
+import Modal from '../components/UI/Modal'; 
+import TipsCarousel from '../components/UI/TipsCarousel';
 
 
 
@@ -13,11 +14,11 @@ const questions = [
   },
   {
     question: "Wie ist deine Verdauung?",
-    answers: { Vata: "Unregelmäßig, Blähungen ", Pitta: "Stark, manchmal Übersäuerung ", Kapha: "Langsam, schweres Gefühl " }
+    answers: { Vata: "Unregelmäßig bis Blähungen ", Pitta: "Stark bis manchmal Übersäuerung ", Kapha: "Langsam bis schweres Gefühl " }
   },
   {
     question: "Wie reagierst du auf Stress?",
-    answers: { Vata: "Ängstlich, unruhig ", Pitta: "Wütend, gereizt ", Kapha: "Zurückgezogen, ruhig " }
+    answers: { Vata: "Ängstlich bis unruhig ", Pitta: "Wütend bis gereizt ", Kapha: "Zurückgezogen bis ruhig " }
   },
   {
     question: "Wie ist dein Schlafverhalten?",
@@ -25,15 +26,15 @@ const questions = [
   },
   {
     question: "Wie ist deine körperliche Konstitution?",
-    answers: { Vata: "Schlank, zierlich", Pitta: "Mittel, athletisch", Kapha: "Kräftig, stämmig" }
+    answers: { Vata: "Schlank bis zierlich", Pitta: "Mittel bis athletisch", Kapha: "Kräftig bis stämmig" }
   },
   {
     question: "Wie ist deine Hautbeschaffenheit?",
-    answers: { Vata: "Trocken, rau", Pitta: "Empfindlich, rötlich", Kapha: "Weich, ölig" }
+    answers: { Vata: "Trocken bis rau", Pitta: "Empfindlich bis rötlich", Kapha: "Weich bis ölig" }
   },
   {
     question: "Wie gehst du mit Veränderungen um?",
-    answers: { Vata: "Unsicher, nervös", Pitta: "Zielgerichtet, ehrgeizig", Kapha: "Gelassen, manchmal träge" }
+    answers: { Vata: "Unsicher bis nervös", Pitta: "Zielgerichtet, ehrgeizig", Kapha: "Gelassen, manchmal träge" }
   },
   {
     question: "Wie ist dein Appetit?",
@@ -59,6 +60,45 @@ const questions = [
     question: "Wie ist deine Denkweise?",
     answers: { Vata: "Kreativ, sprunghaft", Pitta: "Analytisch, scharf", Kapha: "Beständig, langsam" }
   }
+];
+
+const vataTips = [
+    { title: "Regelmäßiger Tagesablauf", text: "Feste Zeiten für Schlaf, Mahlzeiten und Arbeit helfen, Stabilität zu schaffen." },
+    { title: "Warme, gekochte Mahlzeiten", text: "Bevorzuge warme Speisen wie Suppen, Eintöpfe und gekochtes Gemüse." },
+    { title: "Ausreichend Ruhe", text: "Plane Pausen und ausreichend Schlaf ein, um Überanstrengung zu vermeiden." },
+    { title: "Wärme bewahren", text: "Halte dich warm, insbesondere Hände, Füße und Kopf." },
+    { title: "Ölmassagen (Abhyanga)", text: "Tägliche Selbstmassagen mit warmem Sesamöl beruhigen das Nervensystem." },
+    { title: "Sanfte Bewegung", text: "Yoga, Tai-Chi oder Spaziergänge sind ideal. Vermeide exzessiven Sport." },
+    { title: "Meditation & Atemübungen", text: "Pranayama und Meditation helfen, den Geist zu beruhigen." },
+    { title: "Vermeide Reizüberflutung", text: "Reduziere Lärm, hektische Umgebungen und übermäßigen Medienkonsum." },
+    { title: "Hydration", text: "Trinke warme Getränke wie Kräutertees oder heißes Wasser mit Zitrone." },
+    { title: "Kreativität", text: "Nimm dir Zeit für kreative Hobbys, die dich erden und Freude bereiten." } // Korrektur aus den Rohdaten
+];
+
+const pittaTips = [
+    { title: "Kühl bleiben", text: "Vermeide übermäßige Hitze und direkte Sonneneinstrahlung." },
+    { title: "Ausreichende Flüssigkeit", text: "Trinke zimmerwarmes Wasser und kühlende Getränke" },
+    { title: "Regelmäßige Mahlzeiten", text: "Halte feste Essenszeiten ein und vermeide das Auslassen von Mahlzeiten." },
+    { title: "Milde Gewürze verwenden", text: "Bevorzuge Gewürze wie Fenchel, Koriander, Kardamom und Kurkuma." },
+    { title: "Kühlende Lebensmittel", text: "Integriere Lebensmittel mit kühlenden Eigenschaften in deine Ernährung." },
+    { title: "Stressmanagement", text: "Plane regelmäßige Entspannungsphasen ein, z.B. durch Meditation oder Spaziergänge." },
+    { title: "Moderate Bewegung", text: "Bevorzuge sanfte körperliche Aktivitäten wie Yoga oder Schwimmen." },
+    { title: "Vermeide scharfe, saure und salzige Speisen", text: "Diese können das Pitta-Dosha erhöhen." },
+    { title: "Kühle Farben und Umgebung", text: "Umgebe dich mit beruhigenden Farben wie Blau und Grün." },
+    { title: "Pflege soziale Beziehungen", text: "Vermeide übermäßigen Wettbewerb und fördere harmonische Interaktionen." }
+];
+
+const kaphaTips = [
+    { title: "Früh aufstehen", text: "Stehe vor 6 Uhr auf, um Trägheit zu vermeiden." },
+    { title: "Regelmäßige Bewegung", text: "Integriere tägliche körperliche Aktivitäten, besonders morgens." },
+    { title: "Leichte Ernährung", text: "Bevorzuge warme, trockene und leicht verdauliche Speisen." },
+    { title: "Vermeide Zwischenmahlzeiten", text: "Halte feste Mahlzeiten ein und vermeide Snacking." },
+    { title: "Anregende Gewürze", text: "Nutze Gewürze wie Ingwer, Pfeffer und Kurkuma zur Anregung des Stoffwechsels." },
+    { title: "Saunabesuche", text: "Regelmäßige Saunagänge können helfen, Kapha zu reduzieren." },
+    { title: "Geistige Aktivität", text: "Halte den Geist aktiv durch Lernen und neue Erfahrungen." },
+    { title: "Vermeide Kälte und Feuchtigkeit", text: "Halte dich warm und trocken, um Kapha nicht zu erhöhen." },
+    { title: "Reduziere Süßes und Fettiges", text: "Begrenze den Konsum von süßen und fettigen Lebensmitteln." },
+    { title: "Positive Veränderung", text: "Sei offen für Neues und vermeide Routine, um geistige Trägheit zu verhindern." }
 ];
 
 const DoshaTestPage = () => {
@@ -231,7 +271,8 @@ const DoshaTestPage = () => {
         </div>
         <div className="tips">
             <h3 className="spacerHeading">10 Tipps Für den Vata-Typ</h3>
-            <img src="/img/index/VataTipp.gif" alt="Vata Tipps" />
+            <img src="/img/index/VataTipp.gif" alt="Vata Tipps" className="desktop-only" />
+            <div className="mobile-only"><TipsCarousel tips={vataTips} /></div>
         </div>
         <div className="foodTips">
             <h3 className="spacerHeading">Ernährungstipps</h3>
@@ -375,7 +416,8 @@ const DoshaTestPage = () => {
           </div>
           <div className="tips">
             <h3 className="spacerHeading">10 Tipps Für den Pitta-Typ</h3>
-            <img src="/img/index/PittaTipp.gif" alt="Pitta Tipps" />
+            <img src="/img/index/PittaTipp.gif" alt="Pitta Tipps" className="desktop-only" />
+            <div className="mobile-only"><TipsCarousel tips={pittaTips} /></div>
           </div>
           <div className="foodTips">
             <h3 className="spacerHeading">Ernährungstipps</h3>
@@ -510,7 +552,8 @@ const DoshaTestPage = () => {
           </div>
           <div className="tips">
             <h3 className="spacerHeading">10 Tipps Für den Kapha-Typ</h3>
-            <img src="/img/index/KaphaTipp.gif" alt="Kapha Tipps" />
+            <img src="/img/index/KaphaTipp.gif" alt="Kapha Tipps" className="desktop-only" />
+            <div className="mobile-only"><TipsCarousel tips={kaphaTips} /></div>
           </div>
           <div className="foodTips">
             <h3 className="spacerHeading">Ernährungstipps</h3>

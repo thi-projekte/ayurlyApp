@@ -34,8 +34,7 @@
   padding: 40px 30px;
 }
 
-.gamificationCard {
-}
+.gamificationCard {}
 
 .levelInfo {
   text-align: center;
@@ -192,6 +191,10 @@
   color: white;
 }
 
+.mobile-only {
+  display: none !important;
+}
+
 @media (min-width: 768px) {
 
   .resultActions .resultButton {
@@ -207,6 +210,15 @@
 }
 
 @media (max-width: 768px) {
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: block !important;
+    margin-right: auto;
+  }
 
   .resultActions,
   .navigationButtons {
@@ -236,7 +248,7 @@
 
 @media (max-width: 420px) {
   .answerButtons button {
-    min-width: 240px;
+    min-width: 280px;
     min-height: 60px;
   }
 }
