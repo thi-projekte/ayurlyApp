@@ -93,21 +93,21 @@ const LifestylePage = () => {
       <section className={styles.grid}>
         <div className={styles.row}>
           <a href="#" className={styles.item}> 
-            <img src="/img/lifestyle/Friends.webp" alt="Gruppe von Freunden" />
+            <img src="/img/lifestyle/freunde_final.PNG" alt="Gruppe von Freunden" />
             <p>Freunde</p>
           </a>
           <a href="./yoga" className={styles.item}> 
-            <img src="/img/lifestyle/yoga.jpg" alt="Yoga am Strand" />
+            <img src="/img/lifestyle/yoga_final.PNG" alt="Yoga am Strand" />
             <p>Yoga</p>
           </a>
         </div>
         <div className={styles.row}>
           <a href="#" className={styles.item}> 
-            <img src="/img/lifestyle/coaching.jpg" alt="Coaching Gespräch" />
+            <img src="/img/lifestyle/beratung_final.PNG" alt="Coaching Gespräch" />
             <p>Beratung</p>
           </a>
           <a href="./produkte" className={styles.item}> 
-            <img src="/img/lifestyle/products.jpg" alt="Ayurvedische Produkte" />
+            <img src="/img/lifestyle/produkt_final.PNG" alt="Ayurvedische Produkte" />
             <p>Produkte</p>
           </a>
         </div>

@@ -213,6 +213,16 @@
   border-top-left-radius: 10px; 
 }
 
+@media (min-width: 2000px) {
+  .item {
+    height: 550px;
+  }
+
+  .item img {
+    height: 550px;
+  }
+}
+
 @media (max-width: 1024px) {
   .descriptionAndBubbles {
     flex-direction: column; 
