@@ -1,8 +1,8 @@
 # Ayurly - Dein täglicher Ayurveda-Begleiter
 
-Ayurly ist eine Microservice-basierte Lifestyle-Plattform, die dich als täglicher Ayurveda-Begleiter motiviert, gesünder zu leben. Du erhältst personalisierte Empfehlungen und kannst deine täglichen Micro-Habits mit Gamification-Elementen tracken. Eine Besonderheit von Ayurly ist die vollständige Orchestrierung aller fachlichen Vorgänge durch BPMN-Prozesse mithilfe von Kogito.
+Ayurly ist eine Microservice-basierte Lifestyle-Plattform, die dich als täglicher Ayurveda-Begleiter motiviert, gesünder zu leben. Du erhältst personalisierte Empfehlungen und kannst deine täglichen Micro-Habits mit Gamification-Elementen tracken. Eine Besonderheit von Ayurly ist die vollständige Orchestrierung aller fachlichen Vorgänge durch BPMN-Prozesse mithilfe von Camunda.
 
-Das aktuelle Ziel ist die Entwicklung eines Minimum Viable Product (MVP). Langfristig soll die Plattform auch als Mobile Web App verfügbar sein.
+Das aktuelle Ziel ist die Entwicklung eines Minimum Viable Product (MVP) inkl. ansprechendem Design für mobile und Desktops bis 2560x1440.
 
 ## Inhaltsverzeichnis
 
@@ -27,8 +27,8 @@ Die Kernkomponenten der Architektur sind:
 1.  **Nginx Proxy:** Dient als Reverse Proxy und leitet Anfragen an die entsprechenden Backend-Services weiter.
 2.  **Frontend (ayurly-frontend):** Die Benutzeroberfläche, mit der die Nutzer interagieren.
 3.  **Keycloak:** Verantwortlich für die Authentifizierung und Autorisierung der Benutzer.
-4.  **Kogito Process Engine:** Orchestriert alle fachlichen Vorgänge mittels BPMN-Prozessen.
-5.  **Data-Service (ayurly-data-service):** Stellt die Schnittstelle zur Datenbank bereit.
+4.  **Cibseven Process Engine (Camunda 7 Fork):** Orchestriert alle fachlichen Vorgänge mittels BPMN-Prozessen.
+5.  **Data-Service (ayurly-data-service):** Stellt die Schnittstelle zur Datenbank bereit, startet Prozesse und implementiert Service Tasks (Pub/Sub-Prinzip... -> Topic pro Service Task definieren)
 6.  **Fachliche Datenbank (PostgreSQL):** Speichert alle relevanten Anwendungsdaten.
 
 ## Technologie-Stack
@@ -36,10 +36,10 @@ Die Kernkomponenten der Architektur sind:
 -   **Containerisierung & Orchestrierung:** Docker, Docker Compose
 -   **Webserver/Reverse Proxy:** Nginx
 -   **Frontend:** React, Vite, JavaScript, CSS Modules
--   **Backend (Data-Service):** Quarkus (Java), REST-APIs
--   **Prozess-Engine:** Kogito (BPMN)
+-   **Backend (Data-Service):** Quarkus (Java), REST-APIs, Camunda External Task Client
+-   **Prozess-Engine:** Cibseven (Camunda 7 Fork) - beinhaltet zusätzlich eigene Postgres-DB
 -   **Datenbank:** PostgreSQL
--   **Authentifizierung:** Keycloak
+-   **Authentifizierung:** Keycloak - beinhaltet zusätzlich eigene Postgres-DB
 -   **CI/CD:** GitHub Actions
 -   **Deployment-Management (Server):** Portainer auf Ubuntu Server
 
@@ -56,38 +56,43 @@ Die Docker-Compose-Dateien für das Starten der Services sind:
 -   `docker-compose.ayurly-postgres-db.yml`
 -   `docker-compose.keyCloak.yml`
 -   `docker-compose.nginx-proxy.yml`
--   TODO: Kogito
+-   `docker-compose.cibseven.yml`
 
 ## Features (MVP-Fokus)
 
 -   **Ayurveda-Begleiter:** Tägliche Unterstützung und Motivation für einen gesünderen Lebensstil.
 -   **Personalisierte Empfehlungen:** Auf den Nutzer zugeschnittene Ratschläge.
 -   **Micro-Habit Tracking:** Erfassen und Verfolgen von täglichen Gewohnheiten.
--   **Gamification:** Spielerische Elemente zur Steigerung der Motivation.
 -   **Dosha-Analyse:** Ermittlung des individuellen Ayurveda-Typs.
 -   **Rezeptdatenbank:** Sammlung ayurvedischer Rezepte.
--   **BPMN-gesteuerte Prozesse:** Alle fachlichen Abläufe (z.B. Empfehlungsgenerierung) werden durch die Kogito Process Engine orchestriert.
+-   **Yoga-Übungsdatenbank:** Sammlung ayurvedischer Rezepte.
+-   **Produktempfehlungsdatenbank:** Sammlung ayurvedischer Rezepte.
+-   **BPMN-gesteuerte Prozesse:** Alle fachlichen Abläufe (z.B. Empfehlungsgenerierung) werden durch die Camunda Process Engine orchestriert.
 
 ## Repository-Struktur
 
 Das Repository ist wie folgt strukturiert:
 ```
 ayurlyapp/
-├── .github/workflows/         # GitHub Actions CI/CD Workflows
+├── .github/workflows/          # GitHub Actions CI/CD Workflows
 │   ├── data-service-ci.yml
 │   └── frontend-ci.yml
-├── ayurly-data-service/       # Quarkus Backend Service
+├── ayurly-data-service/        # Quarkus Backend Service
 │   ├── src/
 │   ├── pom.xml
-│   └── Dockerfile.jvm
-├── ayurly-db-queries/         # Queries für fachliche DB 
-│   └── t_app_user.sql
+│   ├── Dockerfile
+│   └── ...
+├── ayurly-db-queries/         # Queries für fachliche DB
+│   ├── t_app_user.sql          
+│   └── ...
 ├── ayurly-frontend/           # React Frontend Service
 │   ├── public/
 │   ├── src/
 │   ├── package.json
-│   └── Dockerfile
+│   ├── Dockerfile
+│   └── ...
 ├── docker-compose.ayurly-postgres-db.yml # Docker Compose für PostgreSQL
+├── docker-compose.cibseven.yml           # Docker Compose für Process Engine
 ├── docker-compose.dataservice.yml        # Docker Compose für den Data-Service
 ├── docker-compose.frontend.yml           # Docker Compose für das Frontend
 ├── docker-compose.keyCloak.yml           # Docker Compose für Key Cloak
