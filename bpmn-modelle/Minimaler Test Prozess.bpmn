@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0r31jhj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.36.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="test-prozess" name="Minimaler Test Prozess" isExecutable="true" camunda:historyTimeToLive="P5D">
+    <bpmn:startEvent id="Event_1a3dtp9">
+      <bpmn:outgoing>Flow_0g84nak</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0g84nak" sourceRef="Event_1a3dtp9" targetRef="Activity_0e4dyye" />
+    <bpmn:serviceTask id="Activity_0e4dyye" name="Dynamischen Inhalt erzeugen" camunda:asyncBefore="true" camunda:type="external" camunda:topic="Minimaler-Test-Prozess">
+      <bpmn:incoming>Flow_0g84nak</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wp3ojb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_09ln159">
+      <bpmn:incoming>Flow_0wp3ojb</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0wp3ojb" sourceRef="Activity_0e4dyye" targetRef="Event_09ln159" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="test-prozess">
+      <bpmndi:BPMNShape id="Event_1a3dtp9_di" bpmnElement="Event_1a3dtp9">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rkywu2_di" bpmnElement="Activity_0e4dyye">
+        <dc:Bounds x="240" y="80" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09ln159_di" bpmnElement="Event_09ln159">
+        <dc:Bounds x="392" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0g84nak_di" bpmnElement="Flow_0g84nak">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="240" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wp3ojb_di" bpmnElement="Flow_0wp3ojb">
+        <di:waypoint x="340" y="120" />
+        <di:waypoint x="392" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

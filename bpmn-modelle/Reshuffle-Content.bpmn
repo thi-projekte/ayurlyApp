@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_01bluej" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.36.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="ayurly-reshuffle-tile-prozess" name="Reshuffle-Content" isExecutable="true" camunda:historyTimeToLive="P7D">
+    <bpmn:startEvent id="StartEvent_Reshuffle" name="User möchte neuen Content für eine Kachel">
+      <bpmn:outgoing>Flow_10vx3cd</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_IsDateValid" name="Datum valide?" default="Flow_DateValid_No">
+      <bpmn:incoming>Flow_10vx3cd</bpmn:incoming>
+      <bpmn:outgoing>Flow_DateValid_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_DateValid_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_10vx3cd" sourceRef="StartEvent_Reshuffle" targetRef="Gateway_IsDateValid" />
+    <bpmn:sequenceFlow id="Flow_DateValid_Yes" name="Ja" sourceRef="Gateway_IsDateValid" targetRef="Task_DeleteTileContent">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{isDateValid}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1pdclcj" sourceRef="Task_DeleteTileContent" targetRef="Task_GenerateSingleTileContent" />
+    <bpmn:sequenceFlow id="Flow_1uc4q9q" sourceRef="Task_GenerateSingleTileContent" targetRef="Task_SaveSingleTileContent" />
+    <bpmn:endEvent id="EndEvent_Reshuffle_Success" name="Es wurde erfolgreich neuer Content für die Kachel generiert">
+      <bpmn:incoming>Flow_1pl4m0y</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1pl4m0y" sourceRef="Task_SaveSingleTileContent" targetRef="EndEvent_Reshuffle_Success" />
+    <bpmn:serviceTask id="Task_SaveSingleTileContent" name="Neuen Kachel-Content speichern" camunda:asyncBefore="true" camunda:type="external" camunda:topic="save-single-tile-content">
+      <bpmn:incoming>Flow_1uc4q9q</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pl4m0y</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1jxogb5">
+        <bpmn:targetRef>DataStoreReference_0k4tuo1</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_GenerateSingleTileContent" name="Neuen-Kachel-Content generieren" camunda:asyncBefore="true" camunda:type="external" camunda:topic="generate-single-tile-content">
+      <bpmn:incoming>Flow_1pdclcj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1uc4q9q</bpmn:outgoing>
+      <bpmn:property id="Property_10yfv0n" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_1el32gq">
+        <bpmn:sourceRef>DataStoreReference_1mdfov7</bpmn:sourceRef>
+        <bpmn:targetRef>Property_10yfv0n</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_DeleteTileContent" name="Alten Kachel-Content-löschen" camunda:asyncBefore="true" camunda:type="external" camunda:topic="delete-tile-content">
+      <bpmn:incoming>Flow_DateValid_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pdclcj</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_10wb7ni">
+        <bpmn:targetRef>DataStoreReference_09mzw8y</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_DateValid_No" name="Nein" sourceRef="Gateway_IsDateValid" targetRef="EndEvent_Reshuffle_DateInvalid" />
+    <bpmn:boundaryEvent id="Event_0bdpeor" attachedToRef="Task_DeleteTileContent">
+      <bpmn:outgoing>Flow_1h5mqkp</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0637pzt" errorRef="Error_0ar2u6z" camunda:errorMessageVariable="errorMessage" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_0gos31z" attachedToRef="Task_GenerateSingleTileContent">
+      <bpmn:outgoing>Flow_0f3s980</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0fqxn8g" errorRef="Error_0m3i1fr" camunda:errorMessageVariable="errorMessage" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_053bxhf" attachedToRef="Task_SaveSingleTileContent">
+      <bpmn:outgoing>Flow_09qi8wb</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_19gws2w" errorRef="Error_08102q1" camunda:errorCodeVariable="" camunda:errorMessageVariable="errorMessage" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1h5mqkp" sourceRef="Event_0bdpeor" targetRef="Event_08cxl6a" />
+    <bpmn:sequenceFlow id="Flow_0f3s980" sourceRef="Event_0gos31z" targetRef="Event_08cxl6a" />
+    <bpmn:sequenceFlow id="Flow_09qi8wb" sourceRef="Event_053bxhf" targetRef="Event_08cxl6a" />
+    <bpmn:endEvent id="Event_08cxl6a" name="Technischer Fehler aufgetreten">
+      <bpmn:incoming>Flow_1h5mqkp</bpmn:incoming>
+      <bpmn:incoming>Flow_0f3s980</bpmn:incoming>
+      <bpmn:incoming>Flow_09qi8wb</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1loz2f5" errorRef="Error_04ahwjv" />
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEvent_Reshuffle_DateInvalid" name="Generierung für Vergangenheit nicht erlaubt">
+      <bpmn:incoming>Flow_DateValid_No</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_075x3ht" errorRef="Error_0uulz8w" />
+    </bpmn:endEvent>
+    <bpmn:dataStoreReference id="DataStoreReference_09mzw8y" name="ayurly_data_db" />
+    <bpmn:dataStoreReference id="DataStoreReference_0k4tuo1" name="ayurly_data_db" />
+    <bpmn:dataStoreReference id="DataStoreReference_1mdfov7" name="ayurly_data_db" />
+    <bpmn:textAnnotation id="TextAnnotation_06jpvo0">
+      <bpmn:text>Token enthält userId, selectedDate, tileKey und isDateValid</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1f7t8ar" associationDirection="None" sourceRef="StartEvent_Reshuffle" targetRef="TextAnnotation_06jpvo0" />
+  </bpmn:process>
+  <bpmn:error id="Error_0uulz8w" name="FEHLER_DATUM_INALIDE" errorCode="FEHLER_DATUM_INALIDE" camunda:errorMessage="Generierung für Vergangenheit nicht erlaubt" />
+  <bpmn:error id="Error_04ahwjv" name="TECHNISCHER_FEHLER" errorCode="TECHNISCHER_FEHLER" camunda:errorMessage="${errorMessage}" />
+  <bpmn:error id="Error_08102q1" name="FEHLER_SPEICHERUNG_CONTENT" errorCode="FEHLER_SPEICHERUNG_CONTENT" />
+  <bpmn:error id="Error_0m3i1fr" name="FEHLER_GENERIERUNG_CONTENT" errorCode="FEHLER_GENERIERUNG_CONTENT" />
+  <bpmn:error id="Error_0ar2u6z" name="FEHLER_LOESCHEN_CONTENT" errorCode="FEHLER_LOESCHEN_CONTENT" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ayurly-reshuffle-tile-prozess">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_Reshuffle">
+        <dc:Bounds x="182" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="285" width="90" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_06gg15v_di" bpmnElement="Gateway_IsDateValid" isMarkerVisible="true">
+        <dc:Bounds x="275" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="265" y="205" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_11i6e93_di" bpmnElement="EndEvent_Reshuffle_Success">
+        <dc:Bounds x="902" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="878" y="285" width="84" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08zf140_di" bpmnElement="Task_SaveSingleTileContent">
+        <dc:Bounds x="730" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0o8vs9z_di" bpmnElement="Task_GenerateSingleTileContent">
+        <dc:Bounds x="560" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15v46dm_di" bpmnElement="Task_DeleteTileContent">
+        <dc:Bounds x="390" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ilke36_di" bpmnElement="Event_08cxl6a">
+        <dc:Bounds x="902" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="875" y="395" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_11ifas3_di" bpmnElement="EndEvent_Reshuffle_DateInvalid">
+        <dc:Bounds x="902" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="881" y="495" width="79" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_09mzw8y_di" bpmnElement="DataStoreReference_09mzw8y">
+        <dc:Bounds x="415" y="97" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="402" y="67" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_0k4tuo1_di" bpmnElement="DataStoreReference_0k4tuo1">
+        <dc:Bounds x="755" y="97" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="742" y="67" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_1mdfov7_di" bpmnElement="DataStoreReference_1mdfov7">
+        <dc:Bounds x="585" y="97" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="572" y="67" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_06jpvo0_di" bpmnElement="TextAnnotation_06jpvo0">
+        <dc:Bounds x="150" y="80" width="99.99999805248385" height="84.23739629865986" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_144qz9q" bpmnElement="Event_053bxhf">
+        <dc:Bounds x="792" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0f9cm0w" bpmnElement="Event_0gos31z">
+        <dc:Bounds x="622" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_044u020_di" bpmnElement="Event_0bdpeor">
+        <dc:Bounds x="452" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_10vx3cd_di" bpmnElement="Flow_10vx3cd">
+        <di:waypoint x="218" y="260" />
+        <di:waypoint x="275" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08f4zqe_di" bpmnElement="Flow_DateValid_Yes">
+        <di:waypoint x="325" y="260" />
+        <di:waypoint x="390" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="352" y="242" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pdclcj_di" bpmnElement="Flow_1pdclcj">
+        <di:waypoint x="490" y="260" />
+        <di:waypoint x="560" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uc4q9q_di" bpmnElement="Flow_1uc4q9q">
+        <di:waypoint x="660" y="260" />
+        <di:waypoint x="730" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pl4m0y_di" bpmnElement="Flow_1pl4m0y">
+        <di:waypoint x="830" y="260" />
+        <di:waypoint x="902" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ttrw4e_di" bpmnElement="Flow_DateValid_No">
+        <di:waypoint x="300" y="285" />
+        <di:waypoint x="300" y="470" />
+        <di:waypoint x="902" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="304" y="375" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1h5mqkp_di" bpmnElement="Flow_1h5mqkp">
+        <di:waypoint x="470" y="318" />
+        <di:waypoint x="470" y="370" />
+        <di:waypoint x="902" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f3s980_di" bpmnElement="Flow_0f3s980">
+        <di:waypoint x="640" y="318" />
+        <di:waypoint x="640" y="370" />
+        <di:waypoint x="902" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09qi8wb_di" bpmnElement="Flow_09qi8wb">
+        <di:waypoint x="810" y="318" />
+        <di:waypoint x="810" y="370" />
+        <di:waypoint x="902" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1f7t8ar_di" bpmnElement="Association_1f7t8ar">
+        <di:waypoint x="200" y="242" />
+        <di:waypoint x="200" y="164" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_10wb7ni_di" bpmnElement="DataOutputAssociation_10wb7ni">
+        <di:waypoint x="442" y="220" />
+        <di:waypoint x="444" y="147" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_1el32gq_di" bpmnElement="DataInputAssociation_1el32gq">
+        <di:waypoint x="610" y="147" />
+        <di:waypoint x="610" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1jxogb5_di" bpmnElement="DataOutputAssociation_1jxogb5">
+        <di:waypoint x="780" y="220" />
+        <di:waypoint x="780" y="147" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0tows6t" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.36.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="ayurly-tages-content-prozess" name="MyAyurly-Tages-Content-Generierung" isExecutable="true" camunda:historyTimeToLive="P7D">
+    <bpmn:startEvent id="StartEvent_1" name="User benötigt neuen Content für bestimmten Tag">
+      <bpmn:outgoing>Flow_0001efr</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_16pwytd" name="Datum valide?" default="Flow_1s7tqw3">
+      <bpmn:incoming>Flow_0001efr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bc3su8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1s7tqw3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0001efr" sourceRef="StartEvent_1" targetRef="Gateway_16pwytd" />
+    <bpmn:sequenceFlow id="Flow_1bc3su8" name="Ja" sourceRef="Gateway_16pwytd" targetRef="Activity_1c8nge1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{isDateValid}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ibzlt1" sourceRef="Activity_1c8nge1" targetRef="Activity_08hnegx" />
+    <bpmn:sequenceFlow id="Flow_1lrlwfg" sourceRef="Activity_08hnegx" targetRef="Activity_0o7pmyv" />
+    <bpmn:endEvent id="Event_1xbu9os" name="Tages-Content erfolgreich generiert und bereitgestellt">
+      <bpmn:incoming>Flow_1sjh0ua</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1sjh0ua" sourceRef="Activity_0o7pmyv" targetRef="Event_1xbu9os" />
+    <bpmn:sequenceFlow id="Flow_1s7tqw3" name="nein" sourceRef="Gateway_16pwytd" targetRef="Event_0ockw5x" />
+    <bpmn:endEvent id="Event_0ockw5x" name="Generierung für Vergangenheit nicht erlaubt">
+      <bpmn:incoming>Flow_1s7tqw3</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1w3ztuk" errorRef="Error_1dnfgk3" />
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_1c8nge1" name="User-Präferenzen laden" camunda:asyncBefore="true" camunda:type="external" camunda:topic="user-preferences-laden">
+      <bpmn:incoming>Flow_1bc3su8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ibzlt1</bpmn:outgoing>
+      <bpmn:property id="Property_08w4jt3" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_12voz3b">
+        <bpmn:sourceRef>DataStoreReference_18t64gg</bpmn:sourceRef>
+        <bpmn:targetRef>Property_08w4jt3</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_08hnegx" name="Content generieren" camunda:asyncBefore="true" camunda:type="external" camunda:topic="content-generieren">
+      <bpmn:incoming>Flow_0ibzlt1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lrlwfg</bpmn:outgoing>
+      <bpmn:property id="Property_1if6nz3" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_078jmj3">
+        <bpmn:sourceRef>DataStoreReference_1mdfov7</bpmn:sourceRef>
+        <bpmn:targetRef>Property_1if6nz3</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0o7pmyv" name="Content speichern" camunda:asyncBefore="true" camunda:type="external" camunda:topic="content-speichern">
+      <bpmn:incoming>Flow_1lrlwfg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sjh0ua</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1e99dzx">
+        <bpmn:targetRef>DataStoreReference_1p0y6ob</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_14yj96f" attachedToRef="Activity_1c8nge1">
+      <bpmn:outgoing>Flow_11hljua</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_01anvsc" errorRef="Error_0oqjlvl" camunda:errorMessageVariable="errorMessage" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_0u7sq6g" attachedToRef="Activity_08hnegx">
+      <bpmn:outgoing>Flow_0qkz0ac</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1r50dcp" errorRef="Error_1kourqe" camunda:errorCodeVariable="" camunda:errorMessageVariable="errorMessage" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_199157v" attachedToRef="Activity_0o7pmyv">
+      <bpmn:outgoing>Flow_1447az5</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1tif4r5" errorRef="Error_0cx86y8" camunda:errorCodeVariable="" camunda:errorMessageVariable="errorMessage" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_1hsaw43" name="Technischer Fehler aufgetreten">
+      <bpmn:incoming>Flow_11hljua</bpmn:incoming>
+      <bpmn:incoming>Flow_0qkz0ac</bpmn:incoming>
+      <bpmn:incoming>Flow_1447az5</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_14bxtrg" errorRef="Error_1pg29uw" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_11hljua" sourceRef="Event_14yj96f" targetRef="Event_1hsaw43" />
+    <bpmn:sequenceFlow id="Flow_0qkz0ac" sourceRef="Event_0u7sq6g" targetRef="Event_1hsaw43" />
+    <bpmn:sequenceFlow id="Flow_1447az5" sourceRef="Event_199157v" targetRef="Event_1hsaw43" />
+    <bpmn:dataStoreReference id="DataStoreReference_1p0y6ob" name="ayurly_data_db" />
+    <bpmn:dataStoreReference id="DataStoreReference_18t64gg" name="ayurly_data_db" />
+    <bpmn:dataStoreReference id="DataStoreReference_1mdfov7" name="ayurly_data_db" />
+    <bpmn:textAnnotation id="TextAnnotation_1yhaovw">
+      <bpmn:text>Token enthält User-ID, selectedDate und isDateValid</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1veonar" associationDirection="None" sourceRef="StartEvent_1" targetRef="TextAnnotation_1yhaovw" />
+  </bpmn:process>
+  <bpmn:error id="Error_0cx86y8" name="FEHLER_SPEICHERUNG_CONTENT" errorCode="FEHLER_SPEICHERUNG_CONTENT" camunda:errorMessage="" />
+  <bpmn:error id="Error_1kourqe" name="FEHLER_GENERIERUNG_CONTENT" errorCode="FEHLER_GENERIERUNG_CONTENT" />
+  <bpmn:error id="Error_0oqjlvl" name="FEHLER_LADEN_PRÄFERENZEN" errorCode="FEHLER_LADEN_PRÄFERENZEN" />
+  <bpmn:error id="Error_1pg29uw" name="TECHNISCHER_FEHLER" errorCode="TECHNISCHER_FEHLER" camunda:errorMessage="${errorMessage}" />
+  <bpmn:error id="Error_1dnfgk3" name="FEHLER_DATUM_INALIDE" errorCode="FEHLER_DATUM_INALIDE" camunda:errorMessage="Generierung für Vergangenheit nicht erlaubt" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ayurly-tages-content-prozess">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="182" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="156" y="295" width="90" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_16pwytd_di" bpmnElement="Gateway_16pwytd" isMarkerVisible="true">
+        <dc:Bounds x="275" y="245" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="265" y="215" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xbu9os_di" bpmnElement="Event_1xbu9os">
+        <dc:Bounds x="902" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="884" y="295" width="72" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1sugwgy_di" bpmnElement="Event_0ockw5x">
+        <dc:Bounds x="902" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="881" y="495" width="79" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1s4z9tv_di" bpmnElement="Activity_1c8nge1">
+        <dc:Bounds x="390" y="230" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qo4izz_di" bpmnElement="Activity_08hnegx">
+        <dc:Bounds x="560" y="230" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yld05t_di" bpmnElement="Activity_0o7pmyv">
+        <dc:Bounds x="730" y="230" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0aa2ekx_di" bpmnElement="Event_1hsaw43">
+        <dc:Bounds x="902" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="875" y="395" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_1p0y6ob_di" bpmnElement="DataStoreReference_1p0y6ob">
+        <dc:Bounds x="755" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="742" y="65" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1f9id29" bpmnElement="DataStoreReference_18t64gg">
+        <dc:Bounds x="415" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="402" y="65" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_1mdfov7_di" bpmnElement="DataStoreReference_1mdfov7">
+        <dc:Bounds x="585" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="572" y="65" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1yhaovw_di" bpmnElement="TextAnnotation_1yhaovw">
+        <dc:Bounds x="150" y="80" width="99.99656781987919" height="69.74190005491488" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1sb6o04" bpmnElement="Event_199157v">
+        <dc:Bounds x="792" y="292" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0q4a17v" bpmnElement="Event_0u7sq6g">
+        <dc:Bounds x="622" y="292" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14yj96f_di" bpmnElement="Event_14yj96f">
+        <dc:Bounds x="452" y="292" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0001efr_di" bpmnElement="Flow_0001efr">
+        <di:waypoint x="218" y="270" />
+        <di:waypoint x="275" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bc3su8_di" bpmnElement="Flow_1bc3su8">
+        <di:waypoint x="325" y="270" />
+        <di:waypoint x="390" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="352" y="252" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ibzlt1_di" bpmnElement="Flow_0ibzlt1">
+        <di:waypoint x="490" y="270" />
+        <di:waypoint x="560" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lrlwfg_di" bpmnElement="Flow_1lrlwfg">
+        <di:waypoint x="660" y="270" />
+        <di:waypoint x="730" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sjh0ua_di" bpmnElement="Flow_1sjh0ua">
+        <di:waypoint x="830" y="270" />
+        <di:waypoint x="902" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1s7tqw3_di" bpmnElement="Flow_1s7tqw3">
+        <di:waypoint x="300" y="295" />
+        <di:waypoint x="300" y="470" />
+        <di:waypoint x="902" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="305" y="380" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_12voz3b_di" bpmnElement="DataInputAssociation_12voz3b">
+        <di:waypoint x="440" y="145" />
+        <di:waypoint x="440" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1e99dzx_di" bpmnElement="DataOutputAssociation_1e99dzx">
+        <di:waypoint x="780" y="230" />
+        <di:waypoint x="780" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11hljua_di" bpmnElement="Flow_11hljua">
+        <di:waypoint x="470" y="328" />
+        <di:waypoint x="470" y="370" />
+        <di:waypoint x="902" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qkz0ac_di" bpmnElement="Flow_0qkz0ac">
+        <di:waypoint x="640" y="328" />
+        <di:waypoint x="640" y="370" />
+        <di:waypoint x="902" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1447az5_di" bpmnElement="Flow_1447az5">
+        <di:waypoint x="810" y="328" />
+        <di:waypoint x="810" y="370" />
+        <di:waypoint x="902" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1veonar_di" bpmnElement="Association_1veonar">
+        <di:waypoint x="200" y="252" />
+        <di:waypoint x="200" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssociation_078jmj3_di" bpmnElement="DataInputAssociation_078jmj3">
+        <di:waypoint x="610" y="145" />
+        <di:waypoint x="610" y="230" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
