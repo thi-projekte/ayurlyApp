@@ -122,10 +122,9 @@ const DatePickerPopup = ({ onDateSelect, onClose, initialDate, selectedDate, mon
 
 
 const Calendar = ({ onDateSelect, selectedDate, monthlyProgress, onMonthChange }) => {
-    const [centerDate, setCenterDate] = useState(new Date()); // Das Datum im Zentrum der 7-Tage-Ansicht
+    const [centerDate, setCenterDate] = useState(new Date()); 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-    // Erzeugt immer 7 Tage basierend auf dem centerDate
     const displayDates = React.useMemo(() => {
         const dates = [];
         for (let i = -3; i <= 3; i++) { // 3 Tage davor, Zentrum, 3 Tage danach = 7 Tage

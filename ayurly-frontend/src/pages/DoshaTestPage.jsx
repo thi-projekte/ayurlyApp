@@ -72,7 +72,7 @@ const vataTips = [
     { title: "Meditation & Atemübungen", text: "Pranayama und Meditation helfen, den Geist zu beruhigen." },
     { title: "Vermeide Reizüberflutung", text: "Reduziere Lärm, hektische Umgebungen und übermäßigen Medienkonsum." },
     { title: "Hydration", text: "Trinke warme Getränke wie Kräutertees oder heißes Wasser mit Zitrone." },
-    { title: "Kreativität", text: "Nimm dir Zeit für kreative Hobbys, die dich erden und Freude bereiten." } // Korrektur aus den Rohdaten
+    { title: "Kreativität", text: "Nimm dir Zeit für kreative Hobbys, die dich erden und Freude bereiten." } 
 ];
 
 const pittaTips = [
@@ -202,7 +202,7 @@ const DoshaTestPage = () => {
     <>
       <div className="generalInfo">
         <video src="/videos/index/vata.mp4" type="video/mp4" autoPlay loop muted playsInline id="VataVideo"></video>
-        <div className="modalText"> {/* Klasse modalText für Konsistenz mit indexStyles.css */}
+        <div className="modalText"> 
           <h2 id="VataName">Vata</h2>
           <p>
             Vata ist eines der drei Doshas im Ayurveda und repräsentiert die
@@ -651,12 +651,6 @@ const DoshaTestPage = () => {
               <button className={styles.resultButton} onClick={() => navigate('/myAyurly')}>
                 Jetzt personalisierte Empfehlungen erhalten!
               </button>
-              {/* <Link to={`/rezepte`} className={styles.resultButton}>
-                Passende Rezepte finden
-              </Link>
-              <Link to={`/yoga`} className={styles.resultButton}>
-                Passende Yoga-Übungen finden
-              </Link> */}
             </div>
 
             <div className={styles.navigationButtons}>

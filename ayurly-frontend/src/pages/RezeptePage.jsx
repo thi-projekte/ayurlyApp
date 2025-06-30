@@ -199,7 +199,7 @@ const RezeptePage = () => {
         {filteredRecipes.length > 0 ? (
           filteredRecipes.map(recipe => (
             <div key={recipe.id} className={styles.recipeCard}>
-              <Link to={`/rezepte/${recipe.id}`} className={styles.cardLinkWrapper}> {/* Link umschließt Bild und Titel */}
+              <Link to={`/rezepte/${recipe.id}`} className={styles.cardLinkWrapper}> 
                 <div className={styles.imagePreview}>
                   <img
                       src={recipe.imageUrl || '/img/recipes/default_recipe_image.png'}

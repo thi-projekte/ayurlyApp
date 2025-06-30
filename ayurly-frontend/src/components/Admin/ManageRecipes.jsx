@@ -40,7 +40,6 @@ const ManageRecipes = () => {
 
 
 
-  // Lookup-Daten
   const [doshaTypeOptions, setDoshaTypeOptions] = useState([]);
   const [unitOptions, setUnitOptions] = useState([]);
 
@@ -115,7 +114,7 @@ const ManageRecipes = () => {
           ingredients: recipeToEdit.ingredients && recipeToEdit.ingredients.length > 0 ? recipeToEdit.ingredients.map(ing => ({ ...ing, id: ing.id || Date.now() + Math.random() })) : [{ name: '', quantity: '', unit: '', notes: '', id: Date.now() }],
           preparationSteps: recipeToEdit.preparationSteps && recipeToEdit.preparationSteps.length > 0 ? recipeToEdit.preparationSteps.map(step => ({ ...step, id: step.id || Date.now() + Math.random() })) : [{ stepNumber: 1, description: '', id: Date.now() }],
         });
-        setImagePreview(recipeToEdit.imageUrl || null); // Vorschau für bestehendes Bild
+        setImagePreview(recipeToEdit.imageUrl || null);
         setEditingRecipe(recipeToEdit);
         setIsCreating(false);
       } else {
@@ -156,7 +155,6 @@ const ManageRecipes = () => {
       reader.readAsDataURL(file);
     } else {
       setSelectedFile(null);
-      // Wenn keine neue Datei ausgewählt, aber eine alte imageUrl existiert, diese wieder anzeigen
       setImagePreview(formData.imageUrl || null);
     }
   };
@@ -338,7 +336,6 @@ const ManageRecipes = () => {
         const aValue = a[sortConfig.key];
         const bValue = b[sortConfig.key];
 
-        // Spezifische Behandlung für das doshaTypes Array
         if (sortConfig.key === 'doshaTypes') {
           const aString = a.doshaTypes?.join(', ') || '';
           const bString = b.doshaTypes?.join(', ') || '';

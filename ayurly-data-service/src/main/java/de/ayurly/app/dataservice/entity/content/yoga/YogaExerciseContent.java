@@ -45,7 +45,6 @@ public class YogaExerciseContent extends ContentItem {
     @OrderBy("stepNumber ASC")
     public List<YogaExerciseStep> steps = new ArrayList<>();
     
-    // Add/Remove methods for effects
     public void addEffect(YogaExerciseEffect effect) {
         effects.add(effect);
         effect.yogaExerciseContent = this;
@@ -55,7 +54,6 @@ public class YogaExerciseContent extends ContentItem {
         effect.yogaExerciseContent = null;
     }
     
-    // Add/Remove methods for tips
     public void addTip(YogaExerciseTip tip) {
         tips.add(tip);
         tip.yogaExerciseContent = this;
@@ -65,7 +63,6 @@ public class YogaExerciseContent extends ContentItem {
         tip.yogaExerciseContent = null;
     }
 
-    // Add/Remove methods for steps
     public void addStep(YogaExerciseStep step) {
         steps.add(step);
         step.yogaExerciseContent = this;

@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 public class LookupDoshaType extends PanacheEntityBase {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // SERIAL in PostgreSQL
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     public Integer id;
 
     @Column(unique = true, nullable = false, length = 50)
@@ -31,7 +31,6 @@ public class LookupDoshaType extends PanacheEntityBase {
     @Column(name = "sort_order")
     public int sortOrder = 0;
 
-     // Getter
     public Integer getId() { return id; }
     public String getValue() { return value; }
     public String getLabel() { return label; }

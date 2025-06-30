@@ -44,7 +44,6 @@ const DashboardOverview = () => {
         return <p className={styles.errorMessage}>{error}</p>;
     }
 
-    // Berechne die Gesamtanzahl der Inhalte
     const totalContentCount = metrics
         ? metrics.totalRecipes + metrics.totalMicrohabits + metrics.totalProducts + metrics.totalYogaExercises
         : 0;

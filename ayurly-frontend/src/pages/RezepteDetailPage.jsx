@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import styles from './RezepteDetailPage.module.css';
 import recipeService from '../services/recipeService';
 import { useUser } from '../contexts/UserContext';
-// Importiere Icons von react-icons (Font Awesome)
 import { FaRegThumbsUp, FaThumbsUp, FaRegClock, FaUsers } from 'react-icons/fa';
 
 const RezepteDetailPage = () => {
@@ -136,13 +135,10 @@ const RezepteDetailPage = () => {
                 aria-label={recipe.likedByCurrentUser ? "Unlike this recipe" : "Like this recipe"}
                 disabled={loading} // Deaktiviere Button während Like-Aktion
               >
-                {recipe.likedByCurrentUser ? <FaThumbsUp /> : <FaRegThumbsUp />} {/* react-icons */}
+                {recipe.likedByCurrentUser ? <FaThumbsUp /> : <FaRegThumbsUp />}
                 <span className={styles.likeCount}>{recipe.likeCount}</span>
               </button>
 
-              {/* <Link to="/rezepte" className={styles.backLink}>
-                Zurück
-              </Link> */}
             </div>
             <p className={styles.recipeDescription}>{recipe.description}</p>
             {benefitsList.length > 0 && (

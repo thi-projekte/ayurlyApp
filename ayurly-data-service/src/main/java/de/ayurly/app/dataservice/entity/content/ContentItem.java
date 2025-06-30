@@ -48,7 +48,7 @@ public abstract class ContentItem extends PanacheEntityBase {
     public int likeCount = 0;
 
     @OneToMany(mappedBy = "contentItem", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY) 
-    private List<ContentLike> likes = new ArrayList<>(); // Liste der Likes, nicht direkt exponiert, aber für ORM-Beziehung
+    private List<ContentLike> likes = new ArrayList<>(); 
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

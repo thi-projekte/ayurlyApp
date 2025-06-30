@@ -21,7 +21,7 @@ const PreferencesModal = ({ show, onClose }) => {
     useEffect(() => {
         if (userProfile) {
             const initialPrefs = tilePreferences.reduce((acc, pref) => {
-                acc[pref.key] = userProfile[pref.key] ?? true; // Default auf true, falls nicht vorhanden
+                acc[pref.key] = userProfile[pref.key] ?? true; 
                 return acc;
             }, {});
             setPreferences(initialPrefs);

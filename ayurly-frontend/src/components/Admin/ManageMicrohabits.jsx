@@ -133,7 +133,6 @@ const ManageMicrohabits = () => {
         setError(null);
         setSuccessMessage('');
 
-        // KORREKTUR: Stelle sicher, dass die ID als Zahl gesendet wird
         const payload = { ...formData, routineTileId: parseInt(formData.routineTileId, 10) };
         const method = isCreating ? 'POST' : 'PUT';
         const url = isCreating ? API_BASE_URL_MICROHABITS : `${API_BASE_URL_MICROHABITS}/${editingMicrohabit.id}`;
@@ -141,8 +140,8 @@ const ManageMicrohabits = () => {
         try {
             await apiRequest(url, method, payload, keycloakInstance.token);
             setSuccessMessage(`Microhabit erfolgreich ${isCreating ? 'erstellt' : 'aktualisiert'}.`);
-            cancelEdit(); // Formular zurücksetzen
-            fetchMicrohabits(); // Liste neu laden
+            cancelEdit(); 
+            fetchMicrohabits(); 
         } catch (err) {
             setError(err.message || `Fehler beim ${isCreating ? 'Erstellen' : 'Aktualisieren'} des Microhabits.`);
         } finally {

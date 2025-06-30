@@ -70,15 +70,15 @@ const HomePage = () => {
 
   const doshasExplainedData = [
     {
-      emoji: '🏋️', // Gewichtheber-Emoji 
+      emoji: '🏋️', 
       text: '🏋️ Jeder Mensch trägt alle drei Doshas in sich – jedoch in einer individuellen Zusammensetzung, die seine körperliche und geistige Konstitution prägt.'
     },
     {
-      emoji: '🌻', // Sonnenblumen-Emoji
+      emoji: '🌻', 
       text: '🌻 Die Doshas beeinflussen, wie wir denken, fühlen, verdauen, schlafen und sogar wie wir auf unsere Umwelt reagieren.'
     },
     {
-      emoji: '⚖️', // Waage-Emoji
+      emoji: '⚖️', 
       text: '⚖️ Ein harmonisches Zusammenspiel der Doshas bedeutet Gesundheit, Vitalität und inneres Gleichgewicht. Gerät eines oder mehrere aus der Balance, können sich erste Unstimmigkeiten oder Beschwerden zeigen.'
     }
   ];
@@ -93,7 +93,7 @@ const HomePage = () => {
     { title: "Meditation & Atemübungen", text: "Pranayama und Meditation helfen, den Geist zu beruhigen." },
     { title: "Vermeide Reizüberflutung", text: "Reduziere Lärm, hektische Umgebungen und übermäßigen Medienkonsum." },
     { title: "Hydration", text: "Trinke warme Getränke wie Kräutertees oder heißes Wasser mit Zitrone." },
-    { title: "Kreativität", text: "Nimm dir Zeit für kreative Hobbys, die dich erden und Freude bereiten." } // Korrektur aus den Rohdaten
+    { title: "Kreativität", text: "Nimm dir Zeit für kreative Hobbys, die dich erden und Freude bereiten." } 
 ];
 
 const pittaTips = [
@@ -703,7 +703,6 @@ const kaphaTips = [
               </p>
             </div>
             <div className="socialMedia">
-              {/* Für externe Links ist <a> besser als <Link> von react-router-dom */}
               <a href="https://www.instagram.com/ayurly.balance" target="_blank" rel="noopener noreferrer">
                 <i className="fi fi-brands-instagram"></i>ayurly.balance
               </a>

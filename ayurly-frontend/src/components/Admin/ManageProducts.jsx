@@ -168,7 +168,6 @@ const ManageProducts = () => {
         }
     };
 
-    // Generic handler for simple, repeatable text fields
     const handleRepeatableChange = (index, field, e) => {
         const { value } = e.target;
         const newList = formData[field].map((item, i) => i === index ? { ...item, text: value } : item);
@@ -183,8 +182,7 @@ const ManageProducts = () => {
         setFormData(prev => ({ ...prev, [field]: prev[field].filter((_, i) => i !== index) }));
     };
     
-    // Handler for application steps
-     const handleStepChange = (index, e) => {
+    const handleStepChange = (index, e) => {
         const { value } = e.target;
         const newSteps = formData.applicationSteps.map((step, i) =>
             i === index ? { ...step, description: value } : step
@@ -330,7 +328,6 @@ const ManageProducts = () => {
                     <label>Einheit: <select name="unit" value={formData.unit} onChange={handleFormChange}><option value="g">g</option><option value="kg">kg</option></select></label>
                     <label>Externer Link: <input type="text" name="externalLink" value={formData.externalLink} onChange={handleFormChange} placeholder="https://..." /></label>
 
-                    {/* --- Dosha-Typen --- */}
                     <h4>Dosha-Typen</h4>
                     {doshaTypeOptions.map(dosha => (
                         <label key={dosha.value} className={styles.checkboxLabel}>
@@ -339,7 +336,6 @@ const ManageProducts = () => {
                         </label>
                     ))}
                     
-                    {/* --- Wiederholbare Felder --- */}
                     <h4>Vorteile</h4>
                     {formData.benefits.map((item, index) => (
                         <div key={index} className={styles.formGroupRepeat}>

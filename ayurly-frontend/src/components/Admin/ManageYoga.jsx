@@ -9,9 +9,9 @@ const API_BASE_URL_UPLOADS = '/api/admin/uploads';
 
 const initialYogaFormState = {
     title: '',
-    imageUrl: '', // For the preview card
+    imageUrl: '', 
     previewDescription: '',
-    videoUrl: '', // For the detail page video
+    videoUrl: '', 
     description: '',
     doshaTypes: [],
     effects: [{ text: '' }],
@@ -113,7 +113,6 @@ const ManageYoga = () => {
         }
     };
 
-    // --- Form Handlers ---
     const handleFormChange = (e) => {
         const { name, value, type, checked } = e.target;
         if (name === "doshaTypes") {
@@ -139,7 +138,6 @@ const ManageYoga = () => {
         if (file) setSelectedVideoFile(file);
     };
 
-    // Generic handler for simple lists like 'effects' and 'tips'
     const handleSimpleListChange = (index, field, value) => {
         const list = [...formData[field]];
         list[index].text = value;
@@ -154,7 +152,6 @@ const ManageYoga = () => {
         setFormData(prev => ({ ...prev, [field]: formData[field].filter((_, i) => i !== index) }));
     };
 
-    // Handlers for nested steps
     const handleStepChange = (index, field, value) => {
         const steps = [...formData.steps];
         steps[index][field] = value;
@@ -321,7 +318,6 @@ const ManageYoga = () => {
             {(isCreating || editingExercise) && (
                 <form onSubmit={handleSubmit} className={styles.adminForm}>
                     <h3>{isCreating ? 'Neue Übung' : 'Übung bearbeiten'}</h3>
-                    {/* Basic Info */}
                     <label>Titel: <input name="title" value={formData.title} onChange={handleFormChange} required /></label>
                     <label>Vorschau-Beschreibung: <textarea name="previewDescription" value={formData.previewDescription} onChange={handleFormChange} /></label>
                     <label>Ausführliche Beschreibung: <textarea name="description" value={formData.description} onChange={handleFormChange} rows="4" /></label>
@@ -341,7 +337,6 @@ const ManageYoga = () => {
                     <label>Vorschau-Bild: <input type="file" onChange={handleFileChange} ref={fileInputRef} accept="image/*" /></label>
                     {imagePreview && <img src={imagePreview} alt="Vorschau" style={{ width: '150px', marginTop: '10px' }} />}
 
-                    {/* Dosha Types */}
                     <h4>Dosha-Typen</h4>
                     {doshaTypeOptions.map(d => (
                         <label key={d.value} className={styles.checkboxLabel}>
@@ -349,7 +344,6 @@ const ManageYoga = () => {
                         </label>
                     ))}
 
-                    {/* Effects & Tips */}
                     <h4>Wirkung</h4>
                     {formData.effects.map((item, index) => (
                         <div key={index} className={styles.formGroupRepeat}>
@@ -368,7 +362,6 @@ const ManageYoga = () => {
                     ))}
                     <button type="button" onClick={() => addSimpleListItem('tips')} className={styles.addButton}>Tipp hinzufügen</button>
 
-                    {/* Anleitung */}
                     <h4>Anleitung</h4>
                     {formData.steps.map((step, stepIndex) => (
                         <div key={stepIndex} style={{ border: '1px solid #ccc', padding: '10px', borderRadius: '5px', marginBottom: '10px' }}>
@@ -391,7 +384,6 @@ const ManageYoga = () => {
                     ))}
                     <button type="button" onClick={addStep} className={styles.addButton}>Hauptschritt hinzufügen</button>
 
-                    {/* Actions */}
                     <div className={styles.formActions}>
                         <button type="submit" className={styles.saveButton} disabled={isLoading}>Speichern</button>
                         <button type="button" onClick={resetFormAndState} className={styles.cancelButton} disabled={isLoading}>Abbrechen</button>
@@ -399,7 +391,6 @@ const ManageYoga = () => {
                 </form>
             )}
 
-            {/* Table View */}
             {!isCreating && !editingExercise && (
                 <>
                     <div className={styles.tableControls}>

@@ -33,7 +33,6 @@ public class AppUser extends PanacheEntityBase {
     @Column(name = "show_rest_cycle")
     public boolean showRestCycle = true;
 
-    // Standardkonstruktor (wird von JPA benötigt)
     public AppUser() {
     }
 
